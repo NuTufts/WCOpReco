@@ -1,4 +1,4 @@
-#include "WireCellData/Opflash.h"
+#include "Opflash.h"
 #include <algorithm>
 #include <iostream>
 

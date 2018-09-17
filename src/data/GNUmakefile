@@ -13,20 +13,17 @@ LDLIBS   += `larcv-config --libs`
 LIBS      =
 LDLIBS   += -Llib $(addprefix -l, $(LIBS))
 
-SUBDIRS   =    src/data
-#build/bin build/lib build/python src/algo build/include
+SUBDIRS   = .
+#build/bin build/lib build/python src/algo
 INCLUDES += $(addprefix -I, $(SUBDIRS))
+SRCS := $(wildcard *.cxx)
+BINS := $(SRCS:%.cxx=%)
 EXEC      = #dev
 
-all: obj $(EXEC)
+all: ${BINS} $(EXEC)
+
 
 %: %.cxx
-	$(CXX) $(CFLAGS) $(INCLUDES) -c $< -o $@.o
-	$(CXX) $(LDFLAGS) -o $@ $@.o $(LDLIBS)
-	rm $@.o
-
-obj:
-	@echo $(SUBDIRS)
-	@for i in $(SUBDIRS); do ( echo "" && echo "Compiling $$i..." && cd $$i && $(MAKE) ) || exit $$?; done
-clean:
-	rm lib/*.so dev
+	$(CXX)  $(INCLUDES) -c $< -o $@.o
+	#$(CFLAGS)
+	#$(CXX) $(LDFLAGS) -o $@ $@.o $(LDLIBS)

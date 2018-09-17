@@ -15,6 +15,7 @@ LDLIBS   += -Llib $(addprefix -l, $(LIBS))
 
 SUBDIRS   =
 INCLUDES += $(addprefix -I, $(SUBDIRS))
+EXEC      = dev
 
 all: obj $(EXEC)
 

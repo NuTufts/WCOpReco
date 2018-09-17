@@ -2,20 +2,20 @@
 
 using namespace WireCell;
 
-WireCell::COphit::COphit(int ch_no, TH1S *hist, double time, double gain, double gain_err)
+WireCell::COphit::COphit(int ch_no, std::vector<double> *hist, double time, double gain, double gain_err) //TH1S
   : channel_no(ch_no)
   , time(time)
   , gain(gain)
   , gain_err(gain_err)
 {
   // calculate baseline
-  baseline = hist->GetBinContent(1);
+  baseline = hist->at(1);
 
   // calculate peak and integral
   peak = 0;
   integral = 0;
   for (int i=0; i!=40; i++){
-    double content = hist->GetBinContent(i+1) - baseline;
+    double content = hist->at(i+1) - baseline;
     if (content > peak){
       peak  = content;
     }

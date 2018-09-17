@@ -1,15 +1,16 @@
 #ifndef COphit_h
 #define COphit_h
 
-#include "TH1S.h"
+//#include "TH1S.h"
 #include <vector>
+#include <math.h> //need this if cutting out root
 
 
 namespace WireCell{
 
   class COphit{
   public:
-    COphit(int ch_no, TH1S *hist, double time, double gain, double gain_err);
+    COphit(int ch_no, std::vector<double> *hist, double time, double gain, double gain_err); //TH1S
     ~COphit();
 
     double get_time(){return time;};

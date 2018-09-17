@@ -3,6 +3,7 @@
 
 #include "COphit.h"
 #include "TH1F.h"
+#include <math.h> //Need this if not using root
 #include <set>
 
 namespace WireCell{

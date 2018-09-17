@@ -1,7 +1,7 @@
 #ifndef Opflash_h
 #define Opflash_h
 
-#include "WireCellData/COphit.h"
+#include "COphit.h"
 #include "TH1F.h"
 #include <set>
 

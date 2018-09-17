@@ -1,6 +1,6 @@
-CXX       = g++
+CXX       = g++ 
 
-CFLAGS    = -g -fPIC
+CFLAGS    = -g -fPIC -std=c++11
 CFLAGS   += `root-config --cflags` -DUSE_OPENCV=1
 
 INCLUDES  = `root-config --incdir`
@@ -24,6 +24,5 @@ all: ${BINS} $(EXEC)
 
 
 %: %.cxx
-	$(CXX)  $(INCLUDES) -c $< -o $@.o
-	#$(CFLAGS)
+	$(CXX) $(CFLAGS) $(INCLUDES) -c $< -o $@.o
 	#$(CXX) $(LDFLAGS) -o $@ $@.o $(LDLIBS)

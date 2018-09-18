@@ -34,7 +34,7 @@ WireCell::Opflash::Opflash(COphitSelection &ophits)
 
 }
 
-WireCell::Opflash::Opflash(TH1F **hist, double start_time, int start_bin, int end_bin, float bin_width)
+WireCell::Opflash::Opflash(std::vector<double> **hist, double start_time, int start_bin, int end_bin, float bin_width)
   : type(2)
   , flash_id (-1)
 {
@@ -53,7 +53,7 @@ WireCell::Opflash::Opflash(TH1F **hist, double start_time, int start_bin, int en
     double peak = 0;
     double mult = 0;
     for (int j=0;j!=32;j++){
-      double content = hist[j]->GetBinContent(i+1);
+      double content = hist[j]->at(i+1);
       if (content < 0.2) content = 0;
       peak += content;
       PE[j] += content;
@@ -71,6 +71,7 @@ WireCell::Opflash::Opflash(TH1F **hist, double start_time, int start_bin, int en
   }
 
   time = start_time + (max_bin+0.5) * bin_width;
+
 
   total_PE = 0;
   for (int i=0;i!=32;i++){
@@ -133,12 +134,12 @@ void WireCell::Opflash::swap_channels(){
   PE_err[26] = temp;
 }
 
-void WireCell::Opflash::Add_l1info(TH1F *hist_tot_pe, TH1F *hist_mult, double start_time, int start_bin, int end_bin, float bin_width){
+void WireCell::Opflash::Add_l1info(std::vector<double> *hist_tot_pe, std::vector<double> *hist_mult, double start_time, int start_bin, int end_bin, float bin_width){
   std::vector<int> fired_bin;
   std::vector<double> fired_pe;
   for (int i=start_bin; i!=end_bin;i++){
-    double pe = hist_tot_pe->GetBinContent(i+1);
-    double mult = hist_mult->GetBinContent(i+1);
+    double pe = hist_tot_pe->at(i+1);
+    double mult = hist_mult->at(i+1);
     if (pe >=10 && mult>=3){
       fired_bin.push_back(i);
       fired_pe.push_back(pe);

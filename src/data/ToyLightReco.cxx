@@ -1,4 +1,4 @@
-#include "WireCell2dToy/ToyLightReco.h"
+#include "ToyLightReco.h"
 #include "WireCellRess/LassoModel.h"
 #include "WireCellRess/ElasticNetModel.h"
 #include <Eigen/Dense>

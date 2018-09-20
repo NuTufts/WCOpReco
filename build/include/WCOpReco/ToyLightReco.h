@@ -1,7 +1,7 @@
 #ifndef WIRECELL_TOYLIGHTRECO_H
 #define WIRECELL_TOYLIGHTRECO_H
 
-#include "WireCellData/Opflash.h"
+#include "Opflash.h"
 
 #include "TFile.h"
 #include "TTree.h"

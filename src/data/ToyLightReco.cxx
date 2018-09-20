@@ -1,6 +1,6 @@
 #include "ToyLightReco.h"
-#include "WireCellRess/LassoModel.h"
-#include "WireCellRess/ElasticNetModel.h"
+#include "LassoModel.h"
+#include "ElasticNetModel.h"
 #include <Eigen/Dense>
 
 #include "TH1S.h"

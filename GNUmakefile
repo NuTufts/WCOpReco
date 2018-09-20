@@ -13,9 +13,11 @@ LDLIBS   += `larcv-config --libs`
 LIBS      =
 LDLIBS   += -Llib $(addprefix -l, $(LIBS))
 
-SUBDIRS   =    src/data
+SUBDIRS   = src/data
+#Need to include eigen namespace
+EIGENSPACE = /usr/include/eigen3
 #build/bin build/lib build/python src/algo build/include
-INCLUDES += $(addprefix -I, $(SUBDIRS))
+INCLUDES += $(addprefix -I, $(SUBDIRS) $(EIGENSPACE))
 EXEC      = #dev
 
 all: obj $(EXEC)

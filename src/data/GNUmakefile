@@ -14,8 +14,10 @@ LIBS      = ../../build/lib
 LDLIBS   += -Llib $(addprefix -l, $(LIBS))
 
 HEADERS   = ../../build/include/WCOpReco
+#Need to include eigen namespace
+EIGENSPACE = /usr/include/eigen3
 #build/bin build/lib build/python src/algo
-INCLUDES  = $(addprefix -I, $(HEADERS))
+INCLUDES  = $(addprefix -I, $(HEADERS) $(EIGENSPACE))
 SRCS := $(wildcard *.cxx)
 BINS := $(SRCS:%.cxx=%)
 EXEC      = #dev

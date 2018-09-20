@@ -1,4 +1,4 @@
-#include "WireCellRess/ElasticNetModel.h"
+#include "ElasticNetModel.h"
 
 #include <Eigen/Dense>
 using namespace Eigen;

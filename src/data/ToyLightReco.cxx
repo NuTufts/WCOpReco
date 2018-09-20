@@ -13,6 +13,7 @@ using namespace Eigen;
 
 
 WireCell2dToy::ToyLightReco::ToyLightReco(const char* root_file, bool imagingoutput){
+  //want to do the same funtion without root
   file = new TFile(root_file);
   if(imagingoutput){
     T = (TTree*)file->Get("Trun");
@@ -21,6 +22,8 @@ WireCell2dToy::ToyLightReco::ToyLightReco(const char* root_file, bool imagingout
     T = (TTree*)file->Get("/Event/Sim");
   }
 
+  //TClonesArray: an array of identical objects. Memory is allocated only once in lifetime
+  //probably want vectors instead
   cosmic_hg_wf = new TClonesArray;
   cosmic_lg_wf = new TClonesArray;
   beam_hg_wf = new TClonesArray;
@@ -55,7 +58,12 @@ WireCell2dToy::ToyLightReco::ToyLightReco(const char* root_file, bool imagingout
 
 
 
-
+  /*These variables are objects with 32 histograms (one for each PMT).
+  hraw: filled at end load_event_raw
+  hdecon: filled with deconvoloved waveform
+  hl1: filled with L1 fit waveform
+  each of these should be in their own structure
+  */
   hraw = new TH1F*[32];
   hdecon = new TH1F*[32];
   hl1 = new TH1F*[32];
@@ -64,6 +72,7 @@ WireCell2dToy::ToyLightReco::ToyLightReco(const char* root_file, bool imagingout
     hdecon[i] = new TH1F(Form("hdecon_%d",i),Form("hdecon_%d",i),250,0,250);
     hl1[i] = new TH1F(Form("hl1_%d",i),Form("hl1_%d",i),250,0,250);
   }
+
   h_totPE = new TH1F("h_totPE","h_totPE",250,0,250);
   h_mult = new TH1F("h_mult","h_mult",250,0,250);
   h_l1_mult = new TH1F("h_l1_mult","h_l1_mult",250,0,250);
@@ -91,7 +100,7 @@ WireCell2dToy::ToyLightReco::~ToyLightReco(){
   //  if(delete_status){
 
   clear_flashes();
-
+ // all of the root objects deleted
   for (int i=0;i!=32;i++){
     delete hraw[i];
     hraw[i] = nullptr;

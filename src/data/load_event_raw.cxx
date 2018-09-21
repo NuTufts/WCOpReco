@@ -1,8 +1,9 @@
-#include "LoadEventRaw.h" //Need to make this still
+#include "load_event_raw.h"
 #include <Eigen/Dense>
 #include <iostream>
 #include <vector>
 using namespace Eigen;
+
 /*
 Need to break this up much more. It calls a bunch of other functions after filling hraw,
 they should probably be called in a seperate, main, function
@@ -33,7 +34,7 @@ for (size_t i=0;i!=32;i++){
 */
 
 // Where the raw waveform is made and used
-void WireCell2dToy::ToyLightReco::LoadEventRaw(int eve_num){
+void WireCell2dToy::ToyLightReco::load_event_raw(int eve_num){
   //ROOT
   T->GetEntry(eve_num);
 

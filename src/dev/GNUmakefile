@@ -6,12 +6,13 @@ CFLAGS   += `root-config --cflags` -DUSE_OPENCV=1
 INCLUDES  = `root-config --incdir`
 
 LDFLAGS   = `root-config --ldflags` -lstdc++
-LDLIBS    = `root-config --libs`
+ROOTLIBS  = `root-config --libs`
 
-WCLIBS  = $($($(notdir $(wildcard $(WCOPRECO_LIBDIR)/*.so),lib=)),.so=)
-#WCLIBS  = $(WCLIBS: lib=)
+WCLIBS  = $(notdir $(wildcard $(WCOPRECO_LIBDIR)/*.so))
+WCLIBSTEM := $(WCLIBS:lib%.so=%)
 #WCLIBS := $(WCLIBS: .so=)
-LDLIBS   += -L$(WCOPRECO_LIBDIR) $(addprefix -l, $(WCLIBS))
+LDLIBS   += -L$(WCOPRECO_LIBDIR) $(addprefix -l, $(WCLIBSTEM))
+LDLIBS   += $(ROOTLIBS)
 
 HEADERS   = $(wildcard *.h)
 #Need to include eigen namespace
@@ -29,7 +30,8 @@ all: $(BINS)
 
 %: %.cxx
 	@echo "<<compiling binary $@>>"
-	$(CXX) $(CFLAGS) $(INCLUDES) -c $^ -o $@.o 
+	$(CXX) $(CFLAGS) $(INCLUDES) -c $^ -o $@.o
+	@echo "<< link with ${WCLIBSTEM} >> "
 	$(CXX) $(LDFLAGS) -o $@ $@.o $(LDLIBS)
 
 includes: $(HEADERS)

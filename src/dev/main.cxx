@@ -17,5 +17,7 @@
 int main(){
 
   std::cout << "Hello world" << std::endl;
-  void Reader();
+
+  wcopreco::DataReader reader;
+  reader.Reader();
 };

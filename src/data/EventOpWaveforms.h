@@ -5,15 +5,18 @@
 #include <vector>
 #include <map>
 
-class EventOpWaveforms: public std::vector<OpWaveformCollection> {
-public:
-  EventOpWaveforms();
-  ~EventOpWaveforms();
+namespace wcopreco {
 
-  //A map linking indices to the type of WaveformCollection
-  std::map<int,int> type2index;
+  class EventOpWaveforms: public std::vector<OpWaveformCollection> {
+  public:
+    EventOpWaveforms() {};
+    virtual ~EventOpWaveforms() {};
 
+    //A map linking indices to the type of WaveformCollection
+    std::map<int,int> type2index;
 
-};
+  };
+
+}
 
 #endif

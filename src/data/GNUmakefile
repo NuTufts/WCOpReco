@@ -13,25 +13,37 @@ LDLIBS    = `root-config --libs`
 LIBS      = ../../build/lib
 LDLIBS   += -Llib $(addprefix -l, $(LIBS))
 
-HEADERS   = ../../build/include/WCOpReco
+HEADERS   = $(wildcard *.h)
 #Need to include eigen namespace
 EIGENSPACE = /usr/include/eigen3
 #build/bin build/lib build/python src/algo
-INCLUDES  = $(addprefix -I, $(HEADERS) $(EIGENSPACE))
+INCLUDES  += $(addprefix -I,$(EIGENSPACE))
+INCLUDES  += -I. -I$(WCOPRECO_INCDIR)
+FINALINCLUDES= $(addpredix $(WCOPRECO_INCDIR),$(HEADERS))
 SRCS := $(wildcard *.cxx)
 OBJS := $(SRCS:.cxx=.o)
 LIB = lib${LIBNAME}.so
 
-all: $(LIB) $(WCOPRECO_LIBDIR)/$(LIB)
-	@echo "<<wheres my $(WCOPRECO_LIBDIR)/$(LIB) >>"
+all: $(LIB) $(WCOPRECO_LIBDIR)/$(LIB) includes
 
 $(LIB): $(OBJS)
-	@echo "<<library rule called>>"
+#	@echo "<<library rule called>>"
 	$(CXX) $(LDFLAGS) -shared -o $@ $(OBJS)
 
 $(WCOPRECO_LIBDIR)/$(LIB): $(OBJS)
+	@echo "<< copy lib to lib folder >>"
+	@cp $(LIB) $@
 
 %.o: %.cxx %.h
-	@echo "<<compiling $@>>"
+#	@echo "<<compiling $@>>"
 	$(CXX) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
+includes: $(HEADERS)
+	@echo "<< copy headers to include dir >>"
+
+%.h:
+	@cp $@ $(WCOPRECO_INCDIR)/
+
+clean:
+	@echo "rm $(FINALINCLUDES)"
+	rm *.o *.so $(WCOPRECO_LIBDIR)/$(LIB)

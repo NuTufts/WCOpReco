@@ -3,14 +3,18 @@
 
 #include "EventOpWaveforms.h"
 
-class UBEventWaveform: public EventOpWaveforms {
-public:
-
-  typedef enum {HGBeam=0, LGBeam, HGCosmic, LGCosmic} UBOpWaveformForm_t;
+namespace wcopreco {
   
-  UBEventWaveform() {};
-  virtual ~UBEventWaveform() {};
+  class UBEventWaveform: public EventOpWaveforms {
+  public:
+    
+    typedef enum {HGBeam=0, LGBeam, HGCosmic, LGCosmic} UBOpWaveformForm_t;
+    
+    UBEventWaveform() {};
+    virtual ~UBEventWaveform() {};
+    
+  };
 
-};
-
+}
+  
 #endif

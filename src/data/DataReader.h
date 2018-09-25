@@ -14,8 +14,15 @@
 
 #include <iostream>
 
-class DataReader : public UBEventWaveform {
-public:
-  void Reader();
-};
+namespace wcopreco  {
+
+  class DataReader {
+  public:
+    DataReader() {};
+    ~DataReader() {};
+
+    void Reader();
+  };
+
+}
 #endif

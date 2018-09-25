@@ -1,6 +1,7 @@
 #ifndef OPWAVEFORMCOLLECTION_H
 #define OPWAVEFORMCOLLECTION_H
 
+#include "OpWaveform.h"
 #include <vector>
 
 class OpWaveformCollection : public std::vector<OpWaveform> {

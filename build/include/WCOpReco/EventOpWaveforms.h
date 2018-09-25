@@ -3,6 +3,7 @@
 
 #include "OpWaveformCollection.h"
 #include <vector>
+#include <map>
 
 class EventOpWaveforms: public std::vector<OpWaveformCollection> {
 public:
@@ -10,7 +11,7 @@ public:
   ~EventOpWaveforms();
 
   //A map linking indices to the type of WaveformCollection
-  map<int,int> type2index;
+  std::map<int,int> type2index;
 
 
 };

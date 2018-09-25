@@ -1,14 +1,14 @@
 CXX       = g++ 
 
+LIBNAME = WCOpReco_data
+
 CFLAGS    = -g -fPIC -std=c++11
 CFLAGS   += `root-config --cflags` -DUSE_OPENCV=1
 
 INCLUDES  = `root-config --incdir`
-#INCLUDES += `larcv-config --includes`
 
 LDFLAGS   = `root-config --ldflags` -lstdc++
 LDLIBS    = `root-config --libs`
-#LDLIBS   += `larcv-config --libs`
 
 LIBS      = ../../build/lib
 LDLIBS   += -Llib $(addprefix -l, $(LIBS))
@@ -19,12 +19,19 @@ EIGENSPACE = /usr/include/eigen3
 #build/bin build/lib build/python src/algo
 INCLUDES  = $(addprefix -I, $(HEADERS) $(EIGENSPACE))
 SRCS := $(wildcard *.cxx)
-BINS := $(SRCS:%.cxx=%)
-EXEC      = #dev
+OBJS := $(SRCS:.cxx=.o)
+LIB = lib${LIBNAME}.so
 
-all: ${BINS} $(EXEC)
+all: $(LIB) $(WCOPRECO_LIBDIR)/$(LIB)
+	@echo "<<wheres my $(WCOPRECO_LIBDIR)/$(LIB) >>"
 
+$(LIB): $(OBJS)
+	@echo "<<library rule called>>"
+	$(CXX) $(LDFLAGS) -shared -o $@ $(OBJS)
 
-%: %.cxx
-	$(CXX) $(CFLAGS) $(INCLUDES) -c $< -o $@.o
-	#$(CXX) $(LDFLAGS) -o $@ $@.o $(LDLIBS)
+$(WCOPRECO_LIBDIR)/$(LIB): $(OBJS)
+
+%.o: %.cxx %.h
+	@echo "<<compiling $@>>"
+	$(CXX) $(CFLAGS) $(INCLUDES) -c $< -o $@
+

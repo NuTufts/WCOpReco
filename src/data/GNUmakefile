@@ -38,11 +38,9 @@ $(WCOPRECO_LIBDIR)/$(LIB): $(OBJS)
 #	@echo "<<compiling $@>>"
 	$(CXX) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-includes: $(HEADERS)
-	@echo "<< copy headers to include dir >>"
-
-%.h:
-	@cp $@ $(WCOPRECO_INCDIR)/
+includes:
+	@echo "<< copy headers to include dir: $(WCOPRECO_INCDIR) >>"
+	@cp *.h $(WCOPRECO_INCDIR)/WCOpReco/
 
 clean:
 	@echo "rm $(FINALINCLUDES)"

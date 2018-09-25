@@ -1,0 +1,4 @@
+*~
+build/include/WCOpReco/*
+build/lib/*
+*.o

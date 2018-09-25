@@ -1,5 +1,5 @@
 
-SUBDIRS = src
+SUBDIRS = data dev
 
 all: obj
 

@@ -1,10 +1,10 @@
 #ifndef EventOpWaveforms_h
 #define EventOpWaveforms_h
 
-#include "WaveformCollection.h"
+#include "OpWaveformCollection.h"
 #include <vector>
 
-class EventOpWaveforms: public std::vector<WaveformCollection> {
+class EventOpWaveforms: public std::vector<OpWaveformCollection> {
 public:
   EventOpWaveforms();
   ~EventOpWaveforms();
@@ -12,4 +12,7 @@ public:
   //A map linking indices to the type of WaveformCollection
   map<int,int> type2index;
 
-}
+
+};
+
+#endif

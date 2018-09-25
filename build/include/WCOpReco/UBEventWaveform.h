@@ -9,4 +9,6 @@ public:
   ~UBEventWaveform();
   enum {HGBea=0, LGBeam, HGCosmic, LGCosmic};
 
-}
+};
+
+#endif

@@ -7,7 +7,7 @@ namespace wcopreco {
 
   class OpWaveform : public std::vector<short> {
   public:
-    OpWaveform(int ChanNum, double time_from_trig, int typ);
+    OpWaveform(int ChanNum, double time_from_trig, int typ, const std::vector<short>& wfm );
     virtual ~OpWaveform() {};
 
     int get_ChannelNum() {return ChannelNum;};

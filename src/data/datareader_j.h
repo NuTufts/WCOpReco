@@ -13,6 +13,7 @@
 #include "TVirtualFFT.h"
 
 #include <iostream>
+#include <vector>
 
 namespace wcopreco  {
 
@@ -23,6 +24,10 @@ namespace wcopreco  {
 
     void Reader();
     int eventNo;
+    std::vector<short int> cosmic_hg_opch;
+    int cosmic_lg_opch;
+    int beam_lg_opch;
+    int beam_hg_opch;
   };
 
 }

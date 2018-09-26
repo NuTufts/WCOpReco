@@ -17,8 +17,6 @@
 namespace wcopreco {
 
   void DataReader::Reader() {
-    //std::cout<<"start"<<std::endl;
-    printf("start");
     TFile* file = TFile::Open("/home/kmason/PmtReco/WCOpReco/src/data/celltree.root");
     if (file==0) {
       std::cout<< "Error: Cannot open file" << std::endl;
@@ -26,7 +24,7 @@ namespace wcopreco {
     };
 
     TTree * tree = (TTree*) file->Get("Event/Sim");
-    //point to the branches we'll need
+    //need to save channel and timestamp
     std::vector<double> * cosmic_hg_timestamp = 0;
     std::vector<double> * cosmic_lg_timestamp = 0;
     std::vector<double> * beam_hg_timestamp = 0;
@@ -36,8 +34,8 @@ namespace wcopreco {
     tree->SetBranchAddress("beam_hg_timestamp",&beam_hg_timestamp);
     tree->SetBranchAddress("beam_lg_timestamp",&beam_lg_timestamp);
 
-    Double_t triggerTime;
-    tree->SetBranchAddress("triggerTime",&triggerTime);
+    //Double_t triggerTime;
+    //tree->SetBranchAddress("triggerTime",&triggerTime);
 
     std::vector<short> * cosmic_hg_opch = 0;
     std::vector<short> * cosmic_lg_opch = 0;
@@ -52,19 +50,50 @@ namespace wcopreco {
     std::cout << "Number of Events is: " << tree->GetEntries() << std::endl;
 
     for (Int_t i =0; i< nevents;i++) {
-      //std::cout << i << std::endl;
-      //for each event save an OpWaveform with necessary info
+
       tree->GetEntry(i);
-      std::cout<<"triggerTime " << triggerTime << std::endl;
-      wcopreco::OpWaveform(0, triggerTime, 0);
-      //std::cout << wcopreco::OpWaveform.get_time_from_trigger() <<std::endl;
-      // for (unsigned j=0; j < cosmic_hg_opch->size(); j++) {
-      //   std::vector<short> test = cosmic_hg_opch[j];
-      //   for (unsigned k=0; k < test.size(); k++) {
-      //       std::cout<< "test " << test[k] << "k " << k <<std::endl;
-      //   };
-      //   std::cout << "end of event" <<std::endl;
-      // };
+
+      std::vector<short> ch = *beam_hg_opch;
+      std::vector<double> timestamp = *beam_hg_timestamp;
+      for (unsigned j=0; j < ch.size(); j++) {
+        OpWaveform wfm(ch[j], timestamp[j], 0, std::vector<short> (0));
+        if (j == 1){
+        std::cout <<"type " <<wfm.get_type()<< "ch " <<wfm.get_ChannelNum()<< " timestamp " << wfm.get_time_from_trigger() <<std::endl;};
+      };
+      ch.clear();
+      timestamp.clear();
+
+      ch = *beam_lg_opch;
+      timestamp = *beam_lg_timestamp;
+      for (unsigned j=0; j < ch.size(); j++) {
+        OpWaveform wfm(ch[j], timestamp[j], 1, std::vector<short> (0));
+        if (j == 1){
+        std::cout <<"type " <<wfm.get_type()<< "ch " <<wfm.get_ChannelNum()<< " timestamp " << wfm.get_time_from_trigger() <<std::endl;};
+      };
+      ch.clear();
+      timestamp.clear();
+
+      ch = *cosmic_hg_opch;
+      timestamp = *cosmic_hg_timestamp;
+      for (unsigned j=0; j < ch.size(); j++) {
+        OpWaveform wfm(ch[j], timestamp[j], 2, std::vector<short> (0));
+        if (j == 1){
+        std::cout <<"type " <<wfm.get_type()<< "ch " <<wfm.get_ChannelNum()<< " timestamp " << wfm.get_time_from_trigger() <<std::endl;};
+      };
+      ch.clear();
+      timestamp.clear();
+
+      ch = *cosmic_lg_opch;
+      timestamp = *cosmic_lg_timestamp;
+      for (unsigned j=0; j < ch.size(); j++) {
+        OpWaveform wfm(ch[j], timestamp[j], 3, std::vector<short> (0));
+        if (j == 1){
+        std::cout <<"type " <<wfm.get_type()<< "ch " <<wfm.get_ChannelNum()<< " timestamp " << wfm.get_time_from_trigger() <<std::endl;};
+      };
+      ch.clear();
+      timestamp.clear();
+
+      std::cout << "end of event" << std::endl;
     };
     return;
   };

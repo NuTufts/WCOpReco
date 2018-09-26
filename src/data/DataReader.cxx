@@ -53,46 +53,39 @@ namespace wcopreco {
 
       tree->GetEntry(i);
 
-      std::vector<short> ch = *beam_hg_opch;
-      std::vector<double> timestamp = *beam_hg_timestamp;
-      for (unsigned j=0; j < ch.size(); j++) {
-        OpWaveform wfm(ch[j], timestamp[j], 0, std::vector<short> (0));
-        if (j == 1){
-        std::cout <<"type " <<wfm.get_type()<< "ch " <<wfm.get_ChannelNum()<< " timestamp " << wfm.get_time_from_trigger() <<std::endl;};
-      };
-      ch.clear();
-      timestamp.clear();
+      for (int k = 0; k<4; k++){
+        int type = k;
+        std::vector<short> ch;
+        std::vector<double> timestamp;
+        if (k==0){
+          ch = *beam_hg_opch;
+          timestamp = *beam_hg_timestamp;
+        }
+        else if (k==1){
+          ch = *beam_lg_opch;
+          timestamp = *beam_lg_timestamp;
+        }
+        else if (k==2){
+          ch = *cosmic_hg_opch;
+          timestamp = *cosmic_hg_timestamp;
+        }
+        else if (k==3){
+          ch = *cosmic_lg_opch;
+          timestamp = *cosmic_lg_timestamp;
+        };
 
-      ch = *beam_lg_opch;
-      timestamp = *beam_lg_timestamp;
-      for (unsigned j=0; j < ch.size(); j++) {
-        OpWaveform wfm(ch[j], timestamp[j], 1, std::vector<short> (0));
-        if (j == 1){
-        std::cout <<"type " <<wfm.get_type()<< "ch " <<wfm.get_ChannelNum()<< " timestamp " << wfm.get_time_from_trigger() <<std::endl;};
+        for (unsigned j=0; j < ch.size(); j++) {
+          OpWaveform wfm(ch[j], timestamp[j], type, std::vector<short> (0));
+          //check
+          if (j == 1){
+            std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;};
+        };
+        ch.clear();
+        timestamp.clear();
       };
-      ch.clear();
-      timestamp.clear();
 
-      ch = *cosmic_hg_opch;
-      timestamp = *cosmic_hg_timestamp;
-      for (unsigned j=0; j < ch.size(); j++) {
-        OpWaveform wfm(ch[j], timestamp[j], 2, std::vector<short> (0));
-        if (j == 1){
-        std::cout <<"type " <<wfm.get_type()<< "ch " <<wfm.get_ChannelNum()<< " timestamp " << wfm.get_time_from_trigger() <<std::endl;};
-      };
-      ch.clear();
-      timestamp.clear();
 
-      ch = *cosmic_lg_opch;
-      timestamp = *cosmic_lg_timestamp;
-      for (unsigned j=0; j < ch.size(); j++) {
-        OpWaveform wfm(ch[j], timestamp[j], 3, std::vector<short> (0));
-        if (j == 1){
-        std::cout <<"type " <<wfm.get_type()<< "ch " <<wfm.get_ChannelNum()<< " timestamp " << wfm.get_time_from_trigger() <<std::endl;};
-      };
-      ch.clear();
-      timestamp.clear();
-
+      std::cout <<"  " << std::endl;
       std::cout << "end of event" << std::endl;
     };
     return;

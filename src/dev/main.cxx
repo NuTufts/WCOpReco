@@ -2,6 +2,7 @@
 #include "WCOpReco/OpWaveformCollection.h"
 #include "WCOpReco/EventOpWaveforms.h"
 #include "WCOpReco/UBEventWaveform.h"
+#include "WCOpReco/datareader_j.h"
 #include "WCOpReco/DataReader.h"
 
 //root includes
@@ -20,4 +21,7 @@ int main(){
 
   wcopreco::DataReader reader;
   reader.Reader();
+
+  wcopreco::datareader_j reader_j;
+  reader_j.Reader();
 };

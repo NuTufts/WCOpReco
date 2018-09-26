@@ -28,8 +28,10 @@ namespace wcopreco {
     TTree * tree = (TTree *) f->Get("Event/Sim");
     tree->SetBranchAddress("eventNo",&eventNo);
     std::vector<short> * cosmic_hg_opch = 0; //or =NULL if it complains
+    std::vector<double> * cosmic_hg_timestamp = 0; //or =NULL if it complains
 
-    tree->SetBranchAddress("beam_hg_opch",&cosmic_hg_opch);
+    tree->SetBranchAddress("cosmic_hg_opch",&cosmic_hg_opch);
+    tree->SetBranchAddress("cosmic_hg_timestamp", &cosmic_hg_timestamp);
     // tree->SetBranchAddress("cosmic_lg_opch",&cosmic_lg_opch);
     // tree->SetBranchAddress("beam_hg_opch",&beam_hg_opch);
     // tree->SetBranchAddress("beam_lg_opch",&beam_lg_opch);
@@ -43,18 +45,21 @@ namespace wcopreco {
     std::cout << "Number of Events is:    " << tree->GetEntries() << std::endl;
 
 
-    int channel = 0;
-    double timed = 0;
-    int type = 3;
-    std::vector<short> vec(35,1);
 
-   OpWaveform wfm(channel,timed,type, vec);
-    std::cout << wfm.get_type() << " Did we cout the type?" << std::endl;
+    int type = 2;
+    std::vector<short> vec(35,8);
 
-    for (Int_t i =0; i< nevents;i++) {
+
+
+    //Here we start looping through events
+    for (Int_t i =0; i< nevents; i++) {
       //cout << i << endl;
       tree->GetEntry(i);
-      auto test = *cosmic_hg_opch;
+      std::vector<short> CHG_Channel = *cosmic_hg_opch;
+      std::vector<double> CHG_Timestamp = *cosmic_hg_timestamp;
+
+      OpWaveform wfm(CHG_Channel[0], CHG_Timestamp[0], type, vec);
+      std::cout << wfm[0] <<"    " <<wfm.get_type() <<"    " <<wfm.get_time_from_trigger() <<"    "<< wfm.get_ChannelNum() << " Did we cout the information?" << std::endl;
 
 
       // std::cout << "Size of OpCh Vector:    " << test.size() << std::endl;

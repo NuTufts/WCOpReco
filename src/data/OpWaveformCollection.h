@@ -5,14 +5,16 @@
 #include <vector>
 
 namespace wcopreco {
-  
+
   class OpWaveformCollection : public std::vector<OpWaveform> {
+
   public:
     OpWaveformCollection() {};
-    virtual ~OpWaveformCollection() {};    
-    
-    void clear_opreco();
-    void pushback_opreco();
+    virtual ~OpWaveformCollection() {};
+
+  protected:
+    void clear_opreco() {};
+    void pushback_opreco() {};
   };
 
 }

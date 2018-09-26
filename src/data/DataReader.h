@@ -5,7 +5,6 @@
 #include "OpWaveformCollection.h"
 #include "EventOpWaveforms.h"
 #include "UBEventWaveform.h"
-#include "DataReader.h"
 
 //root includes
 #include "TH1S.h"

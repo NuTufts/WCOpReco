@@ -77,7 +77,7 @@ namespace wcopreco {
 
 
 
-    int type = 2;
+    int type;
     std::vector<short> vec(35,8);
 
 
@@ -107,48 +107,95 @@ namespace wcopreco {
       TClonesArray BLG_Waveform = *beam_lg_wf;
       Int_t BLG_NHist = BLG_Waveform.GetEntries();
 
+
       // std::cout << CHG_NHist<< "    " << CLG_NHist<< "    " << BHG_NHist<< "    " << BLG_NHist << std::endl;
 
 
-
-      for (int j = 0; j<1; j++){
+      int counter=0;
+      for (int j = 0; j<CHG_NHist; j++){
         //Fill some Cosmic High Gains
-        TH1S *CHG_Hist = (TH1S*)CHG_Waveform.At(1);
+        type = 2;
+        counter++;
+        TH1S *CHG_Hist = (TH1S*)CHG_Waveform.At(j);
         Int_t CHG_nbins = CHG_Hist->GetNbinsX();
-        std::vector<short> test_v(CHG_nbins,0);
-        memcpy(test_v.data(),CHG_Hist->GetArray(), sizeof(short)*CHG_nbins);
-        OpWaveform wfm_CHG(CHG_Channel[0], CHG_Timestamp[0], type, vec);
-        std::cout << "Blah";
+        // std::vector<short> test_v(CHG_nbins,0);
+
+        OpWaveform wfm_CHG(CHG_Channel[j], CHG_Timestamp[j], type, CHG_nbins);
+
+
+        memcpy(wfm_CHG.data(),CHG_Hist->GetArray(), sizeof(short)*CHG_nbins);
+
+
+        // std::cout << "Blah";
       }
-      for (int j =0; j<1; j++){
+
+      std::cout << "CHG_Waveforms Performed:  " <<counter << " Should have done:  " << CHG_NHist << std::endl;
+      counter =0;
+
+
+      for (int j =0; j<CLG_NHist; j++){
         //Fill some Cosmic Low Gains
-        TH1S *CLG_Hist = (TH1S*)CLG_Waveform.At(1);
+        type = 3;
+        counter++;
+        TH1S *CLG_Hist = (TH1S*)CLG_Waveform.At(j);
         Int_t CLG_nbins = CLG_Hist->GetNbinsX();
-        std::vector<short> test_v(CLG_nbins,0);
-        memcpy(test_v.data(),CLG_Hist->GetArray(), sizeof(short)*CLG_nbins);
-        OpWaveform wfm_CLG(CLG_Channel[0], CLG_Timestamp[0], type, vec);
-        std::cout << "Blah";
+        // std::vector<short> test_v(CLG_nbins,0);
+
+        OpWaveform wfm_CLG(CLG_Channel[j], CLG_Timestamp[j], type, CLG_nbins);
+
+
+        memcpy(wfm_CLG.data(),CLG_Hist->GetArray(), sizeof(short)*CLG_nbins);
+
+
+        // std::cout << "Blah";
       }
-      for (int j=0; j<1;j++){
+
+      std::cout << "CLG_Waveforms Performed:  " <<counter << " Should have done:  " << CLG_NHist << std::endl;
+      counter =0;
+
+      for (int j=0; j<BHG_NHist;j++){
         //Fill some Beam High Gains
-        TH1S *BHG_Hist = (TH1S*)BHG_Waveform.At(1);
+        type = 0;
+        counter++;
+        TH1S *BHG_Hist = (TH1S*)BHG_Waveform.At(j);
         Int_t BHG_nbins = BHG_Hist->GetNbinsX();
-        std::vector<short> test_v(BHG_nbins,0);
-        memcpy(test_v.data(),BHG_Hist->GetArray(), sizeof(short)*BHG_nbins);
-        OpWaveform wfm_BHG(BHG_Channel[0], BHG_Timestamp[0], type, vec);
-        std::cout << "Blah";
+        // std::vector<short> test_v(BHG_nbins,0);
+
+        OpWaveform wfm_BHG(BHG_Channel[j], BHG_Timestamp[j], type, BHG_nbins);
+
+
+        memcpy(wfm_BHG.data(),BHG_Hist->GetArray(), sizeof(short)*BHG_nbins);
+
+
+        // std::cout << "Blah";
+
       }
-      for (int j=0;j<1;j++){
+
+      std::cout << "BHG_Waveforms Performed:  " <<counter << " Should have done:  " << BHG_NHist << std::endl;
+      counter =0;
+
+      for (int j=0;j<BLG_NHist;j++){
         //Fill some Beam Low Gains
-        TH1S *BLG_Hist = (TH1S*)BLG_Waveform.At(1);
+        type = 1;
+        counter++;
+        TH1S *BLG_Hist = (TH1S*)BLG_Waveform.At(j);
         Int_t BLG_nbins = BLG_Hist->GetNbinsX();
-        std::vector<short> test_v(BLG_nbins,0);
-        memcpy(test_v.data(),BLG_Hist->GetArray(), sizeof(short)*BLG_nbins);
-        OpWaveform wfm_BLG(BLG_Channel[0], BLG_Timestamp[0], type, vec);
-        std::cout << "Blah"<<std::endl;
+        // std::vector<short> test_v(BLG_nbins,0);
+
+        OpWaveform wfm_BLG(BLG_Channel[j], BLG_Timestamp[j], type, BLG_nbins);
+
+
+        memcpy(wfm_BLG.data(),BLG_Hist->GetArray(), sizeof(short)*BLG_nbins);
+
+
+        // std::cout << "Blah";
+
       }
-      // std::cout << CHG_Channel.size() << "   Channel Size"<<std::endl;
-      // std::cout << cosmic_hg_wf->GetSize() <<"    Histogram Size"<< std::endl;
+
+      std::cout << "BLG_Waveforms Performed:  " <<counter << " Should have done:  " << BLG_NHist << std::endl;
+      counter =0;
+      // // std::cout << CHG_Channel.size() << "   Channel Size"<<std::endl;
+      // // std::cout << cosmic_hg_wf->GetSize() <<"    Histogram Size"<< std::endl;
 
 
 

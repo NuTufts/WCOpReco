@@ -25,10 +25,16 @@ namespace wcopreco  {
     void Reader();
     int eventNo;
     std::vector<short int> cosmic_hg_opch;
+    std::vector<short int> cosmic_lg_opch;
+    std::vector<short int> beam_hg_opch;
+    std::vector<short int> beam_lg_opch;
+
     std::vector<double> cosmic_hg_timestamp;
-    int cosmic_lg_opch;
-    int beam_lg_opch;
-    int beam_hg_opch;
+    std::vector<double> cosmic_lg_timestamp;
+    std::vector<double> beam_hg_timestamp;
+    std::vector<double> beam_lg_timestamp;
+
+
   };
 
 }

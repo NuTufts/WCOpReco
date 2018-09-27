@@ -11,6 +11,9 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TClonesArray.h"
+#include "TObject.h"
+#include "TTimeStamp.h"
+
 
 #include <iostream>
 #include <sstream>
@@ -71,38 +74,39 @@ namespace wcopreco {
         int type = k;
         std::vector<short> ch;
         std::vector<double> timestamp;
-        //TClonesArray waveform;
+        //TClonesArray OPwaveform = *cosmic_hg_wf;
         TH1S waveform;
-        if (k==0){
-          ch = *beam_hg_opch;
-          timestamp = *beam_hg_timestamp;
-          TH1S *waveform = (TH1S*)beam_hg_wf->At(i);
-        }
-        else if (k==1){
-          ch = *beam_lg_opch;
-          timestamp = *beam_lg_timestamp;
-          TH1S *waveform = (TH1S*)beam_lg_wf->At(i);
-        }
-        else if (k==2){
+        // if (k==0){
+        //   ch = *beam_hg_opch;
+        //   timestamp = *beam_hg_timestamp;
+        //   TH1S *waveform = (TH1S*)beam_hg_wf->At(i);
+        // }
+        // else if (k==1){
+        //   ch = *beam_lg_opch;
+        //   timestamp = *beam_lg_timestamp;
+        //   TH1S *waveform = (TH1S*)beam_lg_wf->At(i);
+        // }
+         if (k==2){
           ch = *cosmic_hg_opch;
           timestamp = *cosmic_hg_timestamp;
-          TH1S *waveform = (TH1S*)cosmic_hg_wf->At(i);
-        }
-        else if (k==3){
-          ch = *cosmic_lg_opch;
-          timestamp = *cosmic_lg_timestamp;
-          TH1S *waveform = (TH1S*)cosmic_lg_wf->At(i);
+          TH1S *waveform = (TH1S*)cosmic_hg_wf->At(0);
         };
-
+        // else if (k==3){
+        //   ch = *cosmic_lg_opch;
+        //   timestamp = *cosmic_lg_timestamp;
+        //   TH1S *waveform = (TH1S*)cosmic_lg_wf->At(i);
+        // };
+        std::cout << "num bins in histogram " << waveform.GetNbinsX() << std::endl;
+        std::cout << "value of hist bin " <<waveform.GetBinContent(0) << std::endl;
+        std::cout << "ch size " << ch.size() <<std::endl;
         for (unsigned j=0; j < ch.size(); j++){
-          //std::vector<short> wave = cosmic_hg_wf->At(j);
-          //std::cout <<"waveform "<< " " <<std::endl;
-          //std::cout << waveform[j] << " inside loop" <<std::endl;
           OpWaveform wfm(ch[j], timestamp[j], type, std::vector<short> (0));
+          //TH1S *wave = (TH1S*)cosmic_lg_wf[i]->At(j);
           //check
           if (j == 0){
             std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;};
         };
+
         ch.clear();
         timestamp.clear();
         waveform.Clear();

@@ -76,72 +76,17 @@ namespace wcopreco {
         std::vector<double> timestamp;
 
         if (k==0){
-          ch = *beam_hg_opch;
-          timestamp = *beam_hg_timestamp;
-          TClonesArray Eventwaveform = *beam_hg_wf;
-          for (unsigned j=0; j < ch.size(); j++){
-            TH1S *waveform = (TH1S*)Eventwaveform.At(j);
-            Int_t n = waveform->GetNbinsX();
-            OpWaveform wfm(ch[j], timestamp[j], type, n);
-            memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
-            //check
-            if (j == 0){
-              std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;};
-          };
-          Eventwaveform.Clear();
+          LoopThroughWfms(*beam_hg_opch, *beam_hg_timestamp, *beam_hg_wf, 0);
         }
-
         else if (k==1){
-          ch = *beam_lg_opch;
-          timestamp = *beam_lg_timestamp;
-          TClonesArray Eventwaveform = *beam_lg_wf;
-          for (unsigned j=0; j < ch.size(); j++){
-            TH1S *waveform = (TH1S*)Eventwaveform.At(j);
-            Int_t n = waveform->GetNbinsX();
-            OpWaveform wfm(ch[j], timestamp[j], type, n);
-            memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
-            //check
-            if (j == 0){
-              std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;};
-          };
-          Eventwaveform.Clear();
+          LoopThroughWfms(*beam_lg_opch, *beam_lg_timestamp, *beam_lg_wf, 1);
         }
-
         else if (k==2){
-          ch = *cosmic_hg_opch;
-          timestamp = *cosmic_hg_timestamp;
-          TClonesArray Eventwaveform = *cosmic_hg_wf;
-          for (unsigned j=0; j < ch.size(); j++){
-            TH1S *waveform = (TH1S*)Eventwaveform.At(j);
-            Int_t n = waveform->GetNbinsX();
-            OpWaveform wfm(ch[j], timestamp[j], type, n);
-            memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
-            //check
-            if (j == 0){
-              std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;};
-          };
-          Eventwaveform.Clear();
+          LoopThroughWfms(*cosmic_hg_opch, *cosmic_hg_timestamp, *cosmic_hg_wf, 2);
         }
-
         else if (k==3){
-          ch = *cosmic_lg_opch;
-          timestamp = *cosmic_lg_timestamp;
-          TClonesArray Eventwaveform = *cosmic_lg_wf;
-          for (unsigned j=0; j < ch.size(); j++){
-            TH1S *waveform = (TH1S*)Eventwaveform.At(j);
-            Int_t n = waveform->GetNbinsX();
-            OpWaveform wfm(ch[j], timestamp[j], type, n);
-            memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
-            //check
-            if (j == 0){
-              std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;};
-          };
-          Eventwaveform.Clear();
+          LoopThroughWfms(*cosmic_lg_opch, *cosmic_lg_timestamp, *cosmic_lg_wf, 3);
         };
-
-        ch.clear();
-        timestamp.clear();
-
       };
 
       std::cout << "end of event" << std::endl;
@@ -150,4 +95,23 @@ namespace wcopreco {
     return;
   };
 
+  void DataReader::LoopThroughWfms(std::vector<short> ch,
+    std::vector<double> timestamp,
+    TClonesArray Eventwaveform,
+    int type) {
+    //OpWaveformCollection wfm_collection(type,ch.size());
+    for (unsigned j=0; j < ch.size(); j++){
+      TH1S *waveform = (TH1S*)Eventwaveform.At(j);
+      Int_t n = waveform->GetNbinsX();
+      wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n);
+      memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
+      //wfm_collection->pushback(wfm);
+      //check output
+      if (j == 0){
+        std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;};
+        //std::cout << "collection type: "<<wfm_collection.get_type()<<std::endl;
+    };
+    Eventwaveform.Clear();
+    return;
+  };
 };

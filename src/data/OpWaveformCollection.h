@@ -6,15 +6,19 @@
 
 namespace wcopreco {
 
-  class OpWaveformCollection : public std::vector<OpWaveform> {
+  class OpWaveformCollection : public std::vector<short> {
 
   public:
-    OpWaveformCollection(const int nelems);
+    OpWaveformCollection(int type_from_Waveform, const int nelems);
     virtual ~OpWaveformCollection() {};
 
+
+    int get_type() {return type;};
+
   protected:
-    void clear_opreco() {};
-    void pushback_opreco() {};
+    int type;
+    //void clear_opreco() {};
+    //void pushback_opreco() {};
   };
 
 }

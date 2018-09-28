@@ -1,12 +1,11 @@
 #include "OpWaveformCollection.h"
-
-
+#include "OpWaveform.h"
+#include <vector>
 
  using namespace wcopreco ;
 
-wcopreco::OpWaveformCollection::OpWaveformCollection(const int nelems)
- : std::vector<OpWaveform> (nelems,0)
+wcopreco::OpWaveformCollection::OpWaveformCollection(int type_from_Waveform, const int nelems)
+ : std::vector<short> (nelems)
   {
-    // OpWaveform = std::vector<short> empty_v(10,0);
-
+    type = type_from_Waveform;
   }

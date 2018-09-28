@@ -1,5 +1,5 @@
 #include "OpWaveform.h"
-
+#include <vector>
 
 using namespace wcopreco;
 

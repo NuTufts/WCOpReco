@@ -6,7 +6,7 @@
 
 namespace wcopreco {
 
-  class OpWaveformCollection : public std::vector<short> {
+  class OpWaveformCollection : public std::vector<OpWaveform> {
 
   public:
     OpWaveformCollection(int type_from_Waveform, const int nelems);

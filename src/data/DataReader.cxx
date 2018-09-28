@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 namespace wcopreco {
 
@@ -99,17 +100,18 @@ namespace wcopreco {
     std::vector<double> timestamp,
     TClonesArray Eventwaveform,
     int type) {
-    //OpWaveformCollection wfm_collection(type,ch.size());
+    OpWaveformCollection wfm_collection(type,ch.size());
     for (unsigned j=0; j < ch.size(); j++){
       TH1S *waveform = (TH1S*)Eventwaveform.At(j);
       Int_t n = waveform->GetNbinsX();
       wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n);
       memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
-      //wfm_collection->pushback(wfm);
+      wfm_collection.push_back(wfm);
       //check output
       if (j == 0){
-        std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;};
-        //std::cout << "collection type: "<<wfm_collection.get_type()<<std::endl;
+        std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;
+        std::cout << "collection type: "<<wfm_collection.get_type()<<std::endl;
+      };
     };
     Eventwaveform.Clear();
     return;

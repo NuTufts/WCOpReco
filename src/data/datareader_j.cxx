@@ -107,6 +107,11 @@ namespace wcopreco {
       TClonesArray BLG_Waveform = *beam_lg_wf;
       Int_t BLG_NHist = BLG_Waveform.GetEntries();
 
+      //Create OpWaveformCollection to hold OpWaveforms
+      //Each collection has waveforms from a single event of a specific type
+      // OpWaveformCollection 
+
+
 
       // std::cout << CHG_NHist<< "    " << CLG_NHist<< "    " << BHG_NHist<< "    " << BLG_NHist << std::endl;
 

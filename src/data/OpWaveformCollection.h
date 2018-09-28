@@ -9,7 +9,7 @@ namespace wcopreco {
   class OpWaveformCollection : public std::vector<OpWaveform> {
 
   public:
-    OpWaveformCollection() {};
+    OpWaveformCollection(const int nelems);
     virtual ~OpWaveformCollection() {};
 
   protected:

@@ -70,7 +70,6 @@ namespace wcopreco {
 
       tree->GetEntry(i);
 
-
       for (int k = 0; k<4; k++){
         int type = k;
         std::vector<short> ch;
@@ -98,20 +97,21 @@ namespace wcopreco {
 
   void DataReader::LoopThroughWfms(std::vector<short> ch,
     std::vector<double> timestamp,
-    TClonesArray Eventwaveform,
+    TClonesArray Eventwaveform_root,
     int type) {
 
     for (unsigned j=0; j < ch.size(); j++){
-      TH1S *waveform = (TH1S*)Eventwaveform.At(j);
+      TH1S *waveform = (TH1S*)Eventwaveform_root.At(j);
       Int_t n = waveform->GetNbinsX();
       wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n);
+      wcopreco::EventOpWaveforms event_wfm(wfm);
       memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
       //check output
       if (j == 0){
         std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;
       };
     };
-    Eventwaveform.Clear();
+    Eventwaveform_root.Clear();
     return;
   };
 };

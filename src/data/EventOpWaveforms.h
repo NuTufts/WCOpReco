@@ -8,15 +8,15 @@
 
 namespace wcopreco {
 
-  class EventOpWaveforms{
+  class EventOpWaveforms {
   public:
-    EventOpWaveforms();
+    EventOpWaveforms(){};
     virtual ~EventOpWaveforms() {};
 
   protected:
     std::vector<OpWaveformCollection> _wfm_v;
-    //A map linking indices to the type of WaveformCollection
     std::map <int,int> type2index;
+    std::map <int,int> index2type;
 
   };
 

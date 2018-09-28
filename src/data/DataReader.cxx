@@ -68,53 +68,84 @@ namespace wcopreco {
     for (Int_t i =0; i< nevents;i++) {
 
       tree->GetEntry(i);
-      std::cout <<"TClonesArray "<< cosmic_hg_wf->GetSize() <<std::endl;
+
 
       for (int k = 0; k<4; k++){
         int type = k;
         std::vector<short> ch;
         std::vector<double> timestamp;
-        //TClonesArray OPwaveform = *cosmic_hg_wf;
-        TH1S waveform;
-        // if (k==0){
-        //   ch = *beam_hg_opch;
-        //   timestamp = *beam_hg_timestamp;
-        //   TH1S *waveform = (TH1S*)beam_hg_wf->At(i);
-        // }
-        // else if (k==1){
-        //   ch = *beam_lg_opch;
-        //   timestamp = *beam_lg_timestamp;
-        //   TH1S *waveform = (TH1S*)beam_lg_wf->At(i);
-        // }
-         if (k==2){
+
+        if (k==0){
+          ch = *beam_hg_opch;
+          timestamp = *beam_hg_timestamp;
+          TClonesArray Eventwaveform = *beam_hg_wf;
+          for (unsigned j=0; j < ch.size(); j++){
+            TH1S *waveform = (TH1S*)Eventwaveform.At(j);
+            Int_t n = waveform->GetNbinsX();
+            OpWaveform wfm(ch[j], timestamp[j], type, n);
+            memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
+            //check
+            if (j == 0){
+              std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;};
+          };
+          Eventwaveform.Clear();
+        }
+
+        else if (k==1){
+          ch = *beam_lg_opch;
+          timestamp = *beam_lg_timestamp;
+          TClonesArray Eventwaveform = *beam_lg_wf;
+          for (unsigned j=0; j < ch.size(); j++){
+            TH1S *waveform = (TH1S*)Eventwaveform.At(j);
+            Int_t n = waveform->GetNbinsX();
+            OpWaveform wfm(ch[j], timestamp[j], type, n);
+            memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
+            //check
+            if (j == 0){
+              std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;};
+          };
+          Eventwaveform.Clear();
+        }
+
+        else if (k==2){
           ch = *cosmic_hg_opch;
           timestamp = *cosmic_hg_timestamp;
-          TH1S *waveform = (TH1S*)cosmic_hg_wf->At(0);
-        };
-        // else if (k==3){
-        //   ch = *cosmic_lg_opch;
-        //   timestamp = *cosmic_lg_timestamp;
-        //   TH1S *waveform = (TH1S*)cosmic_lg_wf->At(i);
-        // };
-        std::cout << "num bins in histogram " << waveform.GetNbinsX() << std::endl;
-        std::cout << "value of hist bin " <<waveform.GetBinContent(0) << std::endl;
-        std::cout << "ch size " << ch.size() <<std::endl;
-        for (unsigned j=0; j < ch.size(); j++){
-          OpWaveform wfm(ch[j], timestamp[j], type, std::vector<short> (0));
-          //TH1S *wave = (TH1S*)cosmic_lg_wf[i]->At(j);
-          //check
-          if (j == 0){
-            std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;};
+          TClonesArray Eventwaveform = *cosmic_hg_wf;
+          for (unsigned j=0; j < ch.size(); j++){
+            TH1S *waveform = (TH1S*)Eventwaveform.At(j);
+            Int_t n = waveform->GetNbinsX();
+            OpWaveform wfm(ch[j], timestamp[j], type, n);
+            memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
+            //check
+            if (j == 0){
+              std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;};
+          };
+          Eventwaveform.Clear();
+        }
+
+        else if (k==3){
+          ch = *cosmic_lg_opch;
+          timestamp = *cosmic_lg_timestamp;
+          TClonesArray Eventwaveform = *cosmic_lg_wf;
+          for (unsigned j=0; j < ch.size(); j++){
+            TH1S *waveform = (TH1S*)Eventwaveform.At(j);
+            Int_t n = waveform->GetNbinsX();
+            OpWaveform wfm(ch[j], timestamp[j], type, n);
+            memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
+            //check
+            if (j == 0){
+              std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;};
+          };
+          Eventwaveform.Clear();
         };
 
         ch.clear();
         timestamp.clear();
-        waveform.Clear();
-        //opcollection here. group together j entries for each event of each typedef
+
       };
 
-      std::cout <<"  " << std::endl;
       std::cout << "end of event" << std::endl;
+      std::cout <<"  " << std::endl;
     };
     return;
   };

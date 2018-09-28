@@ -4,8 +4,6 @@
 
  using namespace wcopreco ;
 
-wcopreco::OpWaveformCollection::OpWaveformCollection(int type_from_Waveform, const int nelems)
- : std::vector<wcopreco::OpWaveform> (nelems,OpWaveform(0, 0.0, 0, (0)))
-  {
-    type = type_from_Waveform;
-  }
+wcopreco::OpWaveformCollection::OpWaveformCollection()
+ : std::vector<wcopreco::OpWaveform> (500,OpWaveform(0, 0.0, 0, (0)))
+  {}

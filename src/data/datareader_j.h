@@ -34,6 +34,11 @@ namespace wcopreco  {
     std::vector<double> beam_hg_timestamp;
     std::vector<double> beam_lg_timestamp;
 
+    void LoopThroughWfms(std::vector<short> ch,
+      std::vector<double> timestamp,
+      TClonesArray Eventwaveform,
+      int type);
+
 
   };
 

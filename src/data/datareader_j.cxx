@@ -109,7 +109,7 @@ namespace wcopreco {
 
       //Create OpWaveformCollection to hold OpWaveforms
       //Each collection has waveforms from a single event of a specific type
-      // OpWaveformCollection 
+      // OpWaveformCollection CHG_wfm_collection(CHG_NHist);
 
 
 
@@ -215,5 +215,25 @@ namespace wcopreco {
 
     return;
 
+  };
+
+  void datareader_j::LoopThroughWfms(std::vector<short> ch,
+    std::vector<double> timestamp,
+    TClonesArray Eventwaveform_root,
+    int type) {
+
+    for (unsigned j=0; j < ch.size(); j++){
+      TH1S *waveform = (TH1S*)Eventwaveform_root.At(j);
+      Int_t n = waveform->GetNbinsX();
+      wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n);
+      // wcopreco::EventOpWaveforms event_wfm(wfm);
+      memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
+      //check output
+      if (j == 0){
+        std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;
+      };
+    };
+    Eventwaveform_root.Clear();
+    return;
   };
 };

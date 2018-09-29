@@ -104,7 +104,7 @@ namespace wcopreco {
       TH1S *waveform = (TH1S*)Eventwaveform_root.At(j);
       Int_t n = waveform->GetNbinsX();
       wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n);
-      wcopreco::EventOpWaveforms event_wfm(wfm);
+      // wcopreco::EventOpWaveforms event_wfm(wfm);
       memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
       //check output
       if (j == 0){

@@ -37,7 +37,8 @@ namespace wcopreco  {
     void LoopThroughWfms(std::vector<short> ch,
       std::vector<double> timestamp,
       TClonesArray Eventwaveform,
-      int type);
+      int type,
+      OpWaveformCollection &wfm_collection);
 
 
   };

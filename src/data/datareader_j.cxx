@@ -110,95 +110,156 @@ namespace wcopreco {
       //Create OpWaveformCollection to hold OpWaveforms
       //Each collection has waveforms from a single event of a specific type
       // OpWaveformCollection CHG_wfm_collection(CHG_NHist);
+      OpWaveformCollection CHG_wfm_collection;
+      OpWaveformCollection CLG_wfm_collection;
+      OpWaveformCollection BHG_wfm_collection;
+      OpWaveformCollection BLG_wfm_collection;
+      // std::cout << "capacity before reserve: " << CHG_wfm_collection.capacity() << std::endl;
 
-
+      CHG_wfm_collection.reserve(500);
+      CLG_wfm_collection.reserve(500);
+      BLG_wfm_collection.reserve(500);
+      BHG_wfm_collection.reserve(500);
+      // std::cout << "capacity after reserve: " << CHG_wfm_collection.capacity() << std::endl;
 
       // std::cout << CHG_NHist<< "    " << CLG_NHist<< "    " << BHG_NHist<< "    " << BLG_NHist << std::endl;
 
+      //Fill up wfm collections
+      LoopThroughWfms(*beam_hg_opch, *beam_hg_timestamp, *beam_hg_wf, 0, BHG_wfm_collection);
+      LoopThroughWfms(*beam_lg_opch, *beam_lg_timestamp, *beam_lg_wf, 1, BLG_wfm_collection);
+      LoopThroughWfms(*cosmic_hg_opch, *cosmic_hg_timestamp, *cosmic_hg_wf, 2, CHG_wfm_collection);
+      LoopThroughWfms(*cosmic_lg_opch, *cosmic_lg_timestamp, *cosmic_lg_wf, 3, CLG_wfm_collection);
 
-      int counter=0;
-      for (int j = 0; j<CHG_NHist; j++){
-        //Fill some Cosmic High Gains
-        type = 2;
-        counter++;
-        TH1S *CHG_Hist = (TH1S*)CHG_Waveform.At(j);
-        Int_t CHG_nbins = CHG_Hist->GetNbinsX();
-        // std::vector<short> test_v(CHG_nbins,0);
+      // //Prove to myself the collections get filled
+      // std::cout << (CHG_wfm_collection[0]).get_type() << std::endl;
+      // std::cout << (BHG_wfm_collection[1]).get_type() << std::endl;
+      // std::cout << (CLG_wfm_collection[3]).get_type() << std::endl;
+      // std::cout << (BLG_wfm_collection[10]).get_type() << std::endl;
 
-        OpWaveform wfm_CHG(CHG_Channel[j], CHG_Timestamp[j], type, CHG_nbins);
-
-
-        memcpy(wfm_CHG.data(),CHG_Hist->GetArray(), sizeof(short)*CHG_nbins);
-
-
-        // std::cout << "Blah";
-      }
-
-      std::cout << "CHG_Waveforms Performed:  " <<counter << " Should have done:  " << CHG_NHist << std::endl;
-      counter =0;
+    };
 
 
-      for (int j =0; j<CLG_NHist; j++){
-        //Fill some Cosmic Low Gains
-        type = 3;
-        counter++;
-        TH1S *CLG_Hist = (TH1S*)CLG_Waveform.At(j);
-        Int_t CLG_nbins = CLG_Hist->GetNbinsX();
-        // std::vector<short> test_v(CLG_nbins,0);
+    return;
 
-        OpWaveform wfm_CLG(CLG_Channel[j], CLG_Timestamp[j], type, CLG_nbins);
+  };
 
+  void datareader_j::LoopThroughWfms(std::vector<short> ch,
+    std::vector<double> timestamp,
+    TClonesArray Eventwaveform_root,
+    int type,
+    OpWaveformCollection &wfm_collection) {
 
-        memcpy(wfm_CLG.data(),CLG_Hist->GetArray(), sizeof(short)*CLG_nbins);
+    for (unsigned j=0; j < ch.size(); j++){
+      TH1S *waveform = (TH1S*)Eventwaveform_root.At(j);
+      Int_t n = waveform->GetNbinsX();
+      wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n);
 
+      memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
 
-        // std::cout << "Blah";
-      }
-
-      std::cout << "CLG_Waveforms Performed:  " <<counter << " Should have done:  " << CLG_NHist << std::endl;
-      counter =0;
-
-      for (int j=0; j<BHG_NHist;j++){
-        //Fill some Beam High Gains
-        type = 0;
-        counter++;
-        TH1S *BHG_Hist = (TH1S*)BHG_Waveform.At(j);
-        Int_t BHG_nbins = BHG_Hist->GetNbinsX();
-        // std::vector<short> test_v(BHG_nbins,0);
-
-        OpWaveform wfm_BHG(BHG_Channel[j], BHG_Timestamp[j], type, BHG_nbins);
+      // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
+      wfm_collection.emplace_back(std::move(wfm));
+      std::cout << "length: " << wfm_collection.size() << std::endl;
+      std::cout << "capacity: " << wfm_collection.capacity() << std::endl;
 
 
-        memcpy(wfm_BHG.data(),BHG_Hist->GetArray(), sizeof(short)*BHG_nbins);
+      //check output
+      if (j == 0){
+        std::cout << (wfm_collection.at(j)).get_type() << std::endl;
+        std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;
+      };
+    };
+    Eventwaveform_root.Clear();
+    return;
+  };
+};
 
 
-        // std::cout << "Blah";
+//Old code:
 
-      }
+//Replace the following Code block with function LoopThroughWfms()
+      // int counter=0;
+      // for (int j = 0; j<CHG_NHist; j++){
+      //   //Fill some Cosmic High Gains
+      //   type = 2;
+      //   counter++;
+      //   TH1S *CHG_Hist = (TH1S*)CHG_Waveform.At(j);
+      //   Int_t CHG_nbins = CHG_Hist->GetNbinsX();
+      //   // std::vector<short> test_v(CHG_nbins,0);
+      //
+      //   OpWaveform wfm_CHG(CHG_Channel[j], CHG_Timestamp[j], type, CHG_nbins);
+      //
+      //
+      //   memcpy(wfm_CHG.data(),CHG_Hist->GetArray(), sizeof(short)*CHG_nbins);
+      //
+      //
+      //   // std::cout << "Blah";
+      // }
+      //
+      // std::cout << "CHG_Waveforms Performed:  " <<counter << " Should have done:  " << CHG_NHist << std::endl;
+      // counter =0;
+      //
+      //
+      // for (int j =0; j<CLG_NHist; j++){
+      //   //Fill some Cosmic Low Gains
+      //   type = 3;
+      //   counter++;
+      //   TH1S *CLG_Hist = (TH1S*)CLG_Waveform.At(j);
+      //   Int_t CLG_nbins = CLG_Hist->GetNbinsX();
+      //   // std::vector<short> test_v(CLG_nbins,0);
+      //
+      //   OpWaveform wfm_CLG(CLG_Channel[j], CLG_Timestamp[j], type, CLG_nbins);
+      //
+      //
+      //   memcpy(wfm_CLG.data(),CLG_Hist->GetArray(), sizeof(short)*CLG_nbins);
+      //
+      //
+      //   // std::cout << "Blah";
+      // }
+      //
+      // std::cout << "CLG_Waveforms Performed:  " <<counter << " Should have done:  " << CLG_NHist << std::endl;
+      // counter =0;
+      //
+      // for (int j=0; j<BHG_NHist;j++){
+      //   //Fill some Beam High Gains
+      //   type = 0;
+      //   counter++;
+      //   TH1S *BHG_Hist = (TH1S*)BHG_Waveform.At(j);
+      //   Int_t BHG_nbins = BHG_Hist->GetNbinsX();
+      //   // std::vector<short> test_v(BHG_nbins,0);
+      //
+      //   OpWaveform wfm_BHG(BHG_Channel[j], BHG_Timestamp[j], type, BHG_nbins);
+      //
+      //
+      //   memcpy(wfm_BHG.data(),BHG_Hist->GetArray(), sizeof(short)*BHG_nbins);
+      //
+      //
+      //   // std::cout << "Blah";
+      //
+      // }
+      //
+      // std::cout << "BHG_Waveforms Performed:  " <<counter << " Should have done:  " << BHG_NHist << std::endl;
+      // counter =0;
+      //
+      // for (int j=0;j<BLG_NHist;j++){
+      //   //Fill some Beam Low Gains
+      //   type = 1;
+      //   counter++;
+      //   TH1S *BLG_Hist = (TH1S*)BLG_Waveform.At(j);
+      //   Int_t BLG_nbins = BLG_Hist->GetNbinsX();
+      //   // std::vector<short> test_v(BLG_nbins,0);
+      //
+      //   OpWaveform wfm_BLG(BLG_Channel[j], BLG_Timestamp[j], type, BLG_nbins);
+      //
+      //
+      //   memcpy(wfm_BLG.data(),BLG_Hist->GetArray(), sizeof(short)*BLG_nbins);
+      //
+      //
+      //   // std::cout << "Blah";
+      //
+      // }
 
-      std::cout << "BHG_Waveforms Performed:  " <<counter << " Should have done:  " << BHG_NHist << std::endl;
-      counter =0;
-
-      for (int j=0;j<BLG_NHist;j++){
-        //Fill some Beam Low Gains
-        type = 1;
-        counter++;
-        TH1S *BLG_Hist = (TH1S*)BLG_Waveform.At(j);
-        Int_t BLG_nbins = BLG_Hist->GetNbinsX();
-        // std::vector<short> test_v(BLG_nbins,0);
-
-        OpWaveform wfm_BLG(BLG_Channel[j], BLG_Timestamp[j], type, BLG_nbins);
-
-
-        memcpy(wfm_BLG.data(),BLG_Hist->GetArray(), sizeof(short)*BLG_nbins);
-
-
-        // std::cout << "Blah";
-
-      }
-
-      std::cout << "BLG_Waveforms Performed:  " <<counter << " Should have done:  " << BLG_NHist << std::endl;
-      counter =0;
+      // std::cout << "BLG_Waveforms Performed:  " <<counter << " Should have done:  " << BLG_NHist << std::endl;
+      // counter =0;
       // // std::cout << CHG_Channel.size() << "   Channel Size"<<std::endl;
       // // std::cout << cosmic_hg_wf->GetSize() <<"    Histogram Size"<< std::endl;
 
@@ -210,30 +271,3 @@ namespace wcopreco {
         // std::cout << Buffer_size << "   Is size of buffer in CHG_Hist" << std::endl;
         // Class->Dump();
       // }
-    };
-
-
-    return;
-
-  };
-
-  void datareader_j::LoopThroughWfms(std::vector<short> ch,
-    std::vector<double> timestamp,
-    TClonesArray Eventwaveform_root,
-    int type) {
-
-    for (unsigned j=0; j < ch.size(); j++){
-      TH1S *waveform = (TH1S*)Eventwaveform_root.At(j);
-      Int_t n = waveform->GetNbinsX();
-      wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n);
-      // wcopreco::EventOpWaveforms event_wfm(wfm);
-      memcpy(wfm.data(),waveform->GetArray(),sizeof(short)*n);
-      //check output
-      if (j == 0){
-        std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;
-      };
-    };
-    Eventwaveform_root.Clear();
-    return;
-  };
-};

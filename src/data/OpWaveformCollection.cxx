@@ -5,5 +5,5 @@
  using namespace wcopreco ;
 
 wcopreco::OpWaveformCollection::OpWaveformCollection()
- : std::vector<wcopreco::OpWaveform> (500,OpWaveform(0, 0.0, 0, (0)))
+ : std::vector<wcopreco::OpWaveform> (0,OpWaveform(0, 0.0, 0, (0)))
   {}

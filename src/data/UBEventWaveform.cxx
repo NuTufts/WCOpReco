@@ -175,8 +175,11 @@ void wcopreco::UBEventWaveform::read_in_data(std::string filepath) {
     int ENTRY_TO_VIEW =0;
     int TYPE_OF_COLLECTION =0;
     int WFM_INDEX =0;
-    int SIGNAL_INDEX =0;
+    int SIGNAL_INDEX =1;
+
+    std::cout << std::endl;
     std::cout << "Value   Explanation (Anticipated Value)" << std::endl ;
+    std::cout << "---------------------------------------" << std::endl;
     std::cout << (  ( ( ( ( _EvOpwfms_v[ ENTRY_TO_VIEW ] ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ) [SIGNAL_INDEX])     <<  "   Attempt at Reading a Waveform Signal Value (~2000 unless first entry?)" <<std::endl;
     std::cout << (  ( ( ( _EvOpwfms_v[ ENTRY_TO_VIEW ] ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()     <<  "   How many bins in the waveform? (1501)" <<std::endl;
     std::cout << (  ( ( _EvOpwfms_v[ ENTRY_TO_VIEW ] ).get__wfm_v() ) [TYPE_OF_COLLECTION] ).size()      <<  "  How many waveforms in the collection (depends)?" <<std::endl;
@@ -210,8 +213,9 @@ void wcopreco::UBEventWaveform::read_in_data(std::string filepath) {
 
       //check output
       // if (j == 0){
-        // std::cout << (wfm_collection.at(j)).get_type() << std::endl;
-        // std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;
+      //   std::cout << waveform->GetArray()[0] << std::endl;
+      //   std::cout << (wfm_collection.at(j)).get_type() << std::endl;
+      //   std::cout <<"type: " <<wfm.get_type()<< " ch: " <<wfm.get_ChannelNum()<< " timestamp: " << wfm.get_time_from_trigger() <<std::endl;
       // };
     };
     Eventwaveform_root.Clear();

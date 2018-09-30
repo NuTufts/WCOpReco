@@ -136,12 +136,33 @@ namespace wcopreco {
       LoopThroughWfms(*cosmic_hg_opch, *cosmic_hg_timestamp, *cosmic_hg_wf, 2, CHG_wfm_collection);
       LoopThroughWfms(*cosmic_lg_opch, *cosmic_lg_timestamp, *cosmic_lg_wf, 3, CLG_wfm_collection);
 
-      Ev_Opwfms.set__wfm_v( BHG_wfm_collection );
-      Ev_Opwfms.emplace_back__wfm_v(BLG_wfm_collection);
-      Ev_Opwfms.emplace_back__wfm_v(CHG_wfm_collection);
-      Ev_Opwfms.emplace_back__wfm_v(CLG_wfm_collection);
+      // Ev_Opwfms.set__wfm_v( BHG_wfm_collection );
+      // Ev_Opwfms.insert_type2index(0,0);
+      // Ev_Opwfms.insert_index2type(0,0);
+      // Ev_Opwfms.emplace_back__wfm_v(BLG_wfm_collection);
+      // Ev_Opwfms.insert_type2index(1,1);
+      // Ev_Opwfms.insert_index2type(1,1);
+      // Ev_Opwfms.emplace_back__wfm_v(CHG_wfm_collection);
+      // Ev_Opwfms.insert_type2index(2,2);
+      // Ev_Opwfms.insert_index2type(2,2);
+      // Ev_Opwfms.emplace_back__wfm_v(CLG_wfm_collection);
+      // Ev_Opwfms.insert_type2index(3,3);
+      // Ev_Opwfms.insert_index2type(3,3);
 
-      std::cout << (Ev_Opwfms.get__wfm_v().size()) << " Is address of Ev_Opwfms     " << std::endl;
+
+      //Here we are filling the Ev_Opwfms with all the different types of waveforms in the event. 
+      Ev_Opwfms.add_entry(BHG_wfm_collection, 0, 0 )
+      Ev_Opwfms.add_entry(BLG_wfm_collection, 1, 1 )
+      Ev_Opwfms.add_entry(CHG_wfm_collection, 2, 2 )
+      Ev_Opwfms.add_entry(CLG_wfm_collection, 3, 3 )
+
+      std::map <int,int> testmap = Ev_Opwfms.get_type2index();
+      for (int it=0; it<testmap.size(); it++) {
+        std::cout << it << "   type versus index    " <<testmap[it] << std::endl;
+
+      }
+
+      // std::cout << (Ev_Opwfms.get__wfm_v().size()) << " Is address of Ev_Opwfms     " << std::endl;
 
       // //Prove to myself the collections get filled (They are!)
       // std::cout << (CHG_wfm_collection[0]).get_type() << std::endl;

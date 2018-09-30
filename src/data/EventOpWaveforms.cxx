@@ -37,3 +37,8 @@ void wcopreco::EventOpWaveforms::emplace_back__wfm_v(std::vector<OpWaveformColle
 
     }
   }
+void wcopreco::EventOpWaveforms::add_entry(OpWaveformCollection input_collection, int index, int type ) {
+    _wfm_v.emplace_back(std::move(input_collection));
+    type2index.insert(std::pair<int,int>(type,index));
+    index2type.insert(std::pair<int,int>(index,type));
+  }

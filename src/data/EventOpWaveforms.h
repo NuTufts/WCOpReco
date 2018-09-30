@@ -15,10 +15,16 @@ namespace wcopreco {
 
     void set__wfm_v(std::vector<OpWaveformCollection>);
     void set__wfm_v(OpWaveformCollection);
-    void set_type2index(std::map <int,int>);
-    void set_index2type(std::map <int,int>);
     void emplace_back__wfm_v(OpWaveformCollection);
     void emplace_back__wfm_v(std::vector<OpWaveformCollection>);
+
+    void set_type2index(std::map <int,int>);
+    void set_index2type(std::map <int,int>);
+    void insert_type2index(int type, int index) {type2index.insert(std::pair<int,int>(type,index));};
+    void insert_index2type(int index, int type) {index2type.insert(std::pair<int,int>(index,type));};
+
+    void add_entry(OpWaveformCollection, int, int );
+
 
     std::vector<OpWaveformCollection> get__wfm_v() {return _wfm_v;};
     std::map <int,int> get_index2type() {return index2type;};

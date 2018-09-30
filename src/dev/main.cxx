@@ -19,9 +19,12 @@ int main(){
 
   std::cout << "Hello world" << std::endl;
 
-  wcopreco::DataReader reader;
-  reader.Reader();
+  // wcopreco::DataReader reader;
+  // reader.Reader();
 
-  wcopreco::datareader_j reader_j;
-  reader_j.Reader();
+  // wcopreco::datareader_j reader_j;
+  // reader_j.Reader();
+
+  wcopreco::UBEventWaveform reader_ub;
+  reader_ub.read_in_data("filepath/goes/here/hardcoded/right/now");
 };

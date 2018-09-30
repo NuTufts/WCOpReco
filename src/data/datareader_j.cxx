@@ -151,10 +151,10 @@ namespace wcopreco {
 
 
       //Here we are filling the Ev_Opwfms with all the different types of waveforms in the event. 
-      Ev_Opwfms.add_entry(BHG_wfm_collection, 0, 0 )
-      Ev_Opwfms.add_entry(BLG_wfm_collection, 1, 1 )
-      Ev_Opwfms.add_entry(CHG_wfm_collection, 2, 2 )
-      Ev_Opwfms.add_entry(CLG_wfm_collection, 3, 3 )
+      Ev_Opwfms.add_entry(BHG_wfm_collection, 0, 0 );
+      Ev_Opwfms.add_entry(BLG_wfm_collection, 1, 1 );
+      Ev_Opwfms.add_entry(CHG_wfm_collection, 2, 2 );
+      Ev_Opwfms.add_entry(CLG_wfm_collection, 3, 3 );
 
       std::map <int,int> testmap = Ev_Opwfms.get_type2index();
       for (int it=0; it<testmap.size(); it++) {

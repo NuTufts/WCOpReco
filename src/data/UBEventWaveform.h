@@ -24,6 +24,17 @@
 #include <iostream>
 #include <sstream>
 
+/*Structure
+(This section written by Josh during nightshift, treat all content with skepticism):
+
+UBEventWaveform has datamember _EvOpwfms_v which is a vector<EventOpWaveforms>
+Each EventOpWaveforms has a datamember _wfm_v which is a vector<OpWaveformCollection>
+Recall that OpWaveformCollection inherits from vector, so it DOESNT hold a datamember vector, instead it acts like a vector
+Therefore OpWaveformCollection acts like a vector<OpWaveform>
+Then Recall OpWaveform inherits from vector, and it's vector contains signal hit information
+Each OpWaveform also has datamembers ChannelNum, time_from_trigger, type
+*/
+
 namespace wcopreco {
 
   class UBEventWaveform {

@@ -155,9 +155,34 @@ void wcopreco::UBEventWaveform::read_in_data(std::string filepath) {
       // std::cout << (BLG_wfm_collection[10]).get_type() << std::endl;
 
       _EvOpwfms_v.emplace_back(std::move(Ev_Opwfms));
-      std::cout << _EvOpwfms_v.size() << "    Versus loop iteration:    " << i << std::endl;
+      std::cout << "Entries in Vector<EventOpWaveforms>: "<< _EvOpwfms_v.size() << "   Loop Iters:    " << i << std::endl;
 
     };//End of Event Loop
+
+    /*Structure
+    (This section written by Josh during nightshift, treat all content with skepticism):
+
+    UBEventWaveform has datamember _EvOpwfms_v which is a vector<EventOpWaveforms>
+    Each EventOpWaveforms has a datamember _wfm_v which is a vector<OpWaveformCollection>
+    Recall that OpWaveformCollection inherits from vector, so it DOESNT hold a datamember vector, instead it acts like a vector
+    Therefore OpWaveformCollection acts like a vector<OpWaveform>
+    Then Recall OpWaveform inherits from vector, and it's vector contains signal hit information
+    Each OpWaveform also has datamembers ChannelNum, time_from_trigger, type
+    */
+
+    //Now our UBEventWaveform is relatively built (fancy features to come?)
+    //Put stuff here to test that _EvOpWfms_v has correct content
+    int ENTRY_TO_VIEW =0;
+    int TYPE_OF_COLLECTION =0;
+    int WFM_INDEX =0;
+    int SIGNAL_INDEX =0;
+    std::cout << "Value   Explanation (Anticipated Value)" << std::endl ;
+    std::cout << (  ( ( ( ( _EvOpwfms_v[ ENTRY_TO_VIEW ] ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ) [SIGNAL_INDEX])     <<  "   Attempt at Reading a Waveform Signal Value (~2000 unless first entry?)" <<std::endl;
+    std::cout << (  ( ( ( _EvOpwfms_v[ ENTRY_TO_VIEW ] ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()     <<  "   How many bins in the waveform? (1501)" <<std::endl;
+    std::cout << (  ( ( _EvOpwfms_v[ ENTRY_TO_VIEW ] ).get__wfm_v() ) [TYPE_OF_COLLECTION] ).size()      <<  "  How many waveforms in the collection (depends)?" <<std::endl;
+    std::cout << (  ( _EvOpwfms_v[ ENTRY_TO_VIEW ] ).get__wfm_v() ) .size()      <<  "   How many Collections in the Event (4)?" <<std::endl;
+    std::cout << (  _EvOpwfms_v ).size()      <<  "   How many Events? (52) " <<std::endl;
+
 
     IAMTHENIGHT();
     return;

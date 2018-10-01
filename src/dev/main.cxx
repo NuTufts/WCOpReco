@@ -27,12 +27,6 @@ int main(){
 
   wcopreco::UBEventWaveform reader_ub;
 
-  TFile *f = TFile::Open("/home/jmills/workdir/WCOpReco/src/data/celltree.root");
-  if (f==0)
-  {
-    printf("Error: cannot open file");
-    return 0;
-  }
-
-  reader_ub.read_in_data(f);
+  std::string file = "/home/jmills/workdir/WCOpReco/src/data/celltree.root";
+  reader_ub.read_in_data(file);
 };

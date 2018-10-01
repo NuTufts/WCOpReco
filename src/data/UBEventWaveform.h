@@ -40,11 +40,11 @@ namespace wcopreco {
   class UBEventWaveform {
   public:
 
-    typedef enum {HGBeam=0, LGBeam, HGCosmic, LGCosmic} UBOpWaveformForm_t;
+    enum UBOpWaveformForm_t {beam_hg = 0, beam_lg, cosmic_hg, cosmic_lg};
 
     UBEventWaveform() {};
     virtual ~UBEventWaveform() {};
-    void read_in_data(TFile * f);
+    void read_in_data(std::string file);
   protected:
     std::vector<EventOpWaveforms> _EvOpwfms_v;
 
@@ -55,21 +55,18 @@ namespace wcopreco {
     //In data reader, we'll just call this class to fill in the data into objects.
 
     int eventNo;
-    std::vector<short int> cosmic_hg_opch;
-    std::vector<short int> cosmic_lg_opch;
-    std::vector<short int> beam_hg_opch;
-    std::vector<short int> beam_lg_opch;
-
-    std::vector<double> cosmic_hg_timestamp;
-    std::vector<double> cosmic_lg_timestamp;
-    std::vector<double> beam_hg_timestamp;
-    std::vector<double> beam_lg_timestamp;
 
     void LoopThroughWfms_UB(std::vector<short> ch,
       std::vector<double> timestamp,
       TClonesArray Eventwaveform,
       int type,
       OpWaveformCollection &wfm_collection);
+
+    void fill_EventWfms(std::string st_opch,
+      std::string st_timestamp,
+      std::string st_wf,
+      std::string st_gain,
+      TTree * tree);
 
     void IAMTHENIGHT();
   };

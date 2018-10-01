@@ -17,10 +17,10 @@ void wcopreco::UBEventWaveform::read_in_data(std::string file) {
     TTree * tree = (TTree *) f->Get("Event/Sim");
     tree->SetBranchAddress("eventNo",&eventNo);
 
-    fill_EventWfms("beam_hg_opch" ,"beam_hg_timestamp" ,"beam_hg_wf" ,"beam_hg", tree);
-    //fill_EventWfms("beam_lg_opch","beam_lg_timestamp","beam_lg_wf","beam_lg", tree);
-    //fill_EventWfms("cosmic_hg_opch","cosmic_hg_timestamp","cosmic_hg_wf","cosmic_hg", tree);
-    //fill_EventWfms("cosmic_lg_opch","cosmic_lg_timestamp","cosmic_lg_wf","cosmic_lg", tree);
+    fill_EventWfms("beam_hg_opch" ,"beam_hg_timestamp" ,"beam_hg_wf" ,kbeam_hg, tree);
+    fill_EventWfms("beam_lg_opch" ,"beam_lg_timestamp" ,"beam_lg_wf" ,kbeam_lg, tree);
+    fill_EventWfms("cosmic_hg_opch" ,"cosmic_hg_timestamp" ,"cosmic_hg_wf" ,kcosmic_hg, tree);
+    fill_EventWfms("cosmic_lg_opch" ,"cosmic_lg_timestamp" ,"cosmic_lg_wf" ,kcosmic_lg, tree);
 
     /*Structure
     (This section written by Josh during nightshift, treat all content with skepticism):
@@ -57,7 +57,7 @@ void wcopreco::UBEventWaveform::read_in_data(std::string file) {
   void UBEventWaveform::fill_EventWfms(std::string st_opch,
         std::string st_timestamp,
         std::string st_wf,
-        std::string st_gain,
+        UBEventWaveform::UBOpWaveformForm_t st_gain,
         TTree * tree){
     std::vector<short> * opch = 0;
     std::vector<double> * timestamp = 0;
@@ -66,7 +66,6 @@ void wcopreco::UBEventWaveform::read_in_data(std::string file) {
     tree->SetBranchAddress(st_opch.c_str(), &opch);
     tree->SetBranchAddress(st_timestamp.c_str(), &timestamp);
     tree->SetBranchAddress(st_wf.c_str(),&wf);
-
     Int_t nevents = tree->GetEntries();
     std::cout << "Number of Events is:    " << tree->GetEntries() << std::endl;
 
@@ -76,7 +75,7 @@ void wcopreco::UBEventWaveform::read_in_data(std::string file) {
     std::cout << "Don't forget to change to loop through all events, not just first one!" << std::endl;
 
     //Here we start looping through events
-    for (Int_t i =0; i< 1; i++) {
+    for (Int_t i =0; i< nevents; i++) {
       // std::cout << i << std::endl;
       tree->GetEntry(i);
 
@@ -100,23 +99,23 @@ void wcopreco::UBEventWaveform::read_in_data(std::string file) {
       wfm_collection.reserve(500);
 
       //trying to use enum
-      // UBOpWaveformForm_t gain_type = st_gain;
-      // std::cout<< "test enum "<< st_gain <<std::endl;
-      // std::cout<< "test enum "<< st_gain << " " << gain_type <<std::endl;
-      // //Fill up wfm collections
-      // LoopThroughWfms_UB(*opch, *timestamp, *wf, gain_type, wfm_collection);
-      //
-      // // Ev_Opwfms.set__wfm_v( BHG_wfm_collection );
-      // // Ev_Opwfms.insert_type2index(0,0);
-      // // Ev_Opwfms.insert_index2type(0,0);
-      //
-      // //Here we are filling the Ev_Opwfms with all the different types of waveforms in the event.
-      // Ev_Opwfms.add_entry(wfm_collection, gain_type,  gain_type);
-      //
-      // std::map <int,int> testmap = Ev_Opwfms.get_type2index();
-      // 
-      // _EvOpwfms_v.emplace_back(std::move(Ev_Opwfms));
-      // std::cout << "Entries in Vector<EventOpWaveforms>: "<< _EvOpwfms_v.size() << "   Loop Iters:    " << i << std::endl;
+      int gain_type = st_gain;
+      std::cout<< "test enum "<< st_gain <<std::endl;
+
+      //Fill up wfm collections
+      LoopThroughWfms_UB(*opch, *timestamp, *wf, gain_type, wfm_collection);
+
+      // Ev_Opwfms.set__wfm_v( BHG_wfm_collection );
+      // Ev_Opwfms.insert_type2index(0,0);
+      // Ev_Opwfms.insert_index2type(0,0);
+
+      //Here we are filling the Ev_Opwfms with all the different types of waveforms in the event.
+      Ev_Opwfms.add_entry(wfm_collection, gain_type,  gain_type);
+
+      std::map <int,int> testmap = Ev_Opwfms.get_type2index();
+
+      _EvOpwfms_v.emplace_back(std::move(Ev_Opwfms));
+      std::cout << "Entries in Vector<EventOpWaveforms>: "<< _EvOpwfms_v.size() << "   Loop Iters:    " << i << std::endl;
     };
   }
 

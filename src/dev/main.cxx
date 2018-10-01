@@ -19,12 +19,6 @@ int main(){
 
   std::cout << "Hello world" << std::endl;
 
-  // wcopreco::DataReader reader;
-  // reader.Reader();
-
-  // wcopreco::datareader_j reader_j;
-  // reader_j.Reader();
-
   wcopreco::UBEventWaveform reader_ub;
 
   std::string file = "/home/jmills/workdir/WCOpReco/src/data/celltree.root";

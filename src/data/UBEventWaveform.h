@@ -40,7 +40,7 @@ namespace wcopreco {
   class UBEventWaveform {
   public:
 
-    enum UBOpWaveformForm_t {beam_hg = 0, beam_lg, cosmic_hg, cosmic_lg};
+    typedef enum {kbeam_hg = 0, kbeam_lg, kcosmic_hg, kcosmic_lg} UBOpWaveformForm_t;
 
     UBEventWaveform() {};
     virtual ~UBEventWaveform() {};
@@ -65,7 +65,7 @@ namespace wcopreco {
     void fill_EventWfms(std::string st_opch,
       std::string st_timestamp,
       std::string st_wf,
-      std::string st_gain,
+      UBEventWaveform::UBOpWaveformForm_t st_gain,
       TTree * tree);
 
     void IAMTHENIGHT();

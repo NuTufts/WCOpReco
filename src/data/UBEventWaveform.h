@@ -44,7 +44,7 @@ namespace wcopreco {
 
     UBEventWaveform() {};
     virtual ~UBEventWaveform() {};
-    void read_in_data(std::string filepath);
+    void read_in_data(TFile * f);
   protected:
     std::vector<EventOpWaveforms> _EvOpwfms_v;
 

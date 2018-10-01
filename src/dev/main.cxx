@@ -26,5 +26,13 @@ int main(){
   // reader_j.Reader();
 
   wcopreco::UBEventWaveform reader_ub;
-  reader_ub.read_in_data("filepath/goes/here/hardcoded/right/now");
+
+  TFile *f = TFile::Open("/home/jmills/workdir/WCOpReco/src/data/celltree.root");
+  if (f==0)
+  {
+    printf("Error: cannot open file");
+    return 0;
+  }
+
+  reader_ub.read_in_data(f);
 };

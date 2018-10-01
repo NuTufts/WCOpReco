@@ -4,16 +4,9 @@
 namespace wcopreco {
 
 
-void wcopreco::UBEventWaveform::read_in_data(std::string filepath) {
+void wcopreco::UBEventWaveform::read_in_data(TFile * f) {
     IAMTHENIGHT();
 
-    //Open file
-    TFile *f = TFile::Open("/home/jmills/workdir/WCOpReco/src/data/celltree.root");
-    if (f==0)
-    {
-      printf("Error: cannot open file");
-      return;
-    }
     //Get branches to different types of events
     TTree * tree = (TTree *) f->Get("Event/Sim");
     tree->SetBranchAddress("eventNo",&eventNo);

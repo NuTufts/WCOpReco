@@ -21,6 +21,7 @@ int main(){
 
   wcopreco::UBEventWaveform reader_ub;
 
-  std::string file = "/home/jmills/workdir/WCOpReco/src/data/celltree.root";
-  reader_ub.read_in_data(file);
+  std::string file = "/home/kmason/PmtReco/WCOpReco/src/data/celltree.root";
+  DataReader.reader(file)
+  //reader_ub.read_in_data(file);
 };

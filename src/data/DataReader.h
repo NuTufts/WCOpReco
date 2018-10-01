@@ -20,11 +20,15 @@ namespace wcopreco  {
     DataReader() {};
     ~DataReader() {};
 
-    void Reader();
+    void Reader(std::string f);
+
     void LoopThroughWfms(std::vector<short> ch,
       std::vector<double> timestamp,
       TClonesArray Eventwaveform,
-      int type);
+      int type,
+      OpWaveformCollection &wfm_collection);
+
+    void IAMTHENIGHT();
   };
 
 }

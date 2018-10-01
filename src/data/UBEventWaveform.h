@@ -37,7 +37,7 @@ Each OpWaveform also has datamembers ChannelNum, time_from_trigger, type
 
 namespace wcopreco {
 
-  class UBEventWaveform : public EventOpWaveForms {
+  class UBEventWaveform : public EventOpWaveforms{
   public:
 
     typedef enum {kbeam_hg = 0, kbeam_lg, kcosmic_hg, kcosmic_lg, kNumTypes } UBOpWaveformForm_t;
@@ -46,7 +46,7 @@ namespace wcopreco {
     virtual ~UBEventWaveform() {};
 
     void addWaveform( UBOpWaveformForm_t type, const OpWaveform& wfm );
-    
+
   /*   void read_in_data(std::string file); */
   /* protected: */
   /*   std::vector<EventOpWaveforms> _EvOpwfms_v; */

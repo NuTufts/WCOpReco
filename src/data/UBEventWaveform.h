@@ -37,38 +37,41 @@ Each OpWaveform also has datamembers ChannelNum, time_from_trigger, type
 
 namespace wcopreco {
 
-  class UBEventWaveform {
+  class UBEventWaveform : public EventOpWaveForms {
   public:
 
-    typedef enum {kbeam_hg = 0, kbeam_lg, kcosmic_hg, kcosmic_lg} UBOpWaveformForm_t;
+    typedef enum {kbeam_hg = 0, kbeam_lg, kcosmic_hg, kcosmic_lg, kNumTypes } UBOpWaveformForm_t;
 
-    UBEventWaveform() {};
+    UBEventWaveform();
     virtual ~UBEventWaveform() {};
-    void read_in_data(std::string file);
-  protected:
-    std::vector<EventOpWaveforms> _EvOpwfms_v;
 
-  private:
+    void addWaveform( UBOpWaveformForm_t type, const OpWaveform& wfm );
+    
+  /*   void read_in_data(std::string file); */
+  /* protected: */
+  /*   std::vector<EventOpWaveforms> _EvOpwfms_v; */
 
-    //need functions here to get data that we want
-    //add data that we want.
-    //In data reader, we'll just call this class to fill in the data into objects.
+  /* private: */
 
-    int eventNo;
+  /*   //need functions here to get data that we want */
+  /*   //add data that we want. */
+  /*   //In data reader, we'll just call this class to fill in the data into objects. */
 
-    void LoopThroughWfms_UB(std::vector<short> ch,
-      std::vector<double> timestamp,
-      TClonesArray Eventwaveform,
-      int type,
-      OpWaveformCollection &wfm_collection);
+  /*   int eventNo; */
 
-    void fill_EventWfms(std::string st_opch,
-      std::string st_timestamp,
-      std::string st_wf,
-      UBEventWaveform::UBOpWaveformForm_t st_gain,
-      TTree * tree);
+  /*   void LoopThroughWfms_UB(std::vector<short> ch, */
+  /*     std::vector<double> timestamp, */
+  /*     TClonesArray Eventwaveform, */
+  /*     int type, */
+  /*     OpWaveformCollection &wfm_collection); */
 
-    void IAMTHENIGHT();
+  /*   void fill_EventWfms(std::string st_opch, */
+  /*     std::string st_timestamp, */
+  /*     std::string st_wf, */
+  /*     UBEventWaveform::UBOpWaveformForm_t st_gain, */
+  /*     TTree * tree); */
+
+  /*   void IAMTHENIGHT(); */
   };
 
 }

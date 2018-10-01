@@ -25,6 +25,7 @@ namespace wcopreco {
 
     void add_entry(OpWaveformCollection, int, int );
 
+    void emplace_back( int type, const OpWaveform& wfm );
 
     std::vector<OpWaveformCollection> get__wfm_v() {return _wfm_v;};
     std::map <int,int> get_index2type() {return index2type;};

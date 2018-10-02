@@ -30,10 +30,10 @@ namespace wcopreco  {
 
   class DataReader {
   public:
-    DataReader() {};
+    DataReader(std::string filepath);
     ~DataReader() {};
 
-    void Reader(std::string f);
+    void Reader(int event_num);
 
     void LoopThroughWfms(std::vector<short> ch,
       std::vector<double> timestamp,
@@ -43,9 +43,32 @@ namespace wcopreco  {
 
     void IAMTHENIGHT();
 
-  protected:
-    std::vector<EventOpWaveforms> _EvOpwfms_v;
+    //Make a bunch of root reading datamembers
+    Int_t nevents;
+    TFile *file;
+    TTree *tree;
+
+    std::vector<short> * cosmic_hg_opch = 0; //or =NULL if it complains
+    std::vector<short> * cosmic_lg_opch = 0; //or =NULL if it complains
+    std::vector<short> * beam_hg_opch = 0; //or =NULL if it complains
+    std::vector<short> * beam_lg_opch = 0; //or =NULL if it complains
+
+    std::vector<double> * cosmic_hg_timestamp = 0; //or =NULL if it complains
+    std::vector<double> * cosmic_lg_timestamp = 0; //or =NULL if it complains
+    std::vector<double> * beam_hg_timestamp = 0; //or =NULL if it complains
+    std::vector<double> * beam_lg_timestamp = 0; //or =NULL if it complains
+
+    TClonesArray * cosmic_hg_wf;
+    TClonesArray * cosmic_lg_wf;
+    TClonesArray * beam_hg_wf;
+    TClonesArray * beam_lg_wf;
     int eventNo;
+  
+    UBEventWaveform _UB_Ev_wfm;
+    int type;
+
+  protected:
+
   };
 
 }

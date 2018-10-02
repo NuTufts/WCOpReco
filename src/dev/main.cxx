@@ -20,11 +20,15 @@ int main(){
 
   std::cout << "Hello world" << std::endl;
 
-  wcopreco::DataReader reader;
 
-  //std::string file = "/home/jmills/workdir/WCOpReco/src/data/celltree.root";
-  std::string file = "../data/celltree.root";
+
+  
+  std::string file = "src/data/celltree.root";
+  wcopreco::DataReader reader(file);
   std::cout << "Filepath is set to:   " << file << std::endl;
-  reader.Reader(file);
-  //reader_ub.read_in_data(file);
+  int event_num = 3;
+  reader.Reader(event_num);
+
+
+
 };

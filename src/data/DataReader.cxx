@@ -2,42 +2,24 @@
 
 namespace wcopreco {
 
-void wcopreco::DataReader::Reader(std::string filepath) {
-    IAMTHENIGHT();
+wcopreco::DataReader::DataReader(std::string filepath)
 
-    //Open file
-    //filepath.c_str()
-    TFile *file = TFile::Open("/home/jmills/workdir/WCOpReco/src/data/celltree.root");
+  {
+    //Set datamembers
+    file = TFile::Open(filepath.c_str());
     if (file==0)
     {
       printf("Error: cannot open file");
       return;
     }
     //Get branches to different types of events
-    TTree * tree = (TTree *) file->Get("Event/Sim");
+    tree = (TTree *) file->Get("Event/Sim");
     tree->SetBranchAddress("eventNo",&eventNo);
-
-
-    std::vector<short> * cosmic_hg_opch = 0; //or =NULL if it complains
-    std::vector<short> * cosmic_lg_opch = 0; //or =NULL if it complains
-    std::vector<short> * beam_hg_opch = 0; //or =NULL if it complains
-    std::vector<short> * beam_lg_opch = 0; //or =NULL if it complains
-
-    std::vector<double> * cosmic_hg_timestamp = 0; //or =NULL if it complains
-    std::vector<double> * cosmic_lg_timestamp = 0; //or =NULL if it complains
-    std::vector<double> * beam_hg_timestamp = 0; //or =NULL if it complains
-    std::vector<double> * beam_lg_timestamp = 0; //or =NULL if it complains
-
-    TClonesArray * cosmic_hg_wf;
-    TClonesArray * cosmic_lg_wf;
-    TClonesArray * beam_hg_wf;
-    TClonesArray * beam_lg_wf;
 
     cosmic_hg_wf = new TClonesArray("TH1S");
     cosmic_lg_wf = new TClonesArray("TH1S");
     beam_hg_wf = new TClonesArray("TH1S");
     beam_lg_wf = new TClonesArray("TH1S");
-
 
     tree->SetBranchAddress("cosmic_hg_opch",&cosmic_hg_opch);
     tree->SetBranchAddress("cosmic_lg_opch",&cosmic_lg_opch);
@@ -55,26 +37,24 @@ void wcopreco::DataReader::Reader(std::string filepath) {
     tree->SetBranchAddress("beam_lg_wf",&beam_lg_wf);
 
     //Acquire # of Entries in file
-    Int_t nevents = tree->GetEntries();
-    std::cout << "Number of Events is:    " << tree->GetEntries() << std::endl;
+    nevents = tree->GetEntries();
+    std::cout << "Number of Events Constructed:    " << tree->GetEntries() << std::endl;
+  }
 
-
-
-    int type;
-    std::vector<short> vec(35,8);
-
-
-    std::cout << "Don't forget to change to loop through all events, not just first one!" << std::endl;
-
-    //Here we start looping through events
-    for (Int_t i =0; i< nevents; i++) {
-      // std::cout << i << std::endl;
-      tree->GetEntry(i);
+void wcopreco::DataReader::Reader(int event_num) {
+    IAMTHENIGHT();
+    std::cout << "You have chosen to read out event number: " << event_num << " out of " << nevents << std::endl;
+    if ( event_num > nevents)
+      {
+        std::cout << "There aren't that many events!" << std::endl;
+        return;
+      }
+    tree->GetEntry(event_num);
 
       //Make an EventOpWaveforms for this event:
-      EventOpWaveforms Ev_Opwfms;
-      std::vector<OpWaveformCollection> testvector;
-      Ev_Opwfms.set__wfm_v( testvector );
+
+      std::vector<OpWaveformCollection> empty_vec;
+      _UB_Ev_wfm.set__wfm_v( empty_vec );
 
       //Get Vectors of pmt channel and timestamp for each type of waveform, cosmic/beam and high/low gain
       std::vector<short> CHG_Channel = *cosmic_hg_opch;
@@ -103,15 +83,7 @@ void wcopreco::DataReader::Reader(std::string filepath) {
       OpWaveformCollection CLG_wfm_collection;
       OpWaveformCollection BHG_wfm_collection;
       OpWaveformCollection BLG_wfm_collection;
-      // std::cout << "capacity before reserve: " << CHG_wfm_collection.capacity() << std::endl;
 
-      CHG_wfm_collection.reserve(500);
-      CLG_wfm_collection.reserve(500);
-      BLG_wfm_collection.reserve(500);
-      BHG_wfm_collection.reserve(500);
-      // std::cout << "capacity after reserve: " << CHG_wfm_collection.capacity() << std::endl;
-
-      // std::cout << CHG_NHist<< "    " << CLG_NHist<< "    " << BHG_NHist<< "    " << BLG_NHist << std::endl;
 
       //Fill up wfm collections
       LoopThroughWfms(*beam_hg_opch, *beam_hg_timestamp, *beam_hg_wf, 0, BHG_wfm_collection);
@@ -119,48 +91,20 @@ void wcopreco::DataReader::Reader(std::string filepath) {
       LoopThroughWfms(*cosmic_hg_opch, *cosmic_hg_timestamp, *cosmic_hg_wf, 2, CHG_wfm_collection);
       LoopThroughWfms(*cosmic_lg_opch, *cosmic_lg_timestamp, *cosmic_lg_wf, 3, CLG_wfm_collection);
 
-      // Ev_Opwfms.set__wfm_v( BHG_wfm_collection );
-      // Ev_Opwfms.insert_type2index(0,0);
-      // Ev_Opwfms.insert_index2type(0,0);
-      // Ev_Opwfms.emplace_back__wfm_v(BLG_wfm_collection);
-      // Ev_Opwfms.insert_type2index(1,1);
-      // Ev_Opwfms.insert_index2type(1,1);
-      // Ev_Opwfms.emplace_back__wfm_v(CHG_wfm_collection);
-      // Ev_Opwfms.insert_type2index(2,2);
-      // Ev_Opwfms.insert_index2type(2,2);
-      // Ev_Opwfms.emplace_back__wfm_v(CLG_wfm_collection);
-      // Ev_Opwfms.insert_type2index(3,3);
-      // Ev_Opwfms.insert_index2type(3,3);
 
 
-      //Here we are filling the Ev_Opwfms with all the different types of waveforms in the event.
-      Ev_Opwfms.add_entry(BHG_wfm_collection, 0, 0 );
-      Ev_Opwfms.add_entry(BLG_wfm_collection, 1, 1 );
-      Ev_Opwfms.add_entry(CHG_wfm_collection, 2, 2 );
-      Ev_Opwfms.add_entry(CLG_wfm_collection, 3, 3 );
 
-      std::map <int,int> testmap = Ev_Opwfms.get_type2index();
-      // for (int it=0; it<testmap.size(); it++) {
-      //    std::cout << it << "   type versus index    " <<testmap[it] << std::endl;
-      //
-      // }
+      //Here we are filling the _UB_Ev_wfm with all the different types of waveforms in the event.
+      _UB_Ev_wfm.add_entry(BHG_wfm_collection, 0, 0 );
+      _UB_Ev_wfm.add_entry(BLG_wfm_collection, 1, 1 );
+      _UB_Ev_wfm.add_entry(CHG_wfm_collection, 2, 2 );
+      _UB_Ev_wfm.add_entry(CLG_wfm_collection, 3, 3 );
 
-      // std::cout << (Ev_Opwfms.get__wfm_v().size()) << " Is address of Ev_Opwfms     " << std::endl;
-
-      // //Prove to myself the collections get filled (They are!)
-      // std::cout << (CHG_wfm_collection[0]).get_type() << std::endl;
-      // std::cout << (BHG_wfm_collection[1]).get_type() << std::endl;
-      // std::cout << (CLG_wfm_collection[3]).get_type() << std::endl;
-      // std::cout << (BLG_wfm_collection[10]).get_type() << std::endl;
-
-      _EvOpwfms_v.emplace_back(std::move(Ev_Opwfms));
-      std::cout << "Entries in Vector<EventOpWaveforms>: "<< _EvOpwfms_v.size() << "   Loop Iters:    " << i << std::endl;
-
-    };//End of Event Loop
+      std::map <int,int> testmap = _UB_Ev_wfm.get_type2index();
 
     /*Structure
     (This section written by Josh during nightshift, treat all content with skepticism):
-    UBEventWaveform has datamember _EvOpwfms_v which is a vector<EventOpWaveforms>
+    UBEventWaveform is stored in _UB_Ev_wfm, and is essentially one eventopwaveform
     Each EventOpWaveforms has a datamember _wfm_v which is a vector<OpWaveformCollection>
     Recall that OpWaveformCollection inherits from vector, so it DOESNT hold a datamember vector, instead it acts like a vector
     Therefore OpWaveformCollection acts like a vector<OpWaveform>
@@ -169,7 +113,7 @@ void wcopreco::DataReader::Reader(std::string filepath) {
     */
 
     //Now our UBEventWaveform is relatively built (fancy features to come?)
-    //Put stuff here to test that _EvOpWfms_v has correct content
+    //Put stuff here to test that _UB_Ev_wfm has correct content
     int ENTRY_TO_VIEW =0;
     int TYPE_OF_COLLECTION =0;
     int WFM_INDEX =0;
@@ -178,14 +122,14 @@ void wcopreco::DataReader::Reader(std::string filepath) {
     std::cout << std::endl;
     std::cout << "Value   Explanation (Anticipated Value)" << std::endl ;
     std::cout << "---------------------------------------" << std::endl;
-    std::cout << (  ( ( ( ( _EvOpwfms_v[ ENTRY_TO_VIEW ] ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ) [SIGNAL_INDEX])     <<  "   Attempt at Reading a Waveform Signal Value (~2000 unless first entry?)" <<std::endl;
-    std::cout << (  ( ( ( _EvOpwfms_v[ ENTRY_TO_VIEW ] ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()     <<  "   How many bins in the waveform? (1501)" <<std::endl;
-    std::cout << (  ( ( _EvOpwfms_v[ ENTRY_TO_VIEW ] ).get__wfm_v() ) [TYPE_OF_COLLECTION] ).size()      <<  "  How many waveforms in the collection (depends)?" <<std::endl;
-    std::cout << (  ( _EvOpwfms_v[ ENTRY_TO_VIEW ] ).get__wfm_v() ) .size()      <<  "   How many Collections in the Event (4)?" <<std::endl;
-    std::cout << (  _EvOpwfms_v ).size()      <<  "   How many Events? (52) " <<std::endl;
+    std::cout << (  ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ) [SIGNAL_INDEX])     <<  "   Attempt at Reading a Waveform Signal Value (~2000 unless first entry?)" <<std::endl;
+    std::cout << (  ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()     <<  "   How many bins in the waveform? (1501)" <<std::endl;
+    std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] ).size()      <<  "  How many waveforms in the collection (depends)?" <<std::endl;
+    std::cout << (  ( _UB_Ev_wfm ).get__wfm_v() ) .size()      <<  "   How many Collections in the Event (4)?" <<std::endl;
 
 
-    IAMTHENIGHT();
+
+    // IAMTHENIGHT();
     return;
   }
 

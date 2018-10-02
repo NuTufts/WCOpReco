@@ -22,8 +22,9 @@ int main(){
 
   wcopreco::DataReader reader;
 
-  std::string file = "/home/jmills/workdir/WCOpReco/src/data/celltree.root";
+  //std::string file = "/home/jmills/workdir/WCOpReco/src/data/celltree.root";
+  std::string file = "../data/celltree.root";
   std::cout << "Filepath is set to:   " << file << std::endl;
-  reader.Reader("/home/jmills/workdir/WCOpReco/src/data/celltree.root");
+  reader.Reader(file);
   //reader_ub.read_in_data(file);
 };

@@ -1,31 +1,13 @@
-#include "OpWaveform.h"
-#include "OpWaveformCollection.h"
-#include "EventOpWaveforms.h"
-#include "UBEventWaveform.h"
 #include "DataReader.h"
-
-//root includes
-#include "TH1S.h"
-#include "TF1.h"
-#include "TVirtualFFT.h"
-#include "TTree.h"
-#include "TFile.h"
-#include "TClonesArray.h"
-#include "TObject.h"
-#include "TTimeStamp.h"
-
-
-#include <iostream>
-#include <sstream>
-#include <vector>
 
 namespace wcopreco {
 
-  void DataReader::Reader(std::string f) {
+void wcopreco::DataReader::Reader(std::string filepath) {
     IAMTHENIGHT();
 
     //Open file
-    TFile *file = TFile::Open(f.c_str());
+    //filepath.c_str()
+    TFile *file = TFile::Open("/home/jmills/workdir/WCOpReco/src/data/celltree.root");
     if (file==0)
     {
       printf("Error: cannot open file");
@@ -132,10 +114,10 @@ namespace wcopreco {
       // std::cout << CHG_NHist<< "    " << CLG_NHist<< "    " << BHG_NHist<< "    " << BLG_NHist << std::endl;
 
       //Fill up wfm collections
-      LoopThroughWfms_UB(*beam_hg_opch, *beam_hg_timestamp, *beam_hg_wf, 0, BHG_wfm_collection);
-      LoopThroughWfms_UB(*beam_lg_opch, *beam_lg_timestamp, *beam_lg_wf, 1, BLG_wfm_collection);
-      LoopThroughWfms_UB(*cosmic_hg_opch, *cosmic_hg_timestamp, *cosmic_hg_wf, 2, CHG_wfm_collection);
-      LoopThroughWfms_UB(*cosmic_lg_opch, *cosmic_lg_timestamp, *cosmic_lg_wf, 3, CLG_wfm_collection);
+      LoopThroughWfms(*beam_hg_opch, *beam_hg_timestamp, *beam_hg_wf, 0, BHG_wfm_collection);
+      LoopThroughWfms(*beam_lg_opch, *beam_lg_timestamp, *beam_lg_wf, 1, BLG_wfm_collection);
+      LoopThroughWfms(*cosmic_hg_opch, *cosmic_hg_timestamp, *cosmic_hg_wf, 2, CHG_wfm_collection);
+      LoopThroughWfms(*cosmic_lg_opch, *cosmic_lg_timestamp, *cosmic_lg_wf, 3, CLG_wfm_collection);
 
       // Ev_Opwfms.set__wfm_v( BHG_wfm_collection );
       // Ev_Opwfms.insert_type2index(0,0);

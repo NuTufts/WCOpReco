@@ -1,4 +1,10 @@
 #include "UB_spe.h"
+#include "TH1D.h"
+#include "TVirtualFFT.h"
+#include "TF1.h"
+#include "TCanvas.h"
+#include "TMath.h"
+
 
 
 namespace wcopreco {
@@ -9,10 +15,10 @@ wcopreco::UB_spe::UB_spe(std::string nm, bool mult_flag)
 
  }
 
-std::vector<float> wcopreco::UB_spe::Get_wfm(int nbins, float tick_width_ns)
+std::vector<double> wcopreco::UB_spe::Get_wfm(int nbins, float tick_width_ns)
 
   {
-    std::vector<float> wfm(nbins,0);
+    std::vector<double> wfm(nbins,0);
     double value=0;
     int size = wfm.size();
     double parameter_1 = 8.18450e-01;
@@ -38,12 +44,29 @@ std::vector<float> wcopreco::UB_spe::Get_wfm(int nbins, float tick_width_ns)
 
 
 
-std::vector<float> wcopreco::UB_spe::Get_pow_spec(int nbins, float tick_width_ns)
+std::vector<double> wcopreco::UB_spe::Get_pow_spec(int nbins, float tick_width_ns)
 
   {
-    std::vector<float> vec(1,0);
+    std::vector<double> power_spec_d(nbins,0);
+    power_spec_d = Get_wfm(nbins,tick_width_ns);
+
+    double *in = power_spec_d.data();
+    TVirtualFFT *fftr2c = TVirtualFFT::FFT(1, &nbins, "R2C");
+    fftr2c->SetPoints(in);
+    fftr2c->Transform();
+    double re;
+    double im;
+    for (int i=0; i<nbins; i++)
+       {
+         fftr2c->GetPointComplex(i, re, im);
+       }
+
+
+
+
     std::cout << nbins << " bins POWER  " << tick_width_ns << "  tick width POWER" << std::endl;
-    return vec;
+    // std::vector<float> power_spec_f(power_spec_d.begin(), power_spec_d.end());
+    return power_spec_d;
   }
 
 }

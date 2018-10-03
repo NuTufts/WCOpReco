@@ -13,8 +13,8 @@ namespace wcopreco {
     kernel_fourier(std::string word, bool flag);
     virtual ~kernel_fourier() {};
 
-    virtual std::vector<float> Get_wfm(int nbins, float tick_width_ns) = 0;
-    virtual std::vector<float> Get_pow_spec(int nbins, float tick_width_ns) = 0;
+    virtual std::vector<double> Get_wfm(int nbins, float tick_width_ns) = 0;
+    virtual std::vector<double> Get_pow_spec(int nbins, float tick_width_ns) = 0;
     std::string name;
     // 0 = divide 1 = multiply
     bool mult_div;

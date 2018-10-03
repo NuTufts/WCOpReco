@@ -7,19 +7,14 @@ namespace wcopreco{
 
   class noise_remover{
   public:
-    noise_remover(int type, int ch, double timestamp );
+    noise_remover();
     virtual ~noise_remover() {};
 
-    int get_type() {return event_type;};
-    int get_channel() {return ChannelNum;};
-    double get_time() {return time_from_trigger;};
+    virtual std::vector<float> Get_wfm(int nbins, float tick_width_ns) = 0;
 
   protected:
-    int event_type;
-    double time_from_trigger;
-    int ChannelNum;
-  };
 
+  };
 
 }
 

@@ -2,10 +2,6 @@
 
 using namespace wcopreco;
 
-noise_remover::noise_remover(int type, int ch, double timestamp)
+noise_remover::noise_remover()
   {
-    // OpWaveform = std::vector<short> empty_v(10,0);
-    ChannelNum = ch;
-    time_from_trigger = timestamp;
-    event_type = type;
   }

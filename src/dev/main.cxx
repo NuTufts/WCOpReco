@@ -2,9 +2,8 @@
 #include "WCOpReco/OpWaveformCollection.h"
 #include "WCOpReco/EventOpWaveforms.h"
 #include "WCOpReco/UBEventWaveform.h"
-#include "WCOpReco/datareader_j.h"
 #include "WCOpReco/DataReader.h"
-
+#include "WCOpReco/deconvolver.h"
 
 //root includes
 #include "TH1S.h"
@@ -22,12 +21,18 @@ int main(){
 
 
 
-  
-  std::string file = "src/data/celltree.root";
-  wcopreco::DataReader reader(file);
-  std::cout << "Filepath is set to:   " << file << std::endl;
-  int event_num = 3;
-  reader.Reader(event_num);
+  // This tests the reader:
+  // std::string file = "src/data/celltree.root";
+  // wcopreco::DataReader reader(file);
+  // std::cout << "Filepath is set to:   " << file << std::endl;
+  // int event_num = 3;
+  // reader.Reader(event_num);
+
+  //This tests the deconvolver:
+  wcopreco::deconvolver tester;
+  std::cout << "Deconvolver declared!" << std::endl;
+  tester.deconv_test();
+
 
 
 

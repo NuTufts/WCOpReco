@@ -1,1 +1,2 @@
-example
+#ifndef NOISE_REMOVER_H
+#define NOISE_REMOVER_H

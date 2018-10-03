@@ -1,1 +1,2 @@
-example
+#ifndef SPE_CONTAINER_H
+#define SPE_CONTAINER_H

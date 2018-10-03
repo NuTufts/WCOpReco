@@ -43,11 +43,11 @@ namespace wcopreco  {
 
     void IAMTHENIGHT();
 
-    //Make a bunch of root reading datamembers
+    //Make a bunch of root reading datamembers:
     Int_t nevents;
     TFile *file;
     TTree *tree;
-
+    //These will be branches we'll need to read
     std::vector<short> * cosmic_hg_opch = 0; //or =NULL if it complains
     std::vector<short> * cosmic_lg_opch = 0; //or =NULL if it complains
     std::vector<short> * beam_hg_opch = 0; //or =NULL if it complains
@@ -63,7 +63,7 @@ namespace wcopreco  {
     TClonesArray * beam_hg_wf;
     TClonesArray * beam_lg_wf;
     int eventNo;
-  
+
     UBEventWaveform _UB_Ev_wfm;
     int type;
 

@@ -17,7 +17,7 @@ namespace wcopreco {
      virtual ~UB_rc() {};
 
     std::vector<double> Get_wfm(int nbins, float tick_width_ns);
-    std::vector<double> Get_pow_spec(int nbins, float tick_width_ns){};
+    //std::vector<double> Get_pow_spec(int nbins, float tick_width_ns, std::vector<double>* mag, std::vector<double>* phase){};
 
     std::string name;
     // 0 = divide 1 = multiply

@@ -31,7 +31,23 @@ void wcopreco::deconvolver::deconv_test()
     std::cout << mag.at(500) << "    Is 500 element." << std::endl;
     std::cout << *std::max_element(mag.begin(),mag.end()) << "    Is MAX element." << std::endl;
 
+    //testing UB_rc
+    UB_rc rc(word,true);
 
+    std::vector<double> vec_rc = rc.Get_wfm(nbins,bin_width);
+    std::cout << vec_rc.size() << "    Is size of vector(rc)." << std::endl;
+    std::cout << vec_rc.at(1) << "    Is first element(rc)." << std::endl;
+    std::cout << vec_rc.at(500) << "    Is 500 element(rc)." << std::endl;
+    std::cout << *std::max_element(vec_rc.begin(),vec_rc.end()) << "    Is MAX element(rc)." << std::endl;
+
+    std::vector<double> mag_rc;
+    std::vector<double> phase_rc;
+
+    rc.Get_pow_spec(nbins,bin_width,&mag_rc,&phase_rc);
+    std::cout << mag_rc.size() << "    Is size of vector(rc)." << std::endl;
+    std::cout << mag_rc.at(1) << "    Is first element(rc)." << std::endl;
+    std::cout << mag_rc.at(500) << "    Is 500 element(rc)." << std::endl;
+    std::cout << *std::max_element(mag_rc.begin(),mag_rc.end()) << "    Is MAX element(rc)." << std::endl;
 
   }
 

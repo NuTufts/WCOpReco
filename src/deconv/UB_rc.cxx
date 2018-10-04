@@ -11,7 +11,7 @@ using namespace wcopreco;
 std::vector<double> wcopreco::UB_rc::Get_wfm(int nbins, float tick_width_ns)
 {
   std::vector<double> wfm(nbins,0);
-  double value=0;
+  double content=0;
   int size = wfm.size();
   std::cout << size << std::endl;
 
@@ -27,10 +27,12 @@ std::vector<double> wcopreco::UB_rc::Get_wfm(int nbins, float tick_width_ns)
     double content = -1./rc_tau * exp(-X/rc_tau);
     if (i==0) content += 1;
 
-    if (i%100 ==0) {std::cout << value << " Is value of the analytical function at X: " << X << std::endl;}
+    std::cout << content << " Is value of the analytical function at X: " << X << std::endl;
     // if (i%100 ==0) {std::cout << gain << " GAIN " << X << std::endl;}
     wfm[i] = content;
 
   }
+
+  return wfm;
 
 }

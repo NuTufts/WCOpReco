@@ -3,6 +3,12 @@
 
 #include "kernel_fourier.h"
 
+#include "TH1D.h"
+#include "TVirtualFFT.h"
+#include "TF1.h"
+#include "TCanvas.h"
+#include "TMath.h"
+
 #include <vector>
 #include <iostream>
 #include <sstream>
@@ -16,7 +22,7 @@ namespace wcopreco {
      virtual ~UB_spe() {};
 
     std::vector<double> Get_wfm(int nbins, float tick_width_ns);
-    std::vector<double> Get_pow_spec(int nbins, float tick_width_ns);
+    // void Get_pow_spec(int nbins, float tick_width_ns, std::vector<double>* mag, std::vector<double>* phase);
     float gain;
 
   protected:

@@ -5,7 +5,7 @@ namespace wcopreco {
 void wcopreco::deconvolver::deconv_test()
 
   {
-    std::cout << "Within Tester Function!" <<std::endl;
+    // std::cout << "Within Tester Function!" <<std::endl;
 
     // UB_spe spe;
 
@@ -20,11 +20,18 @@ void wcopreco::deconvolver::deconv_test()
     std::cout << vec.size() << "    Is size of vector." << std::endl;
     std::cout << vec.at(1) << "    Is first element." << std::endl;
     std::cout << vec.at(500) << "    Is 500 element." << std::endl;
+    std::cout << *std::max_element(vec.begin(),vec.end()) << "    Is MAX element." << std::endl;
 
-    std::vector<double> vec_transform = spe.Get_pow_spec(nbins,bin_width);
-    std::cout << vec_transform.size() << "    Is size of vector." << std::endl;
-    std::cout << vec_transform.at(1) << "    Is first element." << std::endl;
-    std::cout << vec_transform.at(500) << "    Is 500 element." << std::endl;
+    std::vector<double> mag;
+    std::vector<double> phase;
+
+    spe.Get_pow_spec(nbins,bin_width,&mag,&phase);
+    std::cout << mag.size() << "    Is size of vector." << std::endl;
+    std::cout << mag.at(1) << "    Is first element." << std::endl;
+    std::cout << mag.at(500) << "    Is 500 element." << std::endl;
+    std::cout << *std::max_element(mag.begin(),mag.end()) << "    Is MAX element." << std::endl;
+
+
 
   }
 

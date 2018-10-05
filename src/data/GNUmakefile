@@ -1,4 +1,4 @@
-CXX       = g++ 
+CXX       = g++
 
 LIBNAME = WCOpReco_data
 
@@ -18,7 +18,7 @@ HEADERS   = $(wildcard *.h)
 EIGENSPACE = /usr/include/eigen3
 #build/bin build/lib build/python src/algo
 INCLUDES  += $(addprefix -I,$(EIGENSPACE))
-INCLUDES  += -I. -I$(WCOPRECO_INCDIR)
+INCLUDES  += -I. -I$(WCOPRECO_INCDIR)/WCOpReco
 FINALINCLUDES= $(addpredix $(WCOPRECO_INCDIR),$(HEADERS))
 SRCS := $(wildcard *.cxx)
 OBJS := $(SRCS:.cxx=.o)

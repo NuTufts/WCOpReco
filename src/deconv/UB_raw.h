@@ -2,6 +2,7 @@
 #define UB_RAW_H
 
 #include "kernel_fourier.h"
+#include "OpWaveform.h"
 
 #include <vector>
 #include <iostream>

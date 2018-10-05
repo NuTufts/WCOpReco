@@ -68,6 +68,7 @@ namespace wcopreco {
 
 
       std::cout << nbins << " bins POWER  " << tick_width_ns << "  tick width POWER" << std::endl;
+      std::cout << nbins*tick_width_ns << " Is total width of wfm" << std::endl;
       return ;
     }
 

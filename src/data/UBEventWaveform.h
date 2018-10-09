@@ -37,7 +37,7 @@ Each OpWaveform also has datamembers ChannelNum, time_from_trigger, type
 
 namespace wcopreco {
 
-  class UBEventWaveform : public EventOpWaveforms{
+  class UBEventWaveform : public EventOpWaveforms {
   public:
 
     typedef enum {kbeam_hg = 0, kbeam_lg, kcosmic_hg, kcosmic_lg, kNumTypes } UBOpWaveformForm_t;

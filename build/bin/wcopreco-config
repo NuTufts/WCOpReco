@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+
+import os,sys
+
+args = sys.argv[1:]
+
+for arg in args:
+  if "--" in arg:
+    arg = arg[2:]
+  if arg=="libs":
+     out = "-L%s -lWCOpReco_deconv -lWCOpReco_data"%(os.environ["WCOPRECO_LIBDIR"])
+     print out
+
+
+   
+     

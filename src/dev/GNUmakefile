@@ -8,15 +8,9 @@ INCLUDES  = `root-config --incdir`
 LDFLAGS   = `root-config --ldflags` -lstdc++
 ROOTLIBS  = `root-config --libs`
 
-#WCLIBS  = $(notdir $(wildcard $(WCOPRECO_LIBDIR)/*.so))
-WCLIBS = $(notdir $(WCOPRECO_LIBDIR)/libWCOpReco_deconv.so)
-WCLIBS += $(notdir $(WCOPRECO_LIBDIR)/libWCOpReco_data.so)
-WCLIBSTEM := $(WCLIBS:lib%.so=%)
-
-#WCLIBS := $(WCLIBS: .so=)
-LDLIBS   += -L$(WCOPRECO_LIBDIR) $(addprefix -l, $(WCLIBSTEM))
-#@echo $(WCLIBSTEM)
-LDLIBS   += $(ROOTLIBS)
+WCLIBS = `wcopreco-config --libs`
+LDLIBS   += $(WCLIBS)
+LDLIBS   += $(LDFLAGS) $(ROOTLIBS)
 
 HEADERS   = $(wildcard *.h)
 #Need to include eigen namespace
@@ -35,7 +29,7 @@ all: $(BINS)
 %: %.cxx
 	@echo "<<compiling binary $@>>"
 	$(CXX) $(CFLAGS) $(INCLUDES) -c $^ -o $@.o
-	@echo "<< link with ${WCLIBSTEM} >> "
+	@echo "<< link $@ >> "
 	$(CXX) $(LDFLAGS) -o $@ $@.o $(LDLIBS)
 
 includes: $(HEADERS)
@@ -47,3 +41,4 @@ includes: $(HEADERS)
 clean:
 	@echo "rm $(FINALINCLUDES)"
 	rm *.o *.so $(WCOPRECO_LIBDIR)/$(LIB)
+

@@ -52,8 +52,6 @@ void wcopreco::deconvolver::deconv_test()
 
     fftr2c->GetPointsComplex(re, im); //Put the values in the arrays
 
-
-
     //Copy those array values into vectors passed in by reference.
     //This is inefficient, but makes for an easier user interface.
     memcpy(mag_raw.data(), re, sizeof(double)*nbins);
@@ -93,7 +91,6 @@ void wcopreco::deconvolver::deconv_test()
     // std::cout << mag_spe.at(500) << "    Is 500 element." << std::endl;
     // std::cout << *std::max_element(mag_spe.begin(),mag_spe.end()) << "    Is MAX element." << std::endl;
 
-    //testing UB_rc
     std::string word2 = "RC_Wfm";
     UB_rc rc(word2,true);
 
@@ -132,12 +129,24 @@ void wcopreco::deconvolver::deconv_test()
         //value_re[i] = rho * f3.Eval(freq)* cos(phi)/nbins;
         //value_im[i] = rho * f3.Eval(freq)* sin(phi)/nbins.;
 
-        //value_re1[i] = rho * cos(phi)/nbins.* f2.Eval(freq);
-        //value_im1[i] = rho * sin(phi)/nbins.* f2.Eval(freq);
+        value_re1[i] = rho * cos(phi)/nbins * HighFreqFilter(freq);
+        value_im1[i] = rho * sin(phi)/nbins * HighFreqFilter(freq);
+
+        if (i%100 == 0) std::cout << value_re1[i] << " Is value of value_re1 at: " << i << std::endl;
+        if (i%100 == 0) std::cout << value_im1[i] << " Is value of value_im1 at: " << i << std::endl;
 
     }
 
   }
 
+  //toy light reco f2
+  double deconvolver::HighFreqFilter(double frequency)
+  {
+    double par_0 = 0.45;
+    double par_1 = 3.07;
+     //   TF1 f2("f2","exp(-pow(x/[0],[1]))",0,1); // high frequency filter
+    double freq_filter = exp(-pow(frequency/par_0,par_1));
+    return freq_filter;
+   }
 
 }

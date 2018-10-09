@@ -30,6 +30,7 @@ namespace wcopreco{
     ~deconvolver() {};
 
     void deconv_test();
+    double HighFreqFilter(double frequency);
 
 
 

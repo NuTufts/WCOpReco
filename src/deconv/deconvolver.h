@@ -1,6 +1,7 @@
 #ifndef DECONVOLVER_H
 #define DECONVOLVER_H
 
+//deconv functions
 #include "kernel_fourier.h"
 #include "kernel_fourier_container.h"
 #include "noise_remover.h"
@@ -8,6 +9,10 @@
 #include "UB_spe.h"
 #include "UB_rc.h"
 
+//data
+#include "DataReader.h"
+
+//c++ includes
 #include <vector>
 #include <iostream>
 #include <sstream>

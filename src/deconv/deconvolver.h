@@ -24,7 +24,9 @@ namespace wcopreco{
 
   class deconvolver {
   public:
-    deconvolver() {}; //OpWaveform op_wfm, kernel_fourier_shape kernel_fourier, noise_remover noise, std::vector<short???> LL_shape
+    deconvolver() {
+      std::cout<< "object" <<std::endl;
+    }; //OpWaveform op_wfm, kernel_fourier_shape kernel_fourier, noise_remover noise, std::vector<short???> LL_shape
     ~deconvolver() {};
 
     void deconv_test();

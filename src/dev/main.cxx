@@ -30,6 +30,7 @@ int main(){
 
   //This tests the deconvolver:
   wcopreco::deconvolver tester;
+//  std::cout<< tester <<std::endl;
   std::cout << "Deconvolver declared!" << std::endl;
   tester.deconv_test();
 

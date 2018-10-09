@@ -1,4 +1,4 @@
-CXX       = g++ 
+CXX       = g++
 
 CFLAGS    = -g -fPIC -std=c++11
 CFLAGS   += `root-config --cflags` -DUSE_OPENCV=1
@@ -8,10 +8,14 @@ INCLUDES  = `root-config --incdir`
 LDFLAGS   = `root-config --ldflags` -lstdc++
 ROOTLIBS  = `root-config --libs`
 
-WCLIBS  = $(notdir $(wildcard $(WCOPRECO_LIBDIR)/*.so))
+#WCLIBS  = $(notdir $(wildcard $(WCOPRECO_LIBDIR)/*.so))
+WCLIBS = $(notdir $(WCOPRECO_LIBDIR)/libWCOpReco_deconv.so)
+WCLIBS += $(notdir $(WCOPRECO_LIBDIR)/libWCOpReco_data.so)
 WCLIBSTEM := $(WCLIBS:lib%.so=%)
+
 #WCLIBS := $(WCLIBS: .so=)
 LDLIBS   += -L$(WCOPRECO_LIBDIR) $(addprefix -l, $(WCLIBSTEM))
+#@echo $(WCLIBSTEM)
 LDLIBS   += $(ROOTLIBS)
 
 HEADERS   = $(wildcard *.h)

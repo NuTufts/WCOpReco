@@ -115,11 +115,11 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
 
     //Now our UBEventWaveform is relatively built (fancy features to come?)
     //Put stuff here to test that _UB_Ev_wfm has correct content
-    // int ENTRY_TO_VIEW =0;
-    // int TYPE_OF_COLLECTION =0;
-    // int WFM_INDEX =0;
-    // int SIGNAL_INDEX =1;
-    //
+    int ENTRY_TO_VIEW =0;
+    int TYPE_OF_COLLECTION =0;
+    int WFM_INDEX =0;
+    int SIGNAL_INDEX =1;
+
     // std::cout << std::endl;
     // std::cout << "Value   Explanation (Anticipated Value)" << std::endl ;
     // std::cout << "---------------------------------------" << std::endl;

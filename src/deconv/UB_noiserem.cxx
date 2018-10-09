@@ -1,5 +1,4 @@
 #include "UB_noiserem.h"
-#include "/home/kmason/PmtReco/WCOpReco/src/data/OpWaveform.h"
 
 namespace wcopreco {
 

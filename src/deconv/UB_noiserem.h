@@ -2,7 +2,7 @@
 #define UB_NOISEREM_H
 
 #include "noise_remover.h"
-#include "/home/kmason/PmtReco/WCOpReco/src/data/OpWaveform.h"
+#include "WCOpReco/OpWaveform.h"
 
 #include <vector>
 #include <iostream>

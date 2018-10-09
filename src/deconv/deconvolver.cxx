@@ -126,12 +126,17 @@ void wcopreco::deconvolver::deconv_test()
         double phi = phase_raw.at(i) - phase_rc.at(i) - phase_spe.at(i);
         if (i==0) rho = 0;
 
-        //value_re[i] = rho * f3.Eval(freq)* cos(phi)/nbins;
-        //value_im[i] = rho * f3.Eval(freq)* sin(phi)/nbins.;
+        value_re[i] = rho * BandPassFilter(freq)* cos(phi)/nbins;
+        value_im[i] = rho * BandPassFilter(freq)* sin(phi)/nbins;
+
+        //test band pass filter
+        if (i%100 == 0) std::cout << value_re[i] << " Is value of value_re at: " << i << std::endl;
+        if (i%100 == 0) std::cout << value_im[i] << " Is value of value_im at: " << i << std::endl;
 
         value_re1[i] = rho * cos(phi)/nbins * HighFreqFilter(freq);
         value_im1[i] = rho * sin(phi)/nbins * HighFreqFilter(freq);
 
+        //test high freq filter
         if (i%100 == 0) std::cout << value_re1[i] << " Is value of value_re1 at: " << i << std::endl;
         if (i%100 == 0) std::cout << value_im1[i] << " Is value of value_im1 at: " << i << std::endl;
 
@@ -147,6 +152,19 @@ void wcopreco::deconvolver::deconv_test()
      //   TF1 f2("f2","exp(-pow(x/[0],[1]))",0,1); // high frequency filter
     double freq_filter = exp(-pow(frequency/par_0,par_1));
     return freq_filter;
+  }
+
+  //toy light reco f3
+  double deconvolver::BandPassFilter(double frequency)
+  {
+    //   TF1 f3("f3","(1-exp(-pow(x/[0],2)))*exp(-pow(x/[1],[2]))",0,1);
+
+    double par_0 = 0.05;
+    double par_1 = 0.45;
+    double par_2 = 3.07;
+
+    double bandpass_filter = (1-exp(-pow(frequency/par_0,2)))*exp(-pow(frequency/par_1,par_2));
+    return bandpass_filter;
    }
 
 }

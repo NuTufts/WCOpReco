@@ -31,6 +31,7 @@ namespace wcopreco{
 
     void deconv_test();
     double HighFreqFilter(double frequency);
+    double BandPassFilter(double frequency);
 
 
 

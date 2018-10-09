@@ -19,7 +19,7 @@ namespace wcopreco {
     kernel_fourier(std::string word, bool flag);
     virtual ~kernel_fourier() {};
 
-    virtual std::vector<double> Get_wfm(int nbins, float tick_width_ns, std::vector<short> vec={}) = 0;
+    virtual std::vector<double> Get_wfm(int nbins, float tick_width_ns) = 0;
       /*
       This function is not declared, and cannot be used without a coded childclass
       version. It should in return a vector of doubles with size

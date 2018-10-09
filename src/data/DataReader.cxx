@@ -41,13 +41,14 @@ wcopreco::DataReader::DataReader(std::string filepath)
     std::cout << "Number of Events Constructed:    " << tree->GetEntries() << std::endl;
   }
 
-void wcopreco::DataReader::Reader(int event_num) {
+UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     IAMTHENIGHT();
     std::cout << "You have chosen to read out event number: " << event_num << " out of " << nevents << std::endl;
     if ( event_num > nevents)
       {
-        std::cout << "There aren't that many events!" << std::endl;
-        return;
+        std::cout << "There aren't that many events, didn't work!" << std::endl;
+        UBEventWaveform UB_Ev;
+        return UB_Ev;
       }
     tree->GetEntry(event_num);
 
@@ -114,23 +115,23 @@ void wcopreco::DataReader::Reader(int event_num) {
 
     //Now our UBEventWaveform is relatively built (fancy features to come?)
     //Put stuff here to test that _UB_Ev_wfm has correct content
-    int ENTRY_TO_VIEW =0;
-    int TYPE_OF_COLLECTION =0;
-    int WFM_INDEX =0;
-    int SIGNAL_INDEX =1;
-
-    std::cout << std::endl;
-    std::cout << "Value   Explanation (Anticipated Value)" << std::endl ;
-    std::cout << "---------------------------------------" << std::endl;
-    std::cout << (  ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ) [SIGNAL_INDEX])     <<  "   Attempt at Reading a Waveform Signal Value (~2000 unless first entry?)" <<std::endl;
-    std::cout << (  ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()     <<  "   How many bins in the waveform? (1501)" <<std::endl;
-    std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] ).size()      <<  "  How many waveforms in the collection (depends)?" <<std::endl;
-    std::cout << (  ( _UB_Ev_wfm ).get__wfm_v() ) .size()      <<  "   How many Collections in the Event (4)?" <<std::endl;
+    // int ENTRY_TO_VIEW =0;
+    // int TYPE_OF_COLLECTION =0;
+    // int WFM_INDEX =0;
+    // int SIGNAL_INDEX =1;
+    //
+    // std::cout << std::endl;
+    // std::cout << "Value   Explanation (Anticipated Value)" << std::endl ;
+    // std::cout << "---------------------------------------" << std::endl;
+    // std::cout << (  ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ) [SIGNAL_INDEX])     <<  "   Attempt at Reading a Waveform Signal Value (~2000 unless first entry?)" <<std::endl;
+    // std::cout << (  ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()     <<  "   How many bins in the waveform? (1501)" <<std::endl;
+    // std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] ).size()      <<  "  How many waveforms in the collection (depends)?" <<std::endl;
+    // std::cout << (  ( _UB_Ev_wfm ).get__wfm_v() ) .size()      <<  "   How many Collections in the Event (4)?" <<std::endl;
 
 
 
     // IAMTHENIGHT();
-    return;
+    return _UB_Ev_wfm;
   }
 
 

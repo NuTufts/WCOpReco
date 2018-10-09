@@ -33,7 +33,7 @@ namespace wcopreco  {
     DataReader(std::string filepath);
     ~DataReader() {};
 
-    void Reader(int event_num);
+    UBEventWaveform Reader(int event_num);
 
     void LoopThroughWfms(std::vector<short> ch,
       std::vector<double> timestamp,

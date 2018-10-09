@@ -27,8 +27,7 @@ std::vector<double> wcopreco::UB_rc::Get_wfm(int nbins, float tick_width_ns)
     //std::cout << X << std::endl;
     double content = -1./rc_tau * exp(-X/rc_tau);
     if (i==0) content += 1;
-
-    if (i%100 == 0) std::cout << content << " Is value of the analytical function at X: " << X << std::endl;
+    //if (i%100 == 0) std::cout << content << " Is value of the analytical function at X: " << X << std::endl;
     wfm[i] = content;
   }
 

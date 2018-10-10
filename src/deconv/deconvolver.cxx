@@ -94,7 +94,9 @@ void wcopreco::deconvolver::deconv_test()
       //End of phase_raw calc
 
       //Calculate the mag_v
-
+      double magnitude = TMath::Sqrt(re[i]*re[i]+im[i]*im[i]);
+      mag_raw[i] = magnitude;
+      //if (i%50 == 0) std::cout<<"Magnitude is " << mag_raw[i] <<std::endl;
       //End of mag_v calc
     }
 

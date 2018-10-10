@@ -76,7 +76,9 @@ namespace wcopreco {
         //End of phase_v calc
 
         //Calculate the mag_v
-
+        double magnitude = TMath::Sqrt(re[i]*re[i]+im[i]*im[i]);
+        mag_v->at(i) = magnitude;
+        //if (i%50 == 0) std::cout<<"Magnitude is " << mag_raw[i] <<std::endl;
         //End of mag_v calc
       }
 

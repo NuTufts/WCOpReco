@@ -156,6 +156,16 @@ void wcopreco::deconvolver::deconv_test()
     // spe.gain = 1;
 
     std::vector<double> vec_spe = spe.Get_wfm(nbins,bin_width);
+
+    TCanvas *c4 = new TCanvas("Title", "canvas", 600, 400);
+    TH1D * spe_wfm = new TH1D("SPEwfm" ,"SPEwfm", 1499, 0., 1499.);
+    for (int i=0; i<(vec_spe.size()-1); i++) {
+      spe_wfm->SetBinContent(i,vec_spe[i]);
+    }
+    spe_wfm->Draw();
+    c4->SaveAs("spe_wfm.png");
+    delete c4;
+
     //Cout Block for testing SPE wfm
     // std::cout << vec_spe.size() << "    Is size of vector." << std::endl;
     // std::cout << vec_spe.at(1) << "    Is first element." << std::endl;
@@ -166,6 +176,15 @@ void wcopreco::deconvolver::deconv_test()
     std::vector<double> phase_spe;
 
     spe.Get_pow_spec(nbins,bin_width,&mag_spe,&phase_spe);
+
+    TCanvas *c5 = new TCanvas("Title", "canvas", 600, 400);
+     TH1D * spe_pow = new TH1D("SPEpow" ,"SPEpow", 1499, 0., 1499.);
+     for (int i=0; i<(mag_spe.size()-1); i++) {
+       spe_pow->SetBinContent(i,mag_spe[i]);
+     }
+     spe_pow->Draw();
+     c5->SaveAs("spe_pow.png");
+     delete c5;
     //Cout Block for testing SPE power spectrum
     // std::cout << mag_spe.size() << "    Is size of vector." << std::endl;
     // std::cout << mag_spe.at(1) << "    Is first element." << std::endl;
@@ -176,6 +195,16 @@ void wcopreco::deconvolver::deconv_test()
     UB_rc rc(word2,true);
 
     std::vector<double> vec_rc = rc.Get_wfm(nbins,bin_width);
+
+    TCanvas *c6 = new TCanvas("Title", "canvas", 600, 400);
+    TH1D * rc_wfm = new TH1D("RCwfm" ,"RCwfm", 1499, 0., 1499.);
+    for (int i=0; i<(vec_rc.size()-1); i++) {
+      rc_wfm->SetBinContent(i,vec_rc[i]);
+    }
+    rc_wfm->Draw();
+    c6->SaveAs("rc_wfm.png");
+    delete c6;
+
     //Cout Block for testing RC wfm
     // std::cout << vec_rc.size() << "    Is size of vector(rc)." << std::endl;
     // std::cout << vec_rc.at(1) << "    Is first element(rc)." << std::endl;
@@ -186,6 +215,15 @@ void wcopreco::deconvolver::deconv_test()
     std::vector<double> phase_rc;
 
     rc.Get_pow_spec(nbins,bin_width,&mag_rc,&phase_rc);
+
+    TCanvas *c7 = new TCanvas("Title", "canvas", 600, 400);
+    TH1D * rc_pow = new TH1D("RCpow" ,"RCpow", 1499, 0., 1499.);
+    for (int i=0; i<(mag_rc.size()-1); i++) {
+      rc_pow->SetBinContent(i,mag_rc[i]);
+    }
+    rc_pow->Draw();
+    c7->SaveAs("rc_pow.png");
+    delete c7;
     //Cout Block for testing RC power spectrum
     // std::cout << mag_rc.size() << "    Is size of vector(rc)." << std::endl;
     // std::cout << mag_rc.at(1) << "    Is first element(rc)." << std::endl;

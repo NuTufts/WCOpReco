@@ -30,7 +30,6 @@ void wcopreco::deconvolver::deconv_test()
     std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element after 2nd baseline removed" <<std::endl;
 
 
-
     std::vector<double> wfm_doubles(wfm.begin(), wfm.end());
     //plot wfm_doubles
     TCanvas *c1 = new TCanvas("Title", "canvas", 600, 400);
@@ -41,6 +40,7 @@ void wcopreco::deconvolver::deconv_test()
     }
     wfm_data->Draw();
     c1->SaveAs("wfm_data.png");
+    delete c1;
 
     //get power spectrum of data
     //Create Mag and Phase vectors
@@ -67,6 +67,20 @@ void wcopreco::deconvolver::deconv_test()
     //This is inefficient, but makes for an easier user interface.
     memcpy(mag_raw.data(), re, sizeof(double)*nbins);
     memcpy(phase_raw.data(), im, sizeof(double)*nbins);
+
+    delete fftr2c;
+
+    //plot wfm_power
+    TCanvas *c2 = new TCanvas("wfmPow", "wfmPow", 600, 400);
+    TH1D * wfm_pow = new TH1D("WaveformPowerSpectrum" ,"wmfPowerSpec", 1500, 0., 755.);
+    //std::cout << "size of mag_raw " << mag_raw.size() <<std::endl;
+    for (int i=0; i<(mag_raw.size()-1); i++) {
+      wfm_pow->Fill(i,mag_raw.at(i));
+      //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
+    }
+    wfm_pow->Draw();
+    c2->SaveAs("wfm_pow.png");
+    delete c2;
 
     //Cout Block for Testing RE and IM
 

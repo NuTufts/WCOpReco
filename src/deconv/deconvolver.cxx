@@ -21,16 +21,12 @@ void wcopreco::deconvolver::deconv_test()
     _UB_Ev_wfm = reader.Reader(EVENT_NUM);
     OpWaveform wfm = ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] );
 
-    //remove baseline
-    int size = wfm.size();
-    float baseline = wfm[0];
-    for (int i=0; i<size; i++) {
-      wfm[i] = wfm[i] - baseline;
-    }
+    //remove baseline (baseline here means leading edge)
+    Remove_Baseline_Leading_Edge(&wfm);
+
 
 
     std::vector<double> wfm_doubles(wfm.begin(), wfm.end());
-
     //plot wfm_doubles
     TCanvas *c1 = new TCanvas("Title", "canvas", 600, 400);
     TH1D * wfm_data = new TH1D("Datawfm" ,"name", 1499, 0., 1499.);
@@ -175,6 +171,18 @@ void wcopreco::deconvolver::deconv_test()
 
     double bandpass_filter = (1-exp(-pow(frequency/par_0,2)))*exp(-pow(frequency/par_1,par_2));
     return bandpass_filter;
+   }
+
+
+
+
+   void deconvolver::Remove_Baseline_Leading_Edge(OpWaveform *wfm)
+   {
+     int size = wfm->size();
+     double baseline = wfm->at(0);
+     for (int i=0; i<size; i++) {
+       wfm->at(i) = wfm->at(i) - baseline;
+     }
    }
 
 }

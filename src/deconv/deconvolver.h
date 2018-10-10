@@ -35,6 +35,9 @@ namespace wcopreco{
     void deconv_test();
     double HighFreqFilter(double frequency);
     double BandPassFilter(double frequency);
+    void Remove_Baseline_Leading_Edge(OpWaveform *wfm);
+    virtual void Remove_Baseline_Secondary(OpWaveform *wfm) =0;
+
 
 
 

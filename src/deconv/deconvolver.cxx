@@ -63,6 +63,14 @@ void wcopreco::deconvolver::deconv_test()
 
     fftr2c->GetPointsComplex(re, im); //Put the values in the arrays
 
+    for (int index =nbins-1; index>nbins/2; index--){
+      re[index] = re[(nbins-1) - index];
+      im[index] = im[(nbins-1) - index];
+
+    }
+    // std::cout << re[1499] << "     " << re[0] << std::endl;
+    // std::cout << im[1499] << "     " << im[0] << std::endl;
+
     //Copy those array values into vectors passed in by reference.
     // This is inefficient, but makes for an easier user interface.
     double im_i =0;
@@ -104,21 +112,23 @@ void wcopreco::deconvolver::deconv_test()
     // memcpy(phase_raw.data(), im, sizeof(double)*nbins);
 
     delete fftr2c;
-
+    double max_freq_MHz = 64*1500*2*TMath::Pi();
     //plot wfm_power
     TCanvas *c2 = new TCanvas("wfmPow", "wfmPow", 600, 400);
-    TH1D * wfm_pow = new TH1D("WaveformPowerSpectrum" ,"wmfPowerSpec", 1500, 0., 1500.);
-    std::cout << " Mag 780::    " << mag_raw.at(780) <<std::endl;
+    TH1D * wfm_pow = new TH1D("WaveformPowerSpectrum" ,"wmfPowerSpec", 1500, 0., max_freq_MHz);
+    // std::cout << " Mag 780::    " << mag_raw.at(780) <<std::endl;
     for (int i=0; i<(mag_raw.size()-1); i++) {
       wfm_pow->SetBinContent(i,mag_raw.at(i));
       //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
     }
+    // std::cout << mag_raw.at(1499) <<std::endl;
+    // std::cout << wfm_pow->GetBinContent(0) << " Content at 0    " << wfm_pow->GetBinContent(1499) << " Content at end \n" ;
     wfm_pow->Draw();
     c2->SaveAs("wfm_pow.png");
     delete c2;
 
     TCanvas *c3 = new TCanvas("wfmPhase", "wfmPhase", 600, 400);
-    TH1D * wfm_phase = new TH1D("WaveformPhaseSpectrum" ,"wmfPhaseSpec", 1500, 0., 1500.);
+    TH1D * wfm_phase = new TH1D("WaveformPhaseSpectrum" ,"wmfPhaseSpec", 1500, 0., max_freq_MHz);
     std::cout << " Phase 780::    " << phase_raw.at(780) <<std::endl;
     for (int i=0; i<(phase_raw.size()-1); i++) {
       wfm_phase->SetBinContent(i,phase_raw.at(i));

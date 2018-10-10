@@ -22,7 +22,12 @@ void wcopreco::deconvolver::deconv_test()
     OpWaveform wfm = ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] );
 
     //remove baseline (baseline here means leading edge)
+    std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element before any baseline removed" <<std::endl;
+
     Remove_Baseline_Leading_Edge(&wfm);
+    std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element after 1st baseline removed" <<std::endl;
+    Remove_Baseline_Secondary(&wfm);
+    std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element after 2nd baseline removed" <<std::endl;
 
 
 
@@ -32,7 +37,7 @@ void wcopreco::deconvolver::deconv_test()
     TH1D * wfm_data = new TH1D("Datawfm" ,"name", 1499, 0., 1499.);
     for (int i=0; i<(wfm_doubles.size()-1); i++) {
       wfm_data->Fill(i,wfm_doubles[i]);
-      if (wfm_doubles[i] >5 )std::cout << wfm_doubles[i] << " :Value of wfm_data" << std::endl;
+      // if (wfm_doubles[i] >5 )std::cout << wfm_doubles[i] << " :Value of wfm_data" << std::endl;
     }
     wfm_data->Draw();
     c1->SaveAs("wfm_data.png");
@@ -183,6 +188,28 @@ void wcopreco::deconvolver::deconv_test()
      for (int i=0; i<size; i++) {
        wfm->at(i) = wfm->at(i) - baseline;
      }
+     return;
    }
 
+   void deconvolver::Remove_Baseline_Secondary(OpWaveform *wfm)
+   {
+      TH1F h1("h1","h1",200,-100,100);
+
+      h1.Reset();
+      for (int j=0;j!=20;j++){
+          h1.Fill(wfm->at(j));
+      }
+      // double xq = 0.5;
+      // double baseline;
+      // h1.GetQuantiles(1,&baseline,&xq);
+      double baseline = h1.GetMaximumBin()-100;
+      if (fabs(baseline)>=8) {baseline = 0;}
+      else {std::cout << "Baseline adjusted by: " <<baseline << std::endl;}
+      //std::cout << h1.GetMaximum() << " " << baseline << std::endl;
+      for (int j=0;j!=1500;j++){
+          wfm->at(j) = wfm->at(j) - baseline;
+      }
+
+      return;
+   }
 }

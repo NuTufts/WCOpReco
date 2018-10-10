@@ -1,6 +1,7 @@
 #include "kernel_fourier.h"
 #include <vector>
 
+
 namespace wcopreco {
 
  wcopreco::kernel_fourier::kernel_fourier(std::string nm, bool mult_flag)
@@ -19,11 +20,11 @@ namespace wcopreco {
 
   }
 
-  void wcopreco::kernel_fourier::Get_pow_spec(int nbins, float tick_width_ns, std::vector<double>* mag, std::vector<double>* phase)
+  void wcopreco::kernel_fourier::Get_pow_spec(int nbins, float tick_width_ns, std::vector<double>* mag_v, std::vector<double>* phase_v)
 
     {
-      mag->resize(nbins);
-      phase->resize(nbins);
+      mag_v->resize(nbins);
+      phase_v->resize(nbins);
 
       //Get the input to the fourier transform ready
       std::vector<double> power_spec_d(nbins,0);
@@ -46,12 +47,44 @@ namespace wcopreco {
 
       //Copy those array values into vectors passed in by reference.
       //This is inefficient, but makes for an easier user interface.
-      memcpy(mag->data(), re, sizeof(double)*nbins);
-      memcpy(phase->data(), im, sizeof(double)*nbins);
+      double im_i =0;
+      double re_i = 0;
+      for (int i =0; i<nbins; i++){
+        //Calculate the phase_v
+        im_i = im[i];
+        re_i = re[i];
+        double ph = 0;
+        // fft->GetPointComplex(ind, re, im);
+        if (TMath::Abs(re_i) > 1e-13){
+           ph = TMath::ATan(im_i/re_i);
 
-      // std::cout << mag->at(index) << "    MAG[" << index << "]" << std::endl <<std::endl;
-      // std::cout << im[index] << "    IM[" << index << "]" << std::endl;
 
+           //find the correct quadrant
+           if (re_i<0 && im_i<0)
+              ph -= TMath::Pi();
+           if (re_i<0 && im_i>=0)
+              ph += TMath::Pi();
+        } else {
+           if (TMath::Abs(im_i) < 1e-13)
+              ph = 0;
+           else if (im_i>0)
+              ph = TMath::Pi()*0.5;
+           else
+              ph = -TMath::Pi()*0.5;
+        }
+        phase_v->at(i) = ph;
+        //End of phase_v calc
+
+        //Calculate the mag_v
+
+        //End of mag_v calc
+      }
+
+      //Test loop to output every 50 entries
+      for (int index =0; index <phase_v->size(); index +=50) {
+        // std::cout << phase_v->at(index) << "    Phase[" << index << "]" << std::endl <<std::endl;
+        // std::cout << im[index] << "    IM[" << index << "]" << std::endl;
+      }
 
 
       // Deletion test confirms that you can delete re after you delecte fftr2c, so fftr2c doesn't own re or im! Good.

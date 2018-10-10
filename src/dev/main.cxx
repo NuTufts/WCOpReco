@@ -11,6 +11,7 @@
 #include "TVirtualFFT.h"
 #include "TTree.h"
 #include "TFile.h"
+#include "TCanvas.h"
 
 #include <iostream>
 #include <sstream>

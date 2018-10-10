@@ -19,6 +19,9 @@
 #include <cmath>
 #include <string>
 
+//root
+#include "TCanvas.h"
+
 namespace wcopreco{
 
 

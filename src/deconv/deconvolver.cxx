@@ -31,6 +31,16 @@ void wcopreco::deconvolver::deconv_test()
 
     std::vector<double> wfm_doubles(wfm.begin(), wfm.end());
 
+    //plot wfm_doubles
+    TCanvas *c1 = new TCanvas("Title", "canvas", 600, 400);
+    TH1D * wfm_data = new TH1D("Datawfm" ,"name", 1499, 0., 1499.);
+    for (int i=0; i<(wfm_doubles.size()-1); i++) {
+      wfm_data->Fill(i,wfm_doubles[i]);
+      if (wfm_doubles[i] >5 )std::cout << wfm_doubles[i] << " :Value of wfm_data" << std::endl;
+    }
+    wfm_data->Draw();
+    c1->SaveAs("wfm_data.png");
+
     //get power spectrum of data
     //Create Mag and Phase vectors
     std::vector<double> mag_raw;

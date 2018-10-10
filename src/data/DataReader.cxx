@@ -117,17 +117,19 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     //Now our UBEventWaveform is relatively built (fancy features to come?)
     //Put stuff here to test that _UB_Ev_wfm has correct content
     int ENTRY_TO_VIEW =0;
-    int TYPE_OF_COLLECTION =0;
+    int TYPE_OF_COLLECTION =3;
     int WFM_INDEX =0;
-    int SIGNAL_INDEX =1500;
+    int SIGNAL_INDEX =0;
+    int SIGNAL_INDEX2 =( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size() -1;
 
     std::cout << std::endl;
     std::cout << "Value   Explanation (Anticipated Value)" << std::endl ;
     std::cout << "---------------------------------------" << std::endl;
-    std::cout << (  ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).at(SIGNAL_INDEX))     <<  "   Attempt at Reading a Waveform Signal Value (~2000 unless first entry?)" <<std::endl;
+    std::cout << (  ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).at(SIGNAL_INDEX))     <<  "   Attempt at Reading a Waveform Signal Value (~2000 unless first entry?) " <<SIGNAL_INDEX << std::endl;
+    std::cout << (  ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).at(SIGNAL_INDEX2))     <<  "   Attempt at Reading a Waveform Signal Value (~2000 unless first entry?)" <<SIGNAL_INDEX2 << std::endl;
     std::cout << (  ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()     <<  "   How many bins in the waveform? (1501)" <<std::endl;
     std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] ).size()      <<  "  How many waveforms in the collection (depends)?" <<std::endl;
-    std::cout << (  ( _UB_Ev_wfm ).get__wfm_v() ) .size()      <<  "   How many Collections in the Event (4)?" <<std::endl;
+    std::cout << (  ( _UB_Ev_wfm ).get__wfm_v() ) .size()      <<  "   How many Collections in the Event (4)?" <<std::endl <<std::endl;
 
 
 
@@ -141,7 +143,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     TClonesArray Eventwaveform_root,
     int type,
     OpWaveformCollection &wfm_collection) {
-    std::cout<< ch.size() << "CHANNEL SIZE" << std::endl <<std::endl;
+    // std::cout<< ch.size() << "CHANNEL SIZE" << std::endl <<std::endl;
     int count = 0;
     // TCanvas *c = new TCanvas("Title", "Name", 600,400);
 
@@ -152,18 +154,18 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     for (unsigned j=0; j < ch.size(); j++){
       TH1S *waveform = (TH1S*)Eventwaveform_root.At(j);
       Int_t n = waveform->GetNbinsX();
-      std::cout << n << " NUMBER OF BINS!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-      if (n ==1501) count++;
-      wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n);
+      //Declare wfm, size of n-1 to get rid of underflow bin
+      wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n-1);
 
-      memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*n);
+      //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1)
+      memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*(n-1));
 
       // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
       wfm_collection.emplace_back(std::move(wfm));
+
+
       // std::cout << "length: " << wfm_collection.size() << std::endl;
       // std::cout << "capacity: " << wfm_collection.capacity() << std::endl;
-
-
       //check output
       // if (j == 0){
       //   std::cout << waveform->GetArray()[0] << std::endl;
@@ -178,7 +180,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     // c->SaveAs("canvas.png");
     // for (int i=1;i<waveform->GetNbinsX(); i++)
     // {std::cout << waveform->GetBinContent(i) <<std::endl;}
-    std::cout << count << "COUNTED WITH 1500" << std::endl << std::endl;
+    // std::cout << count << "COUNTED WITH 1500" << std::endl << std::endl;
     Eventwaveform_root.Clear();
     return;
   };

@@ -13,7 +13,7 @@ namespace wcopreco {
     if (mult_div) {optioned = "|| Multiply || this kernel.";}
     else if (not mult_div) {optioned = "|| Divide || this kernel.";}
     else {optioned = " Bool not true or false...";}
-    std::cout << "Flag is set to:  " << mult_div  << "   This means "<< optioned << std::endl <<std::endl;
+    std::cout << "Flag is set to:  " << mult_div  << "   This means "<< optioned << std::endl;
 
 
 
@@ -68,7 +68,7 @@ namespace wcopreco {
 
 
       std::cout << nbins << " bins POWER  " << tick_width_ns << "  tick width POWER" << std::endl;
-      std::cout << nbins*tick_width_ns << " Is total width of wfm" << std::endl;
+      std::cout << nbins*tick_width_ns << " Is total width of wfm" << std::endl <<std::endl;
       return ;
     }
 

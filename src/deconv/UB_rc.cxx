@@ -13,7 +13,7 @@ std::vector<double> wcopreco::UB_rc::Get_wfm(int nbins, float tick_width_ns)
   std::vector<double> wfm(nbins,0);
   double content=0;
   int size = wfm.size();
-  std::cout << size << std::endl;
+  //std::cout << size << std::endl;
 
   //rc_tau = 800 for all channels except 28
   //rc_tau(28) = 28.6

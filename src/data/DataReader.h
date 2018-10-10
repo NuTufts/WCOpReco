@@ -9,6 +9,7 @@
 #include "UBEventWaveform.h"
 #include "datareader_j.h"
 
+
 //root includes
 #include "TObject.h"
 #include "TH1S.h"
@@ -20,6 +21,8 @@
 #include "TH1F.h"
 #include "TH1I.h"
 #include "TTimeStamp.h"
+#include "TCanvas.h"
+
 
 #include <iostream>
 #include <sstream>

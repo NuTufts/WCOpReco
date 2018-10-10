@@ -130,15 +130,15 @@ void wcopreco::deconvolver::deconv_test()
         value_im[i] = rho * BandPassFilter(freq)* sin(phi)/nbins;
 
         //test band pass filter
-        if (i%100 == 0) std::cout << value_re[i] << " Is value of value_re at: " << i << std::endl;
-        if (i%100 == 0) std::cout << value_im[i] << " Is value of value_im at: " << i << std::endl;
+        // if (i%100 == 0) std::cout << value_re[i] << " Is value of value_re at: " << i << std::endl;
+        // if (i%100 == 0) std::cout << value_im[i] << " Is value of value_im at: " << i << std::endl;
 
         value_re1[i] = rho * cos(phi)/nbins * HighFreqFilter(freq);
         value_im1[i] = rho * sin(phi)/nbins * HighFreqFilter(freq);
 
         //test high freq filter
-        if (i%100 == 0) std::cout << value_re1[i] << " Is value of value_re1 at: " << i << std::endl;
-        if (i%100 == 0) std::cout << value_im1[i] << " Is value of value_im1 at: " << i << std::endl;
+        // if (i%100 == 0) std::cout << value_re1[i] << " Is value of value_re1 at: " << i << std::endl;
+        // if (i%100 == 0) std::cout << value_im1[i] << " Is value of value_im1 at: " << i << std::endl;
 
     }
 

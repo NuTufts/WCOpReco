@@ -22,7 +22,7 @@ std::vector<double> wcopreco::UB_spe::Get_wfm(int nbins, float tick_width_ns)
 
 
     for (int i=0; i<size; i++) {
-      X = (tick_width_ns)*(double(i)+0.5);
+      X = (double(i)+0.5);
       //std::cout << X << std::endl;
       value = 1./19.6348*pow(X/parameter_1,4)*exp(-X/parameter_1)*gain;
 

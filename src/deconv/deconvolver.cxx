@@ -64,23 +64,67 @@ void wcopreco::deconvolver::deconv_test()
     fftr2c->GetPointsComplex(re, im); //Put the values in the arrays
 
     //Copy those array values into vectors passed in by reference.
-    //This is inefficient, but makes for an easier user interface.
-    memcpy(mag_raw.data(), re, sizeof(double)*nbins);
-    memcpy(phase_raw.data(), im, sizeof(double)*nbins);
+    // This is inefficient, but makes for an easier user interface.
+    double im_i =0;
+    double re_i = 0;
+    for (int i =0; i<nbins; i++){
+      //Calculate the phase_raw
+      im_i = im[i];
+      re_i = re[i];
+      double ph = 0;
+      // fft->GetPointComplex(ind, re, im);
+      if (TMath::Abs(re_i) > 1e-13){
+         ph = TMath::ATan(im_i/re_i);
+
+
+         //find the correct quadrant
+         if (re_i<0 && im_i<0)
+            ph -= TMath::Pi();
+         if (re_i<0 && im_i>=0)
+            ph += TMath::Pi();
+      } else {
+         if (TMath::Abs(im_i) < 1e-13)
+            ph = 0;
+         else if (im_i>0)
+            ph = TMath::Pi()*0.5;
+         else
+            ph = -TMath::Pi()*0.5;
+      }
+      phase_raw.at(i) = ph;
+      //End of phase_raw calc
+
+      //Calculate the mag_v
+
+      //End of mag_v calc
+    }
+
+    // memcpy(mag_raw.data(), re, sizeof(double)*nbins);
+    // memcpy(phase_raw.data(), im, sizeof(double)*nbins);
 
     delete fftr2c;
 
     //plot wfm_power
     TCanvas *c2 = new TCanvas("wfmPow", "wfmPow", 600, 400);
-    TH1D * wfm_pow = new TH1D("WaveformPowerSpectrum" ,"wmfPowerSpec", 1500, 0., 755.);
-    //std::cout << "size of mag_raw " << mag_raw.size() <<std::endl;
+    TH1D * wfm_pow = new TH1D("WaveformPowerSpectrum" ,"wmfPowerSpec", 1500, 0., 1500.);
+    std::cout << " Mag 780::    " << mag_raw.at(780) <<std::endl;
     for (int i=0; i<(mag_raw.size()-1); i++) {
-      wfm_pow->Fill(i,mag_raw.at(i));
+      wfm_pow->SetBinContent(i,mag_raw.at(i));
       //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
     }
     wfm_pow->Draw();
     c2->SaveAs("wfm_pow.png");
     delete c2;
+
+    TCanvas *c3 = new TCanvas("wfmPhase", "wfmPhase", 600, 400);
+    TH1D * wfm_phase = new TH1D("WaveformPhaseSpectrum" ,"wmfPhaseSpec", 1500, 0., 1500.);
+    std::cout << " Phase 780::    " << phase_raw.at(780) <<std::endl;
+    for (int i=0; i<(phase_raw.size()-1); i++) {
+      wfm_phase->SetBinContent(i,phase_raw.at(i));
+      //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
+    }
+    wfm_phase->Draw();
+    c3->SaveAs("wfm_phase.png");
+    delete c3;
 
     //Cout Block for Testing RE and IM
 

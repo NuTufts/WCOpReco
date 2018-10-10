@@ -82,7 +82,8 @@ namespace wcopreco {
         //End of phase_v calc
 
         //Calculate the mag_v
-
+        double magnitude = TMath::Sqrt(re[i]*re[i]+im[i]*im[i]);
+        mag_v->at(i) = magnitude;
         //End of mag_v calc
       }
 

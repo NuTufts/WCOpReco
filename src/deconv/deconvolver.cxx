@@ -158,7 +158,7 @@ void wcopreco::deconvolver::deconv_test()
     std::vector<double> vec_spe = spe.Get_wfm(nbins,bin_width);
 
     TCanvas *c4 = new TCanvas("Title", "canvas", 600, 400);
-    TH1D * spe_wfm = new TH1D("SPEwfm" ,"SPEwfm", 1499, 0., 1499.);
+    TH1D * spe_wfm = new TH1D("SPEwfm" ,"SPEwfm", 1499, 0., max_freq_MHz);
     for (int i=0; i<(vec_spe.size()-1); i++) {
       spe_wfm->SetBinContent(i,vec_spe[i]);
     }
@@ -178,7 +178,7 @@ void wcopreco::deconvolver::deconv_test()
     spe.Get_pow_spec(nbins,bin_width,&mag_spe,&phase_spe);
 
     TCanvas *c5 = new TCanvas("Title", "canvas", 600, 400);
-     TH1D * spe_pow = new TH1D("SPEpow" ,"SPEpow", 1499, 0., 1499.);
+     TH1D * spe_pow = new TH1D("SPEpow" ,"SPEpow", 1499, 0., max_freq_MHz);
      for (int i=0; i<(mag_spe.size()-1); i++) {
        spe_pow->SetBinContent(i,mag_spe[i]);
      }
@@ -197,7 +197,7 @@ void wcopreco::deconvolver::deconv_test()
     std::vector<double> vec_rc = rc.Get_wfm(nbins,bin_width);
 
     TCanvas *c6 = new TCanvas("Title", "canvas", 600, 400);
-    TH1D * rc_wfm = new TH1D("RCwfm" ,"RCwfm", 1499, 0., 1499.);
+    TH1D * rc_wfm = new TH1D("RCwfm" ,"RCwfm", 1499, 0., max_freq_MHz);
     for (int i=0; i<(vec_rc.size()-1); i++) {
       rc_wfm->SetBinContent(i,vec_rc[i]);
     }
@@ -217,7 +217,7 @@ void wcopreco::deconvolver::deconv_test()
     rc.Get_pow_spec(nbins,bin_width,&mag_rc,&phase_rc);
 
     TCanvas *c7 = new TCanvas("Title", "canvas", 600, 400);
-    TH1D * rc_pow = new TH1D("RCpow" ,"RCpow", 1499, 0., 1499.);
+    TH1D * rc_pow = new TH1D("RCpow" ,"RCpow", 1499, 0., max_freq_MHz);
     for (int i=0; i<(mag_rc.size()-1); i++) {
       rc_pow->SetBinContent(i,mag_rc[i]);
     }
@@ -234,33 +234,73 @@ void wcopreco::deconvolver::deconv_test()
     double value_re1[nbins], value_im1[nbins];
 
     for (int i=0;i<nbins;i++){
-        double freq;
-        if (i<=750){
-    	     freq = i/nbins*2.;
-        }
-        else{
-    	     freq = (nbins-i)/nbins*2;
-        }
-        double rho = mag_raw.at(i)/ mag_rc.at(i) / mag_spe.at(i);
-        double phi = phase_raw.at(i) - phase_rc.at(i) - phase_spe.at(i);
-        if (i==0) rho = 0;
+      double freq;
+      if (i<=750){
+  	     freq = i/nbins*2.;
+      }
+      else{
+  	     freq = (nbins-i)/nbins*2;
+      }
+      double rho = mag_raw.at(i)/ mag_rc.at(i) / mag_spe.at(i);
+      double phi = phase_raw.at(i) - phase_rc.at(i) - phase_spe.at(i);
+      if (i==0) rho = 0;
 
-        value_re[i] = rho * BandPassFilter(freq)* cos(phi)/nbins;
-        value_im[i] = rho * BandPassFilter(freq)* sin(phi)/nbins;
+      value_re[i] = rho * BandPassFilter(freq)* cos(phi)/nbins;
+      if (i%50 == 0) std::cout << "BandPass: " << BandPassFilter(freq)<< std::endl;
+      value_im[i] = rho * BandPassFilter(freq)* sin(phi)/nbins;
 
-        //test band pass filter
-        // if (i%100 == 0) std::cout << value_re[i] << " Is value of value_re at: " << i << std::endl;
-        // if (i%100 == 0) std::cout << value_im[i] << " Is value of value_im at: " << i << std::endl;
+      value_re1[i] = rho * cos(phi)/nbins * HighFreqFilter(freq);
+      value_im1[i] = rho * sin(phi)/nbins * HighFreqFilter(freq);
 
-        value_re1[i] = rho * cos(phi)/nbins * HighFreqFilter(freq);
-        value_im1[i] = rho * sin(phi)/nbins * HighFreqFilter(freq);
-
-        //test high freq filter
-        // if (i%100 == 0) std::cout << value_re1[i] << " Is value of value_re1 at: " << i << std::endl;
-        // if (i%100 == 0) std::cout << value_im1[i] << " Is value of value_im1 at: " << i << std::endl;
+      if(i%50 == 0){
+        std::cout << "val_re of " << i <<  " is: " << value_re[i] << std::endl;
+        std::cout << "val_im of " << i <<  " is: " << value_im[i] << std::endl;
+        //std::cout << "val_re1 of " << i <<  " is: " << value_re1[i] << std::endl;
+        //std::cout << "val_im1 of " << i <<  " is: " << value_im1[i] << std::endl << std::endl;
+      }
 
     }
+    // ROI finding
+    // TVirtualFFT *ifft = TVirtualFFT::FFT(1,&nbins,"C2R M K");
+    // ifft->SetPointsComplex(value_re,value_im);
+    // ifft->Transform();
+    //
+    // double *re_inv = new double[nbins]; //Real -> Magnitude
+    // double *im_inv = new double[nbins]; //Imaginary -> Phase
+    //
+    // ifft->GetPointsComplex(re_inv, im_inv);
+    //
+    // std::vector<double> inverse_res;
+    // inverse_res.resize(nbins);
+    // for (int i = 0; i < nbins ; i++){
+    //   double value = re_inv[i];
+    //   inverse_res.at(i) = value;
+    //   if (i%50 == 0) std::cout<< "ifft value: " <<value <<std::endl;
+    // };
+    //
+    // TCanvas *c8 = new TCanvas("fb", "fb", 600, 400);
+    // TH1D * ifft_plot = new TH1D("ifft" ,"ifft", 1500, 0., max_freq_MHz);
+    // for (int i=0; i<(inverse_res.size()-1); i++) {
+    //   ifft_plot->SetBinContent(i,inverse_res.at(i));
+    //   //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
+    // }
+    // ifft_plot->Draw();
+    // c8->SaveAs("ifft.png");
+    // delete c8;
 
+    //TH1 *fb = TH1::TransformHisto(ifft,0,"Re");
+    // calcumate rms and mean ...
+    //std::pair<double,double> results = cal_mean_rms(fb);
+    //std::cout << results.first << " " << results.second << std::endl;
+    //TH1F *hflag = new TH1F("hflag","hflag",1500,0,1500);
+    //for (int i=0;i<nbins;i++){
+      //double content = fb->GetBinContent(i+1);
+      //if (fabs(content-results.first)>5*results.second){
+	       //for (int j=-20;j!=20;j++){
+	          //hflag->SetBinContent(i+j+1,1);
+	       //}
+      //}
+    //}
   }
 
   //toy light reco f2
@@ -283,6 +323,10 @@ void wcopreco::deconvolver::deconv_test()
     double par_2 = 3.07;
 
     double bandpass_filter = (1-exp(-pow(frequency/par_0,2)))*exp(-pow(frequency/par_1,par_2));
+    double first = exp(-pow(frequency/par_0,2));
+    std::cout << "first: " << first <<std::endl;
+    std::cout << "second: " << exp(-pow(frequency/par_1,par_2)) <<std::endl;
+    std::cout << "total: " << exp(-pow(frequency/par_0,2))*exp(-pow(frequency/par_1,par_2)) <<std::endl;
     return bandpass_filter;
    }
 

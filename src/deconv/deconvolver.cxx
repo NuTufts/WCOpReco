@@ -22,12 +22,12 @@ void wcopreco::deconvolver::deconv_test()
     OpWaveform wfm = ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] );
 
     //remove baseline (baseline here means leading edge)
-    std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element before any baseline removed" <<std::endl;
+    // std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element before any baseline removed" <<std::endl;
 
     Remove_Baseline_Leading_Edge(&wfm);
-    std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element after 1st baseline removed" <<std::endl;
+    // std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element after 1st baseline removed" <<std::endl;
     Remove_Baseline_Secondary(&wfm);
-    std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element after 2nd baseline removed" <<std::endl;
+    // std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element after 2nd baseline removed" <<std::endl;
 
 
     std::vector<double> wfm_doubles(wfm.begin(), wfm.end());
@@ -129,7 +129,7 @@ void wcopreco::deconvolver::deconv_test()
 
     TCanvas *c3 = new TCanvas("wfmPhase", "wfmPhase", 600, 400);
     TH1D * wfm_phase = new TH1D("WaveformPhaseSpectrum" ,"wmfPhaseSpec", 1500, 0., max_freq_MHz);
-    std::cout << " Phase 780::    " << phase_raw.at(780) <<std::endl;
+    // std::cout << " Phase 780::    " << phase_raw.at(780) <<std::endl;
     for (int i=0; i<(phase_raw.size()-1); i++) {
       wfm_phase->SetBinContent(i,phase_raw.at(i));
       //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
@@ -347,7 +347,7 @@ void wcopreco::deconvolver::deconv_test()
       // h1.GetQuantiles(1,&baseline,&xq);
       double baseline = h1.GetMaximumBin()-100;
       if (fabs(baseline)>=8) {baseline = 0;}
-      else {std::cout << "Baseline adjusted by: " <<baseline << std::endl;}
+      // else {std::cout << "Baseline adjusted by: " <<baseline << std::endl;}
       //std::cout << h1.GetMaximum() << " " << baseline << std::endl;
       for (int j=0;j!=1500;j++){
           wfm->at(j) = wfm->at(j) - baseline;

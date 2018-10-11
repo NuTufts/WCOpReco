@@ -2,3 +2,4 @@
 build/include/WCOpReco/*
 build/lib/*
 *.o
+*.png

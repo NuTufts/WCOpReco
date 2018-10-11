@@ -82,21 +82,22 @@ void wcopreco::deconvolver::deconv_test()
       double ph = 0;
       // fft->GetPointComplex(ind, re, im);
       if (TMath::Abs(re_i) > 1e-13){
-         ph = TMath::ATan(im_i/re_i);
+         //ph = TMath::ATan(im_i/re_i);
+         ph = atan2(im_i , re_i);
 
 
          //find the correct quadrant
-         if (re_i<0 && im_i<0)
-            ph -= TMath::Pi();
-         if (re_i<0 && im_i>=0)
-            ph += TMath::Pi();
-      } else {
-         if (TMath::Abs(im_i) < 1e-13)
-            ph = 0;
-         else if (im_i>0)
-            ph = TMath::Pi()*0.5;
-         else
-            ph = -TMath::Pi()*0.5;
+      //    if (re_i<0 && im_i<0)
+      //       ph -= TMath::Pi();
+      //    if (re_i<0 && im_i>=0)
+      //       ph += TMath::Pi();
+      // } else {
+      //    if (TMath::Abs(im_i) < 1e-13)
+      //       ph = 0;
+      //    else if (im_i>0)
+      //       ph = TMath::Pi()*0.5;
+      //    else
+      //       ph = -TMath::Pi()*0.5;
       }
       phase_raw.at(i) = ph;
       //End of phase_raw calc
@@ -207,13 +208,17 @@ void wcopreco::deconvolver::deconv_test()
       }
       double rho = mag_raw.at(i)/ mag_rc.at(i) / mag_spe.at(i);
       double phi = phase_raw.at(i) - phase_rc.at(i) - phase_spe.at(i);
+
+      //double rho = mag_raw.at(i);
+      //double phi = phase_raw.at(i);
+
       if (i==0) rho = 0;
 
-      value_re[i] = rho * BandPassFilter(freq)* cos(phi)/nbins;
-      value_im[i] = rho * BandPassFilter(freq)* sin(phi)/nbins;
+      value_re[i] = rho * BandPassFilter(freq)* (cos(phi)/nbins)*2;
+      value_im[i] = rho * BandPassFilter(freq)* (sin(phi)/nbins)*2;
 
-      value_re1[i] = rho * cos(phi)/nbins * HighFreqFilter(freq);
-      value_im1[i] = rho * sin(phi)/nbins * HighFreqFilter(freq);
+      value_re1[i] = rho * (cos(phi)/nbins)*2 * HighFreqFilter(freq);
+      value_im1[i] = rho * (sin(phi)/nbins)*2 * HighFreqFilter(freq);
 
       // if(i%50 == 0){
       //   std::cout << "val_re of " << i <<  " is: " << value_re[i] << std::endl;
@@ -224,8 +229,9 @@ void wcopreco::deconvolver::deconv_test()
     }
 
     // ROI finding
-    TVirtualFFT *ifft = TVirtualFFT::FFT(1,&nbins,"C2R M K");
+    TVirtualFFT *ifft = TVirtualFFT::FFT(1,&nbins,"C2R");
     ifft->SetPointsComplex(value_re,value_im);
+    //ifft->SetPointsComplex(re,im);
     ifft->Transform();
 
     double *re_inv = new double[nbins]; //Real -> Magnitude
@@ -240,16 +246,7 @@ void wcopreco::deconvolver::deconv_test()
       inverse_res.at(i) = value;
       //if (i%50 == 0) std::cout<< "ifft value: " <<value <<std::endl;
     };
-
-    TCanvas *c8 = new TCanvas("fb", "fb", 600, 400);
-    TH1D * ifft_plot = new TH1D("ifft" ,"ifft", 1500, 0., max_freq_MHz);
-    for (int i=0; i<(inverse_res.size()-1); i++) {
-      ifft_plot->SetBinContent(i,inverse_res.at(i));
-      //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
-    }
-    ifft_plot->Draw();
-    c8->SaveAs("ifft.png");
-    delete c8;
+    delete ifft;
 
     // calcumate rms and mean ...
     std::pair<double,double> results = cal_mean_rms(inverse_res, nbins);
@@ -268,41 +265,68 @@ void wcopreco::deconvolver::deconv_test()
        }
     }
 
-//Next Step
-    //     // solve for baseline
-    //     ifft->SetPointsComplex(value_re1,value_im1);
-    //     ifft->Transform();
-    //     fb = TH1::TransformHisto(ifft,0,"Re");
-    //     double A11 = 0, A12 = 0, A21=0, A22=0;
-    //     double B1 = 0, B2 = 0;
-    //     double a=0, b=0;
-    //     for (int i=0;i!=1500;i++){
-    //       if (hflag->GetBinContent(i+1)==0){
-    // 	B2 += fb->GetBinContent(i+1);
-    // 	B1 += fb->GetBinContent(i+1) * fb->GetBinCenter(i+1);
-    // 	A11 += pow(fb->GetBinCenter(i+1),2);
-    // 	A12 += fb->GetBinCenter(i+1);
-    // 	A21 += fb->GetBinCenter(i+1);
-    // 	A22 += 1;
-    //       }
-    //     }
-    //
-    //     if (A22>0){
-    //       a = (B1*A22-B2*A12)/(A11*A22-A21*A12);
-    //       b = (B1*A21-B2*A11)/(A22*A11-A12*A21);
-    //     }
-    //     // std::cout << a << " " << b << std::endl;
-    //     for (int i=0;i!=1500;i++){
-    //       fb->SetBinContent(i+1,fb->GetBinContent(i+1) - a * fb->GetBinCenter(i+1) -b);
-    //     }
-    //     results = cal_mean_rms(fb);
-    //     for (int i=0;i!=1500;i++){
-    //       if (i<1500-4){
-    // 	fb->SetBinContent(i+1,fb->GetBinContent(i+1)-results.first+0.01);
-    //       }else{
-    // 	fb->SetBinContent(i+1,0);
-    //       }
-    //     }
+    // solve for baseline
+    TVirtualFFT *ifft1 = TVirtualFFT::FFT(1,&nbins,"C2R");
+    ifft1->SetPointsComplex(value_re1,value_im1);
+    ifft1->Transform();
+
+    double *re_inv1 = new double[nbins]; //Real -> Magnitude
+    double *im_inv1 = new double[nbins]; //Imaginary -> Phase
+
+    ifft1->GetPointsComplex(re_inv1, im_inv1);
+
+    std::vector<double> inverse_res1;
+    inverse_res1.resize(nbins);
+    for (int i = 0; i < nbins ; i++){
+      double value = re_inv1[i];
+      inverse_res1.at(i) = value;
+      if (i%50 == 0) std::cout<< "ifft value: " <<value <<std::endl;
+    };
+    double A11 = 0, A12 = 0, A21=0, A22=0;
+    double B1 = 0, B2 = 0;
+    double a=0, b=0;
+    for (int i=0;i!=1500;i++){
+      double bincenter = i+.5;
+      if (hflag.at(i)==0){
+      	B2 += inverse_res1.at(i);
+      	B1 += inverse_res1.at(i) * bincenter;
+      	A11 += pow(bincenter,2);
+      	A12 += bincenter;
+      	A21 += bincenter;
+      	A22 += 1;
+      }
+    }
+
+    if (A22>0){
+      a = (B1*A22-B2*A12)/(A11*A22-A21*A12);
+      b = (B1*A21-B2*A11)/(A22*A11-A12*A21);
+    }
+    // std::cout << a << " " << b << std::endl;
+    for (int i=0;i!=1500;i++){
+      //fb->SetBinContent(i+1,fb->GetBinContent(i+1) - a * fb->GetBinCenter(i+1) -b);
+      double bincenter = i+.5;
+      inverse_res1.at(i) = inverse_res1.at(i) - a * bincenter -b;
+    }
+    results = cal_mean_rms(inverse_res1, nbins);
+    for (int i=0;i!=1500;i++){
+      if (i<1500-4){
+	       //fb->SetBinContent(i+1,fb->GetBinContent(i+1)-results.first+0.01);
+         inverse_res1.at(i) = inverse_res1.at(i) -results.first+0.01;
+      }else{
+	       inverse_res1.at(i) = 0;
+      }
+    }
+
+    TCanvas *c8 = new TCanvas("fb", "fb", 600, 400);
+    TH1D * ifft1_plot = new TH1D("ifft1" ,"ifft1", 1480, 10., 1490.);
+    for (int i=10; i<(inverse_res1.size()-10); i++) {
+      ifft1_plot->SetBinContent(i,inverse_res1.at(i));
+      //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
+    }
+    ifft1_plot->Draw();
+    c8->SaveAs("ifft1.png");
+    delete c8;
+
   }
 
   //toy light reco f2

@@ -1,4 +1,5 @@
 #include "DataReader.h"
+#include <cmath>
 
 
 namespace wcopreco {
@@ -131,9 +132,64 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] ).size()      <<  "  How many waveforms in the collection (depends)?" <<std::endl;
     std::cout << (  ( _UB_Ev_wfm ).get__wfm_v() ) .size()      <<  "   How many Collections in the Event (4)?" <<std::endl <<std::endl;
 
+    // int nbins_tmp =-1 ;
+    // int iter =-1;
+    // double start_time_bhg=-1;
+    // double start_time_clg=-2;
+    // while (nbins_tmp < 50) {
+    //   iter++;
+    //   nbins_tmp = ((TH1S*)beam_hg_wf->At(iter))->GetNbinsX();
+    //
+    //   std::cout << "ITER IS " << iter << "\n";
+    // }
+    // std::cout << "ITER IS Stopped At: " << iter << "    For BHG, now let's find a matched CLG\n";
+    // start_time_bhg = beam_hg_timestamp->at(iter);
+    // std::cout << "This BHG waveform starts at time: " << std::fixed <<start_time_bhg << std::endl;
+    // int iter2=0;  //-1
+    // double time_diff =-1;
+    // double minimum_time_diff = 100000000;
+    // while ((time_diff !=-15134134) && (iter2 < cosmic_lg_wf->GetSize()-1)) {
+    //   iter2++;
+    //   if (((TH1S*)cosmic_lg_wf->At(iter2))->GetNbinsX() >1450) std::cout <<std::fixed<< cosmic_lg_timestamp->at(iter2) <<  "    START TIMES\n";
+    //   start_time_clg = cosmic_lg_timestamp->at(iter2);
+    //   time_diff = fabs(start_time_bhg - start_time_clg);
+    //   // std::cout << "Time Difference is:  " << time_diff << "\n";
+    //   if (time_diff < minimum_time_diff) minimum_time_diff = time_diff;
+    // }
+    // std::cout << "Iter2 is   " << iter2 << "\n";
+    // std::cout << "This CLG waveform starts at time: " << start_time_clg << std::endl;
+    //
+    // std::cout << "Time Diff out of Loop is::  " << time_diff << "\n";
+    // std::cout << "Minimum Time Difference is:  " << minimum_time_diff << "\n\n\n\n\n";
+    // int N = cosmic_lg_opch->size();
+    // for (int i = 0; i<nbins_tmp; i++){
+    //   //Value in wfm check:
+    //   if (i%100==0) std::cout <<( ( (TH1S*)beam_hg_wf->At(iter) )->GetArray() )[i]  << "     "<<  ( ( (TH1S*)cosmic_lg_wf->At(iter2) )->GetArray() )[i]  << "     " <<  ( ( (TH1S*)beam_hg_wf->At(iter) )->GetArray() )[i] - ( ( (TH1S*)cosmic_lg_wf->At(iter2) )->GetArray() )[i]  << "    Difference between BHG and CLG \n";
+    //   // if ( ( ( (TH1S*)beam_hg_wf->At(iter) )->GetArray() )[i] - ( ( (TH1S*)cosmic_lg_wf->At(iter) )->GetArray() )[i] *10.0  == 0) std::cout << "THEY ARE THE SAMEEEEEE\n";
+    //   //Value in Timestamp
+    //   // if (cosmic_lg_opch->at(i)  - beam_lg_opch->at(i)   == 0) std::cout << "OPCHs ARE THE SAMEEEEEE\n";
+    //
+    //   // else std::cout << "<<<<<<<<<<<<<DIFFERENT>>>>>>>>>>>>>\n";
+    // }
 
 
-    // IAMTHENIGHT();
+    int iter = 0;
+    TCanvas *c1 = new TCanvas("Title", "canvas", 600, 400);
+    TH1S * beam_hg_wfm_plot = (TH1S*)beam_hg_wf->At(iter);
+
+    beam_hg_wfm_plot->Draw();
+    c1->SaveAs("beam_hg_wfm.png");
+    delete c1;
+
+    TCanvas *c2 = new TCanvas("Title", "canvas", 600, 400);
+    TH1S * cosmic_lg_wfm_plot = (TH1S*)cosmic_lg_wf->At(iter);
+
+    cosmic_lg_wfm_plot->Draw();
+    c2->SaveAs("cosmic_lg_wfm.png");
+    delete c2;
+
+
+
     return _UB_Ev_wfm;
   }
 

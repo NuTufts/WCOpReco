@@ -317,6 +317,83 @@ void wcopreco::deconvolver::deconv_test()
       }
     }
 
+  //   // prepare L1 fit ... 
+  //   TH1F *hrebin = new TH1F("hrebin","hrebin",250,0,250);
+  //
+  //   for (int i=0;i!=250;i++){
+  //     hrebin->SetBinContent(i+1,
+	// 		       fb->GetBinContent(6*i+1) +
+	// 		       fb->GetBinContent(6*i+2) +
+	// 		       fb->GetBinContent(6*i+3) +
+	// 		       fb->GetBinContent(6*i+4) +
+	// 		       fb->GetBinContent(6*i+5) +
+	// 		       fb->GetBinContent(6*i+6) );
+  //   }
+  //   for (int i=0;i!=250;i++){
+  //     hdecon[j]->SetBinContent(i+1,hrebin->GetBinContent(i+1));
+  //   }
+  //
+  //
+  //   // work on the L1 ...
+  //   std::vector<double> vals_y;
+  //   std::vector<double> vals_x;
+  //   std::vector<int> vals_bin;
+  //
+  //   for (int i=0;i!=250;i++){
+  //     double content = hrebin->GetBinContent(i+1);
+  //     if (content>0.3){
+	// vals_y.push_back(content);
+	// vals_x.push_back(hrebin->GetBinCenter(i+1));
+	// vals_bin.push_back(i);
+  //
+	// // global_vals_y.push_back(content);
+	// // global_vals_x.push_back(hrebin->GetBinCenter(i+1));
+	// // global_vals_bin.push_back(i);
+	// // global_vals_pmtid.push_back(j);
+  //     }
+  //   }
+  //
+  //   int nbin_fit = vals_x.size();
+  //   VectorXd W = VectorXd::Zero(nbin_fit);
+  //   MatrixXd G = MatrixXd::Zero(nbin_fit,nbin_fit);
+  //   for (int i=0;i!=nbin_fit;i++){
+  //     W(i) = vals_y.at(i) / sqrt(vals_y.at(i));
+  //     double t1 = vals_x.at(i); // measured time
+  //     for (int k=0;k!=nbin_fit;k++){
+	// double t2 = vals_x.at(k); // real time
+	// if (t1>t2) {
+	//   G(i,k) = (0.75 * (exp(-((t1-t2)*6*15.625/1000.-3*15.625/1000.)/1.5)-exp(-((t1-t2)*6*15.625/1000.+3*15.625/1000.)/1.5))) / sqrt(vals_y.at(i));
+	// }else if (t1==t2){
+	//   G(i,k) = (0.25 + 0.75 *(1-exp(-3*15.625/1000./1.5))) / sqrt(vals_y.at(i));
+	// }else{
+	//   continue;
+	// }
+  //     }
+  //   }
+  //
+  //   double lambda = 5;//1/2.;
+  //   WireCell::LassoModel m2(lambda, 100000, 0.05);
+  //   m2.SetData(G, W);
+  //   m2.Fit();
+  //   VectorXd beta = m2.Getbeta();
+  //   for (int i=0;i!=nbin_fit;i++){
+  //     //global_sols.push_back(beta(i));
+  //     hl1[j]->SetBinContent(vals_bin.at(i)+1,beta(i));
+  //   }
+  //
+  //
+  //   delete hrebin;
+  //   delete hflag;
+  //   delete fb;
+  //   delete ifft;
+  //   delete hm;
+  //   delete hp;
+  //   delete hm_rc;
+  //   delete hp_rc;
+  //   delete hm_spe;
+  //   delete hp_spe;
+  // }
+
     TCanvas *c8 = new TCanvas("fb", "fb", 600, 400);
     TH1D * ifft1_plot = new TH1D("ifft1" ,"ifft1", 1480, 10., 1490.);
     for (int i=10; i<(inverse_res1.size()-10); i++) {

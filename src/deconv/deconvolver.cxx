@@ -155,17 +155,6 @@ void wcopreco::deconvolver::deconv_test()
     UB_spe spe(word, true);
     // spe.gain = 1;
 
-    std::vector<double> vec_spe = spe.Get_wfm(nbins,bin_width);
-
-    TCanvas *c4 = new TCanvas("Title", "canvas", 600, 400);
-    TH1D * spe_wfm = new TH1D("SPEwfm" ,"SPEwfm", 1499, 0., max_freq_MHz);
-    for (int i=0; i<(vec_spe.size()-1); i++) {
-      spe_wfm->SetBinContent(i,vec_spe[i]);
-    }
-    spe_wfm->Draw();
-    c4->SaveAs("spe_wfm.png");
-    delete c4;
-
     //Cout Block for testing SPE wfm
     // std::cout << vec_spe.size() << "    Is size of vector." << std::endl;
     // std::cout << vec_spe.at(1) << "    Is first element." << std::endl;
@@ -177,14 +166,6 @@ void wcopreco::deconvolver::deconv_test()
 
     spe.Get_pow_spec(nbins,bin_width,&mag_spe,&phase_spe);
 
-    TCanvas *c5 = new TCanvas("Title", "canvas", 600, 400);
-     TH1D * spe_pow = new TH1D("SPEpow" ,"SPEpow", 1499, 0., max_freq_MHz);
-     for (int i=0; i<(mag_spe.size()-1); i++) {
-       spe_pow->SetBinContent(i,mag_spe[i]);
-     }
-     spe_pow->Draw();
-     c5->SaveAs("spe_pow.png");
-     delete c5;
     //Cout Block for testing SPE power spectrum
     // std::cout << mag_spe.size() << "    Is size of vector." << std::endl;
     // std::cout << mag_spe.at(1) << "    Is first element." << std::endl;
@@ -195,15 +176,6 @@ void wcopreco::deconvolver::deconv_test()
     UB_rc rc(word2,true);
 
     std::vector<double> vec_rc = rc.Get_wfm(nbins,bin_width);
-
-    TCanvas *c6 = new TCanvas("Title", "canvas", 600, 400);
-    TH1D * rc_wfm = new TH1D("RCwfm" ,"RCwfm", 1499, 0., max_freq_MHz);
-    for (int i=0; i<(vec_rc.size()-1); i++) {
-      rc_wfm->SetBinContent(i,vec_rc[i]);
-    }
-    rc_wfm->Draw();
-    c6->SaveAs("rc_wfm.png");
-    delete c6;
 
     //Cout Block for testing RC wfm
     // std::cout << vec_rc.size() << "    Is size of vector(rc)." << std::endl;
@@ -216,14 +188,6 @@ void wcopreco::deconvolver::deconv_test()
 
     rc.Get_pow_spec(nbins,bin_width,&mag_rc,&phase_rc);
 
-    TCanvas *c7 = new TCanvas("Title", "canvas", 600, 400);
-    TH1D * rc_pow = new TH1D("RCpow" ,"RCpow", 1499, 0., max_freq_MHz);
-    for (int i=0; i<(mag_rc.size()-1); i++) {
-      rc_pow->SetBinContent(i,mag_rc[i]);
-    }
-    rc_pow->Draw();
-    c7->SaveAs("rc_pow.png");
-    delete c7;
     //Cout Block for testing RC power spectrum
     // std::cout << mag_rc.size() << "    Is size of vector(rc)." << std::endl;
     // std::cout << mag_rc.at(1) << "    Is first element(rc)." << std::endl;
@@ -290,15 +254,55 @@ void wcopreco::deconvolver::deconv_test()
     // calcumate rms and mean ...
     std::pair<double,double> results = cal_mean_rms(inverse_res, nbins);
     std::cout <<"mean: " << results.first << " rms: " << results.second << std::endl;
+    std::vector<double> hflag;
+    hflag.resize(nbins);
     // TH1F *hflag = new TH1F("hflag","hflag",1500,0,1500);
-    // for (int i=0;i<nbins;i++){
-    //   double content = fb->GetBinContent(i+1);
-    //   if (fabs(content-results.first)>5*results.second){
-	  //      for (int j=-20;j!=20;j++){
-	  //         hflag->SetBinContent(i+j+1,1);
-	       //}
-      //}
-    //}
+    for (int i=0;i<nbins;i++){
+      double content = inverse_res.at(i);
+      if (fabs(content-results.first)>5*results.second){
+	       for (int j=-20;j!=20;j++){
+	        //hflag->SetBinContent(i+j+1,1);
+          double flag =1.0;
+          if((i+j) >= 0 && (i+j) < 1500) hflag.at(i+j) = flag;
+	       }
+       }
+    }
+
+//Next Step
+    //     // solve for baseline
+    //     ifft->SetPointsComplex(value_re1,value_im1);
+    //     ifft->Transform();
+    //     fb = TH1::TransformHisto(ifft,0,"Re");
+    //     double A11 = 0, A12 = 0, A21=0, A22=0;
+    //     double B1 = 0, B2 = 0;
+    //     double a=0, b=0;
+    //     for (int i=0;i!=1500;i++){
+    //       if (hflag->GetBinContent(i+1)==0){
+    // 	B2 += fb->GetBinContent(i+1);
+    // 	B1 += fb->GetBinContent(i+1) * fb->GetBinCenter(i+1);
+    // 	A11 += pow(fb->GetBinCenter(i+1),2);
+    // 	A12 += fb->GetBinCenter(i+1);
+    // 	A21 += fb->GetBinCenter(i+1);
+    // 	A22 += 1;
+    //       }
+    //     }
+    //
+    //     if (A22>0){
+    //       a = (B1*A22-B2*A12)/(A11*A22-A21*A12);
+    //       b = (B1*A21-B2*A11)/(A22*A11-A12*A21);
+    //     }
+    //     // std::cout << a << " " << b << std::endl;
+    //     for (int i=0;i!=1500;i++){
+    //       fb->SetBinContent(i+1,fb->GetBinContent(i+1) - a * fb->GetBinCenter(i+1) -b);
+    //     }
+    //     results = cal_mean_rms(fb);
+    //     for (int i=0;i!=1500;i++){
+    //       if (i<1500-4){
+    // 	fb->SetBinContent(i+1,fb->GetBinContent(i+1)-results.first+0.01);
+    //       }else{
+    // 	fb->SetBinContent(i+1,0);
+    //       }
+    //     }
   }
 
   //toy light reco f2

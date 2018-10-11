@@ -236,10 +236,12 @@ void wcopreco::deconvolver::deconv_test()
     for (int i=0;i<nbins;i++){
       double freq;
       if (i<=750){
-  	     freq = i/nbins*2.;
+  	     freq = (i/nbins*2.)*1.0;
+         if (i%50 == 0) std::cout <<"frequency: " <<freq <<std::endl;
       }
       else{
-  	     freq = (nbins-i)/nbins*2;
+  	     freq = ((nbins-i)/nbins*2.)*1.0;
+         if (i%50 == 0) std::cout <<"frequency: " <<freq <<std::endl;
       }
       double rho = mag_raw.at(i)/ mag_rc.at(i) / mag_spe.at(i);
       double phi = phase_raw.at(i) - phase_rc.at(i) - phase_spe.at(i);
@@ -314,19 +316,20 @@ void wcopreco::deconvolver::deconv_test()
   }
 
   //toy light reco f3
-  double deconvolver::BandPassFilter(double frequency)
+  double deconvolver::BandPassFilter(double frequency2)
   {
     //   TF1 f3("f3","(1-exp(-pow(x/[0],2)))*exp(-pow(x/[1],[2]))",0,1);
 
     double par_0 = 0.05;
     double par_1 = 0.45;
     double par_2 = 3.07;
+    //std::cout << "frequency: " <<frequency2 <<std::endl;
 
-    double bandpass_filter = (1-exp(-pow(frequency/par_0,2)))*exp(-pow(frequency/par_1,par_2));
-    double first = exp(-pow(frequency/par_0,2));
-    std::cout << "first: " << first <<std::endl;
-    std::cout << "second: " << exp(-pow(frequency/par_1,par_2)) <<std::endl;
-    std::cout << "total: " << exp(-pow(frequency/par_0,2))*exp(-pow(frequency/par_1,par_2)) <<std::endl;
+    double bandpass_filter = (1-exp(-pow(frequency2/par_0,2)))*exp(-pow(frequency2/par_1,par_2));
+    // double first = exp(-pow(frequency/par_0,2));
+    // std::cout << "first: " << first <<std::endl;
+    // std::cout << "second: " << exp(-pow(frequency/par_1,par_2)) <<std::endl;
+    //std::cout << "total: " << bandpass_filter <<std::endl;
     return bandpass_filter;
    }
 

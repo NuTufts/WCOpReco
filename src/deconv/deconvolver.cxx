@@ -236,11 +236,11 @@ void wcopreco::deconvolver::deconv_test()
     for (int i=0;i<nbins;i++){
       double freq;
       if (i<=750){
-  	     freq = (i/nbins*2.)*1.0;
+  	     freq = ((double)i/(double)nbins*2.)*1.0;
          if (i%50 == 0) std::cout <<"frequency: " <<freq <<std::endl;
       }
       else{
-  	     freq = ((nbins-i)/nbins*2.)*1.0;
+  	     freq = (((double)nbins-(double)i)/(double)nbins*2.)*1.0;
          if (i%50 == 0) std::cout <<"frequency: " <<freq <<std::endl;
       }
       double rho = mag_raw.at(i)/ mag_rc.at(i) / mag_spe.at(i);

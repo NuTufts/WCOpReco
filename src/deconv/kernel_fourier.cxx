@@ -40,11 +40,11 @@ namespace wcopreco {
 
       fftr2c->GetPointsComplex(re, im); //Put the values in the arrays
 
-      for (int index =nbins-1; index>nbins/2; index--){
-        re[index] = re[(nbins-1) - index];
-        im[index] = im[(nbins-1) - index];
-
-      }
+      // for (int index =nbins-1; index>nbins/2; index--){
+      //   re[index] = re[(nbins-1) - index];
+      //   im[index] = im[(nbins-1) - index];
+      //
+      // }
 
       // int index =3;
       // std::cout << power_spec_d[index] << "    POWER SPEC[" << index << "]" <<std::endl;

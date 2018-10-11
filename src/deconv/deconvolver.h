@@ -37,6 +37,7 @@ namespace wcopreco{
     double BandPassFilter(double frequency2);
     void Remove_Baseline_Leading_Edge(OpWaveform *wfm);
     void Remove_Baseline_Secondary(OpWaveform *wfm);
+    std::pair<double,double> cal_mean_rms(std::vector<double> wfm, int nbin);
 
 
 

@@ -274,7 +274,7 @@ void wcopreco::deconvolver::deconv_test()
     for (int i = 0; i < nbins ; i++){
       double value = re_inv[i];
       inverse_res.at(i) = value;
-      if (i%50 == 0) std::cout<< "ifft value: " <<value <<std::endl;
+      //if (i%50 == 0) std::cout<< "ifft value: " <<value <<std::endl;
     };
 
     TCanvas *c8 = new TCanvas("fb", "fb", 600, 400);
@@ -288,8 +288,8 @@ void wcopreco::deconvolver::deconv_test()
     delete c8;
 
     // calcumate rms and mean ...
-    //std::pair<double,double> results = cal_mean_rms(inverse_res);
-    // std::cout << results.first << " " << results.second << std::endl;
+    std::pair<double,double> results = cal_mean_rms(inverse_res, nbins);
+    std::cout <<"mean: " << results.first << " rms: " << results.second << std::endl;
     // TH1F *hflag = new TH1F("hflag","hflag",1500,0,1500);
     // for (int i=0;i<nbins;i++){
     //   double content = fb->GetBinContent(i+1);
@@ -324,9 +324,6 @@ void wcopreco::deconvolver::deconv_test()
     return bandpass_filter;
    }
 
-
-
-
    void deconvolver::Remove_Baseline_Leading_Edge(OpWaveform *wfm)
    {
      int size = wfm->size();
@@ -357,5 +354,31 @@ void wcopreco::deconvolver::deconv_test()
       }
 
       return;
+   }
+
+   std::pair<double,double> deconvolver::cal_mean_rms(std::vector<double> wfm, int nbin)
+   {
+      //calculate the mean and rms values
+      TH1F *h4 = new TH1F("h4","h4",2000,-10,10);
+      double mean, rms;
+      for (int i=0;i!=nbin;i++){
+        double content = wfm.at(i);
+        if (fabs(content)<10)
+        h4->Fill(content);
+      }
+      mean = h4->GetBinCenter(h4->GetMaximumBin()+1);
+
+      double xq = 0.5;
+      double par[3];
+      h4->GetQuantiles(1,&par[1],&xq);
+      xq = 0.5 - 0.34;
+      h4->GetQuantiles(1,&par[0],&xq);
+      xq = 0.5 + 0.34;
+      h4->GetQuantiles(1,&par[2],&xq);
+
+      rms = sqrt((pow(par[0]-par[1],2)+pow(par[2]-par[1],2))/2.);
+
+      delete h4;
+      return std::make_pair(mean,rms);
    }
 }

@@ -237,69 +237,65 @@ void wcopreco::deconvolver::deconv_test()
       double freq;
       if (i<=750){
   	     freq = ((double)i/(double)nbins*2.)*1.0;
-         if (i%50 == 0) std::cout <<"frequency: " <<freq <<std::endl;
       }
       else{
   	     freq = (((double)nbins-(double)i)/(double)nbins*2.)*1.0;
-         if (i%50 == 0) std::cout <<"frequency: " <<freq <<std::endl;
       }
       double rho = mag_raw.at(i)/ mag_rc.at(i) / mag_spe.at(i);
       double phi = phase_raw.at(i) - phase_rc.at(i) - phase_spe.at(i);
       if (i==0) rho = 0;
 
       value_re[i] = rho * BandPassFilter(freq)* cos(phi)/nbins;
-      if (i%50 == 0) std::cout << "BandPass: " << BandPassFilter(freq)<< std::endl;
       value_im[i] = rho * BandPassFilter(freq)* sin(phi)/nbins;
 
       value_re1[i] = rho * cos(phi)/nbins * HighFreqFilter(freq);
       value_im1[i] = rho * sin(phi)/nbins * HighFreqFilter(freq);
 
-      if(i%50 == 0){
-        std::cout << "val_re of " << i <<  " is: " << value_re[i] << std::endl;
-        std::cout << "val_im of " << i <<  " is: " << value_im[i] << std::endl;
-        //std::cout << "val_re1 of " << i <<  " is: " << value_re1[i] << std::endl;
-        //std::cout << "val_im1 of " << i <<  " is: " << value_im1[i] << std::endl << std::endl;
-      }
-
+      // if(i%50 == 0){
+      //   std::cout << "val_re of " << i <<  " is: " << value_re[i] << std::endl;
+      //   std::cout << "val_im of " << i <<  " is: " << value_im[i] << std::endl;
+      //   std::cout << "val_re1 of " << i <<  " is: " << value_re1[i] << std::endl;
+      //   std::cout << "val_im1 of " << i <<  " is: " << value_im1[i] << std::endl << std::endl;
+      // }
     }
-    // ROI finding
-    // TVirtualFFT *ifft = TVirtualFFT::FFT(1,&nbins,"C2R M K");
-    // ifft->SetPointsComplex(value_re,value_im);
-    // ifft->Transform();
-    //
-    // double *re_inv = new double[nbins]; //Real -> Magnitude
-    // double *im_inv = new double[nbins]; //Imaginary -> Phase
-    //
-    // ifft->GetPointsComplex(re_inv, im_inv);
-    //
-    // std::vector<double> inverse_res;
-    // inverse_res.resize(nbins);
-    // for (int i = 0; i < nbins ; i++){
-    //   double value = re_inv[i];
-    //   inverse_res.at(i) = value;
-    //   if (i%50 == 0) std::cout<< "ifft value: " <<value <<std::endl;
-    // };
-    //
-    // TCanvas *c8 = new TCanvas("fb", "fb", 600, 400);
-    // TH1D * ifft_plot = new TH1D("ifft" ,"ifft", 1500, 0., max_freq_MHz);
-    // for (int i=0; i<(inverse_res.size()-1); i++) {
-    //   ifft_plot->SetBinContent(i,inverse_res.at(i));
-    //   //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
-    // }
-    // ifft_plot->Draw();
-    // c8->SaveAs("ifft.png");
-    // delete c8;
 
-    //TH1 *fb = TH1::TransformHisto(ifft,0,"Re");
+    // ROI finding
+    TVirtualFFT *ifft = TVirtualFFT::FFT(1,&nbins,"C2R M K");
+    ifft->SetPointsComplex(value_re,value_im);
+    ifft->Transform();
+
+    double *re_inv = new double[nbins]; //Real -> Magnitude
+    double *im_inv = new double[nbins]; //Imaginary -> Phase
+
+    ifft->GetPointsComplex(re_inv, im_inv);
+
+    std::vector<double> inverse_res;
+    inverse_res.resize(nbins);
+    for (int i = 0; i < nbins ; i++){
+      double value = re_inv[i];
+      inverse_res.at(i) = value;
+      if (i%50 == 0) std::cout<< "ifft value: " <<value <<std::endl;
+    };
+
+    TCanvas *c8 = new TCanvas("fb", "fb", 600, 400);
+    TH1D * ifft_plot = new TH1D("ifft" ,"ifft", 1500, 0., max_freq_MHz);
+    for (int i=0; i<(inverse_res.size()-1); i++) {
+      ifft_plot->SetBinContent(i,inverse_res.at(i));
+      //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
+    }
+    ifft_plot->Draw();
+    c8->SaveAs("ifft.png");
+    delete c8;
+
     // calcumate rms and mean ...
-    //std::pair<double,double> results = cal_mean_rms(fb);
-    //std::cout << results.first << " " << results.second << std::endl;
-    //TH1F *hflag = new TH1F("hflag","hflag",1500,0,1500);
-    //for (int i=0;i<nbins;i++){
-      //double content = fb->GetBinContent(i+1);
-      //if (fabs(content-results.first)>5*results.second){
-	       //for (int j=-20;j!=20;j++){
-	          //hflag->SetBinContent(i+j+1,1);
+    //std::pair<double,double> results = cal_mean_rms(inverse_res);
+    // std::cout << results.first << " " << results.second << std::endl;
+    // TH1F *hflag = new TH1F("hflag","hflag",1500,0,1500);
+    // for (int i=0;i<nbins;i++){
+    //   double content = fb->GetBinContent(i+1);
+    //   if (fabs(content-results.first)>5*results.second){
+	  //      for (int j=-20;j!=20;j++){
+	  //         hflag->SetBinContent(i+j+1,1);
 	       //}
       //}
     //}
@@ -323,13 +319,8 @@ void wcopreco::deconvolver::deconv_test()
     double par_0 = 0.05;
     double par_1 = 0.45;
     double par_2 = 3.07;
-    //std::cout << "frequency: " <<frequency2 <<std::endl;
 
     double bandpass_filter = (1-exp(-pow(frequency2/par_0,2)))*exp(-pow(frequency2/par_1,par_2));
-    // double first = exp(-pow(frequency/par_0,2));
-    // std::cout << "first: " << first <<std::endl;
-    // std::cout << "second: " << exp(-pow(frequency/par_1,par_2)) <<std::endl;
-    //std::cout << "total: " << bandpass_filter <<std::endl;
     return bandpass_filter;
    }
 

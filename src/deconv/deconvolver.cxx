@@ -166,8 +166,10 @@ void wcopreco::deconvolver::deconv_test()
     // std::cout << mag_rc.at(500) << "    Is 500 element(rc)." << std::endl;
     // std::cout << *std::max_element(mag_rc.begin(),mag_rc.end()) << "    Is MAX element(rc)." << std::endl;
 
-    double value_re[nbins], value_im[nbins];
-    double value_re1[nbins], value_im1[nbins];
+    double value_re[nbins];
+    double value_im[nbins];
+    double value_re1[nbins];
+    double value_im1[nbins];
 
     for (int i=0;i<nbins;i++){
       double freq;

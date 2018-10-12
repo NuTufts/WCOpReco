@@ -1,5 +1,6 @@
 
 SUBDIRS = src
+#Don't make test subdir - will overwrite things!
 
 all: obj
 

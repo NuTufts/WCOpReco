@@ -3,7 +3,7 @@
 
 #include "ElasticNetModel.h"
 
-namespace WireCell {
+namespace wcopreco {
 
 class LassoModel: public ElasticNetModel {
 public:

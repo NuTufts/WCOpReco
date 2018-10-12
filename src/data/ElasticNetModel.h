@@ -5,7 +5,7 @@
 #include <vector>
 #include <Eigen/Dense>
 
-namespace WireCell {
+namespace wcopreco {
 
 class ElasticNetModel: public LinearModel {
 public:

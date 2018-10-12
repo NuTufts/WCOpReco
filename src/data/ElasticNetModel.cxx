@@ -14,16 +14,16 @@ using namespace std;
  * where lambda = a + b and alpha = a / (a + b)
  */
 
-WireCell::ElasticNetModel::ElasticNetModel(double lambda, double alpha, int max_iter, double TOL, bool non_negtive)
+wcopreco::ElasticNetModel::ElasticNetModel(double lambda, double alpha, int max_iter, double TOL, bool non_negtive)
 : lambda(lambda), alpha(alpha), max_iter(max_iter), TOL(TOL), non_negtive(non_negtive)
 {
     name = "Elastic net";
 }
 
-WireCell::ElasticNetModel::~ElasticNetModel()
+wcopreco::ElasticNetModel::~ElasticNetModel()
 {}
 
-void WireCell::ElasticNetModel::Fit()
+void wcopreco::ElasticNetModel::Fit()
 {
     // initialize solution to zero
     Eigen::VectorXd beta = VectorXd::Zero(_X.cols());
@@ -91,7 +91,7 @@ void WireCell::ElasticNetModel::Fit()
     Setbeta(beta);
 }
 
-double WireCell::ElasticNetModel::_soft_thresholding(double delta, double lambda_)
+double wcopreco::ElasticNetModel::_soft_thresholding(double delta, double lambda_)
 {
 
     if (delta > lambda_) {

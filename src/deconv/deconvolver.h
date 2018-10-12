@@ -8,6 +8,9 @@
 #include "noise_container.h"
 #include "UB_spe.h"
 #include "UB_rc.h"
+#include "WCOpReco/LassoModel.h"
+#include "WCOpReco/ElasticNetModel.h"
+#include "WCOpReco/LinearModel.h"
 
 //data
 #include "WCOpReco/DataReader.h"
@@ -18,6 +21,7 @@
 #include <sstream>
 #include <cmath>
 #include <string>
+#include <Eigen/Dense>
 
 //root
 #include "TCanvas.h"

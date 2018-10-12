@@ -250,7 +250,7 @@ void wcopreco::deconvolver::deconv_test()
 
     // calcumate rms and mean ...
     std::pair<double,double> results = cal_mean_rms(inverse_res, nbins);
-    std::cout <<"mean: " << results.first << " rms: " << results.second << std::endl;
+    // std::cout <<"mean: " << results.first << " rms: " << results.second << std::endl;
     std::vector<double> hflag;
     hflag.resize(nbins);
     // TH1F *hflag = new TH1F("hflag","hflag",1500,0,1500);
@@ -280,7 +280,7 @@ void wcopreco::deconvolver::deconv_test()
     for (int i = 0; i < nbins ; i++){
       double value = re_inv1[i];
       inverse_res1.at(i) = value;
-      if (i%50 == 0) std::cout<< "ifft value: " <<value <<std::endl;
+      // if (i%50 == 0) std::cout<< "ifft value: " <<value <<std::endl;
     };
     double A11 = 0, A12 = 0, A21=0, A22=0;
     double B1 = 0, B2 = 0;
@@ -402,6 +402,11 @@ void wcopreco::deconvolver::deconv_test()
 
 
 
+
+
+
+
+
     TCanvas *c8 = new TCanvas("fb", "fb", 600, 400);
     TH1D * ifft1_plot = new TH1D("ifft1" ,"ifft1", 1480, 10., 1490.);
     for (int i=10; i<(inverse_res1.size()-10); i++) {
@@ -412,7 +417,56 @@ void wcopreco::deconvolver::deconv_test()
     c8->SaveAs("ifft1.png");
     delete c8;
 
-  }
+    TCanvas *c9 = new TCanvas("L1", "L1", 600, 400);
+    TH1D * L1_plot = new TH1D("L1" ,"L1", 250, 0., 250.);
+    for (int i=10; i<(l1_v.size()-10); i++) {
+      L1_plot->SetBinContent(i,l1_v.at(i));
+      //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
+    }
+    L1_plot->Draw();
+    c9->SaveAs("L1_plot.png");
+    delete c9;
+
+    std::vector<double> totPE_v;
+    totPE_v.resize(250);
+    std::vector<double> mult_v;
+    mult_v.resize(250);
+
+    std::vector<double> l1_totPE_v;
+    totPE_v.resize(250);
+    std::vector<double> l1_mult_v;
+    mult_v.resize(250);
+
+    for (int j=0;j!=250;j++){
+      double content = decon_v.at(j);
+      if (content >0.2) {
+          // h_totPE->SetBinContent(j+1,h_totPE->GetBinContent(j+1) + content);
+          totPE_v.at(j)= totPE_v.at(j) + content;
+        }
+      if (content > 1.5) {// ~2 PE threshold ...
+          mult_v.at(j)= mult_v.at(j) + 1 ;
+          // h_mult->SetBinContent(j+1,h_mult->GetBinContent(j+1)+1);
+        }
+
+      // content = hl1[i]->GetBinContent(j+1);
+      content = l1_v.at(j);
+      // h_l1_totPE->SetBinContent(j+1,h_l1_totPE->GetBinContent(j+1)+content);
+      l1_totPE_v.at(j) = l1_totPE_v.at(j) + content;
+      if (content > 1) {// 1 PE threshold
+          // h_l1_mult->SetBinContent(j+1,h_l1_mult->GetBinContent(j+1)+1);
+            l1_mult_v.at(j) = l1_mult_v.at(j) +1;
+        }
+}
+
+
+
+
+
+
+
+
+
+  }//End of Deconv_test
 
   //toy light reco f2
   double deconvolver::HighFreqFilter(double frequency)

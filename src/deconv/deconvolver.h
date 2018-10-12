@@ -41,14 +41,8 @@ namespace wcopreco{
     double BandPassFilter(double frequency2);
     void Remove_Baseline_Leading_Edge(OpWaveform *wfm);
     void Remove_Baseline_Secondary(OpWaveform *wfm);
+    void Perform_L1(std::vector<double> inverse_res1, std::vector<double> *totPE_v, std::vector<double> *mult_v, std::vector<double> *l1_totPE_v, std::vector<double> *l1_mult_v);
     std::pair<double,double> cal_mean_rms(std::vector<double> wfm, int nbin);
-
-
-
-
-
-
-
 
 
 

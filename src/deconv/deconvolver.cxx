@@ -31,16 +31,8 @@ void wcopreco::deconvolver::deconv_test()
 
 
     std::vector<double> wfm_doubles(wfm.begin(), wfm.end());
-    //plot wfm_doubles
-    TCanvas *c1 = new TCanvas("Title", "canvas", 600, 400);
-    TH1D * wfm_data = new TH1D("Datawfm" ,"name", 1499, 0., 1499.);
-    for (int i=0; i<(wfm_doubles.size()-1); i++) {
-      wfm_data->Fill(i,wfm_doubles[i]);
-      // if (wfm_doubles[i] >5 )std::cout << wfm_doubles[i] << " :Value of wfm_data" << std::endl;
-    }
-    wfm_data->Draw();
-    c1->SaveAs("wfm_data.png");
-    delete c1;
+
+    testPlot("raw_data", wfm_doubles);
 
     //get power spectrum of data
     //Create Mag and Phase vectors
@@ -114,30 +106,9 @@ void wcopreco::deconvolver::deconv_test()
 
     delete fftr2c;
     double max_freq_MHz = 64*1500*2*TMath::Pi();
-    //plot wfm_power
-    TCanvas *c2 = new TCanvas("wfmPow", "wfmPow", 600, 400);
-    TH1D * wfm_pow = new TH1D("WaveformPowerSpectrum" ,"wmfPowerSpec", 1500, 0., max_freq_MHz);
-    // std::cout << " Mag 780::    " << mag_raw.at(780) <<std::endl;
-    for (int i=0; i<(mag_raw.size()-1); i++) {
-      wfm_pow->SetBinContent(i,mag_raw.at(i));
-      //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
-    }
-    // std::cout << mag_raw.at(1499) <<std::endl;
-    // std::cout << wfm_pow->GetBinContent(0) << " Content at 0    " << wfm_pow->GetBinContent(1499) << " Content at end \n" ;
-    wfm_pow->Draw();
-    c2->SaveAs("wfm_pow.png");
-    delete c2;
 
-    TCanvas *c3 = new TCanvas("wfmPhase", "wfmPhase", 600, 400);
-    TH1D * wfm_phase = new TH1D("WaveformPhaseSpectrum" ,"wmfPhaseSpec", 1500, 0., max_freq_MHz);
-    // std::cout << " Phase 780::    " << phase_raw.at(780) <<std::endl;
-    for (int i=0; i<(phase_raw.size()-1); i++) {
-      wfm_phase->SetBinContent(i,phase_raw.at(i));
-      //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
-    }
-    wfm_phase->Draw();
-    c3->SaveAs("wfm_phase.png");
-    delete c3;
+    testPlot("wfm_mag", mag_raw);
+    testPlot("wfm_phase", phase_raw);
 
     //Cout Block for Testing RE and IM
 
@@ -317,6 +288,8 @@ void wcopreco::deconvolver::deconv_test()
       }
     }
 
+    testPlot("ifft", inverse_res1);
+
     std::vector<double> totPE_v;
     totPE_v.resize(250);
     std::vector<double> mult_v;
@@ -331,155 +304,6 @@ void wcopreco::deconvolver::deconv_test()
                 &mult_v,
                 &l1_totPE_v,
                 &l1_mult_v);
-
-    // // prepare L1 fit ...
-    // std::vector<float> rebin_v;
-    // rebin_v.resize(250);
-    // // TH1F *rrebin = new TH1F("hrebin","hrebin",250,0,250);
-    //
-    // for (int i=0;i!=250;i++){
-    //   // hrebin->SetBinContent(i+1,
-		// 	//        fb->GetBinContent(6*i+1) +
-		// 	//        fb->GetBinContent(6*i+2) +
-		// 	//        fb->GetBinContent(6*i+3) +
-		// 	//        fb->GetBinContent(6*i+4) +
-		// 	//        fb->GetBinContent(6*i+5) +
-		// 	//        fb->GetBinContent(6*i+6) );
-    //
-    //   rebin_v[i] = inverse_res1.at(6*i) +
-    //               inverse_res1.at(6*i+1) +
-    //               inverse_res1.at(6*i+2) +
-    //               inverse_res1.at(6*i+3) +
-    //               inverse_res1.at(6*i+4) +
-    //               inverse_res1.at(6*i+5) ;
-    // }
-    // std::vector<double> decon_v;
-    // decon_v.resize(250);
-    // for (int i=0;i!=250;i++){
-    //   // hdecon[j]->SetBinContent(i+1,hrebin->GetBinContent(i+1));
-    //   decon_v[i] = rebin_v[i];
-    // }
-    //
-    //
-    // // work on the L1 ...
-    // std::vector<double> vals_y;
-    // std::vector<double> vals_x;
-    // std::vector<int> vals_bin;
-    //
-    // for (int i=0;i!=250;i++){
-    //   double content = rebin_v[i];
-    //   if (content>0.3){
-    //   	vals_y.push_back(content);
-    //   	vals_x.push_back(i+0.5);
-    //   	vals_bin.push_back(i);
-    //
-    //   	// global_vals_y.push_back(content);
-    //   	// global_vals_x.push_back(hrebin->GetBinCenter(i+1));
-    //   	// global_vals_bin.push_back(i);
-    //   	// global_vals_pmtid.push_back(j);
-    //   }
-    // }
-    //
-    // int nbin_fit = vals_x.size();
-    // Eigen::VectorXd W = Eigen::VectorXd::Zero(nbin_fit);
-    // Eigen::MatrixXd G = Eigen::MatrixXd::Zero(nbin_fit,nbin_fit);
-    // for (int i=0;i!=nbin_fit;i++){
-    //     W(i) = vals_y.at(i) / sqrt(vals_y.at(i));
-    //     double t1 = vals_x.at(i); // measured time
-    //     for (int k=0;k!=nbin_fit;k++){
-    //       	double t2 = vals_x.at(k); // real time
-    //       	if (t1>t2) {
-    //         	  G(i,k) = (0.75 * (exp(-((t1-t2)*6*15.625/1000.-3*15.625/1000.)/1.5)-exp(-((t1-t2)*6*15.625/1000.+3*15.625/1000.)/1.5))) / sqrt(vals_y.at(i));
-    //       	}
-    //         else if (t1==t2){
-    //         	  G(i,k) = (0.25 + 0.75 *(1-exp(-3*15.625/1000./1.5))) / sqrt(vals_y.at(i));
-    //       	}
-    //         else{
-    //         	  continue;
-    //       	}
-    //     }
-    // }
-    //
-    // double lambda = 5;//1/2.;
-    // wcopreco::LassoModel m2(lambda, 100000, 0.05);
-    // m2.SetData(G, W);
-    // m2.Fit();
-    // Eigen::VectorXd beta = m2.Getbeta();
-    // //Make vector to hold L1 fit values
-    // std::vector<double> l1_v;
-    // l1_v.resize(250);
-    // for (int i=0;i!=nbin_fit;i++){
-    //     // hl1[j]->SetBinContent(vals_bin.at(i)+1,beta(i));
-    //     l1_v[vals_bin.at(i)] = beta(i);
-    // }
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    // TCanvas *c8 = new TCanvas("fb", "fb", 600, 400);
-    // TH1D * ifft1_plot = new TH1D("ifft1" ,"ifft1", 1480, 10., 1490.);
-    // for (int i=10; i<(inverse_res1.size()-10); i++) {
-    //   ifft1_plot->SetBinContent(i,inverse_res1.at(i));
-    //   //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
-    // }
-    // ifft1_plot->Draw();
-    // c8->SaveAs("ifft1.png");
-    // delete c8;
-    //
-    // TCanvas *c9 = new TCanvas("L1", "L1", 600, 400);
-    // TH1D * L1_plot = new TH1D("L1" ,"L1", 250, 0., 250.);
-    // for (int i=10; i<(l1_v.size()-10); i++) {
-    //   L1_plot->SetBinContent(i,l1_v.at(i));
-    //   //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
-    // }
-    // L1_plot->Draw();
-    // c9->SaveAs("L1_plot.png");
-    // delete c9;
-    //
-    // std::vector<double> totPE_v;
-    // totPE_v.resize(250);
-    // std::vector<double> mult_v;
-    // mult_v.resize(250);
-    //
-    // std::vector<double> l1_totPE_v;
-    // totPE_v.resize(250);
-    // std::vector<double> l1_mult_v;
-    // mult_v.resize(250);
-    //
-    // for (int j=0;j!=250;j++){
-    //   double content = decon_v.at(j);
-    //   if (content >0.2) {
-    //       // h_totPE->SetBinContent(j+1,h_totPE->GetBinContent(j+1) + content);
-    //       totPE_v.at(j)= totPE_v.at(j) + content;
-    //     }
-    //   if (content > 1.5) {// ~2 PE threshold ...
-    //       mult_v.at(j)= mult_v.at(j) + 1 ;
-    //       // h_mult->SetBinContent(j+1,h_mult->GetBinContent(j+1)+1);
-    //     }
-    //
-    //   // content = hl1[i]->GetBinContent(j+1);
-    //   content = l1_v.at(j);
-    //   // h_l1_totPE->SetBinContent(j+1,h_l1_totPE->GetBinContent(j+1)+content);
-    //   l1_totPE_v.at(j) = l1_totPE_v.at(j) + content;
-    //   if (content > 1) {// 1 PE threshold
-    //       // h_l1_mult->SetBinContent(j+1,h_l1_mult->GetBinContent(j+1)+1);
-    //         l1_mult_v.at(j) = l1_mult_v.at(j) +1;
-    //     }
-    //   }
-
-
-
-
-
-
-
-
 
   }//End of Deconv_test
 
@@ -651,34 +475,7 @@ void wcopreco::deconvolver::deconv_test()
          l1_v[vals_bin.at(i)] = beta(i);
      }
 
-
-
-
-
-
-
-
-
-
-     TCanvas *c8 = new TCanvas("fb", "fb", 600, 400);
-     TH1D * ifft1_plot = new TH1D("ifft1" ,"ifft1", 1480, 10., 1490.);
-     for (int i=10; i<(inverse_res1.size()-10); i++) {
-       ifft1_plot->SetBinContent(i,inverse_res1.at(i));
-       //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
-     }
-     ifft1_plot->Draw();
-     c8->SaveAs("ifft1.png");
-     delete c8;
-
-     TCanvas *c9 = new TCanvas("L1", "L1", 600, 400);
-     TH1D * L1_plot = new TH1D("L1" ,"L1", 250, 0., 250.);
-     for (int i=10; i<(l1_v.size()-10); i++) {
-       L1_plot->SetBinContent(i,l1_v.at(i));
-       //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
-     }
-     L1_plot->Draw();
-     c9->SaveAs("L1_plot.png");
-     delete c9;
+     testPlot("L1test", l1_v);
 
      for (int j=0;j!=250;j++){
        double content = decon_v.at(j);
@@ -701,6 +498,21 @@ void wcopreco::deconvolver::deconv_test()
          }
        }
 
+   }
+
+   void deconvolver::testPlot(std::string Title, std::vector<double> input){
+     //makes a hsitogram in root to test output and saves as png
+     TCanvas *c1 = new TCanvas(Title.c_str(), Title.c_str(), 600, 400);
+     int nbins = input.size();
+     TH1D * hist = new TH1D(Title.c_str() ,Title.c_str(), nbins, 0., (double) nbins);
+     for (int i=0; i<nbins; i++) {
+       hist->SetBinContent(i,input.at(i));
+       //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
+     }
+     hist->Draw();
+     c1->SaveAs((Title + ".png").c_str());
+     delete c1;
+     return;
    }
 
 }

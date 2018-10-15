@@ -5,7 +5,7 @@ namespace wcopreco {
 void wcopreco::deconvolver::deconv_test()
 
   {
-    int nbins = 1500;
+
     float bin_width = (1.0/(64e6) );
 
     //load raw data
@@ -20,6 +20,7 @@ void wcopreco::deconvolver::deconv_test()
 
     _UB_Ev_wfm = reader.Reader(EVENT_NUM);
     OpWaveform wfm = ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] );
+    int nbins = wfm.size();
 
     //remove baseline (baseline here means leading edge)
     // std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element before any baseline removed" <<std::endl;
@@ -29,268 +30,11 @@ void wcopreco::deconvolver::deconv_test()
     Remove_Baseline_Secondary(&wfm);
     // std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element after 2nd baseline removed" <<std::endl;
 
-
-    std::vector<double> wfm_doubles(wfm.begin(), wfm.end());
-
-    testPlot("raw_data", wfm_doubles);
-
-    //get power spectrum of data
-    //Create Mag and Phase vectors
-    std::vector<double> mag_raw;
-    std::vector<double> phase_raw;
-    mag_raw.resize(nbins);
-    phase_raw.resize(nbins);
-
-    //Get the input to the fourier transform ready
-    std::vector<double> power_spec_d(nbins,0);
-    power_spec_d = wfm_doubles;
-    double *in = power_spec_d.data();
-
-    //Start the fourier transform (real to complex)
-    TVirtualFFT *fftr2c = TVirtualFFT::FFT(1, &nbins, "R2C");
-    fftr2c->SetPoints(in);
-    fftr2c->Transform();
-    double *re = new double[nbins]; //Real -> Magnitude
-    double *im = new double[nbins]; //Imaginary -> Phase
-
-    fftr2c->GetPointsComplex(re, im); //Put the values in the arrays
-
-    for (int index =nbins-1; index>nbins/2; index--){
-      re[index] = re[(nbins-1) - index];
-      im[index] = im[(nbins-1) - index];
-
-    }
-    // std::cout << re[1499] << "     " << re[0] << std::endl;
-    // std::cout << im[1499] << "     " << im[0] << std::endl;
-
-    //Copy those array values into vectors passed in by reference.
-    // This is inefficient, but makes for an easier user interface.
-    double im_i =0;
-    double re_i = 0;
-    for (int i =0; i<nbins; i++){
-      //Calculate the phase_raw
-      im_i = im[i];
-      re_i = re[i];
-      double ph = 0;
-      // fft->GetPointComplex(ind, re, im);
-      if (TMath::Abs(re_i) > 1e-13){
-         //ph = TMath::ATan(im_i/re_i);
-         ph = atan2(im_i , re_i);
-
-
-         //find the correct quadrant
-      //    if (re_i<0 && im_i<0)
-      //       ph -= TMath::Pi();
-      //    if (re_i<0 && im_i>=0)
-      //       ph += TMath::Pi();
-      // } else {
-      //    if (TMath::Abs(im_i) < 1e-13)
-      //       ph = 0;
-      //    else if (im_i>0)
-      //       ph = TMath::Pi()*0.5;
-      //    else
-      //       ph = -TMath::Pi()*0.5;
-      }
-      phase_raw.at(i) = ph;
-      //End of phase_raw calc
-
-      //Calculate the mag_v
-      double magnitude = TMath::Sqrt(re[i]*re[i]+im[i]*im[i]);
-      mag_raw[i] = magnitude;
-      //if (i%50 == 0) std::cout<<"Magnitude is " << mag_raw[i] <<std::endl;
-      //End of mag_v calc
-    }
-
-    // memcpy(mag_raw.data(), re, sizeof(double)*nbins);
-    // memcpy(phase_raw.data(), im, sizeof(double)*nbins);
-
-    delete fftr2c;
-    double max_freq_MHz = 64*1500*2*TMath::Pi();
-
-    testPlot("wfm_mag", mag_raw);
-    testPlot("wfm_phase", phase_raw);
-
-    //Cout Block for Testing RE and IM
-
-    // int index =3;
-    // std::cout << power_spec_d[index] << "    POWER SPEC[" << index << "]" <<std::endl;
-    // std::cout << re[index] << "    RE[" << index << "]" << std::endl;
-    // std::cout << *(re+500) << "   Accessed *(re+500)" << std::endl;
-    // std::cout << mag_raw.at(index) << "    MAG[" << index << "]" << std::endl;
-    // std::cout << im[index] << "    IM[" << index << "]" << std::endl;
-
-    // std::cout << nbins << " bins POWER  " << bin_width << "  tick width POWER" << std::endl;
-    // std::cout << nbins*bin_width << " Is total width of wfm" << std::endl;
-
-    std::string word = "SPE_wfm" ;
-
-    UB_spe spe(word, true);
-    // spe.gain = 1;
-
-    //Cout Block for testing SPE wfm
-    // std::cout << vec_spe.size() << "    Is size of vector." << std::endl;
-    // std::cout << vec_spe.at(1) << "    Is first element." << std::endl;
-    // std::cout << vec_spe.at(500) << "    Is 500 element." << std::endl;
-    // std::cout << *std::max_element(vec_spe.begin(),vec_spe.end()) << "    Is MAX element." << std::endl;
-
-    std::vector<double> mag_spe;
-    std::vector<double> phase_spe;
-
-    spe.Get_pow_spec(nbins,bin_width,&mag_spe,&phase_spe);
-
-    //Cout Block for testing SPE power spectrum
-    // std::cout << mag_spe.size() << "    Is size of vector." << std::endl;
-    // std::cout << mag_spe.at(1) << "    Is first element." << std::endl;
-    // std::cout << mag_spe.at(500) << "    Is 500 element." << std::endl;
-    // std::cout << *std::max_element(mag_spe.begin(),mag_spe.end()) << "    Is MAX element." << std::endl;
-
-    std::string word2 = "RC_Wfm";
-    UB_rc rc(word2,true);
-
-    std::vector<double> vec_rc = rc.Get_wfm(nbins,bin_width);
-
-    //Cout Block for testing RC wfm
-    // std::cout << vec_rc.size() << "    Is size of vector(rc)." << std::endl;
-    // std::cout << vec_rc.at(1) << "    Is first element(rc)." << std::endl;
-    // std::cout << vec_rc.at(500) << "    Is 500 element(rc)." << std::endl;
-    // std::cout << *std::max_element(vec_rc.begin(),vec_rc.end()) << "    Is MAX element(rc)." << std::endl;
-
-    std::vector<double> mag_rc;
-    std::vector<double> phase_rc;
-
-    rc.Get_pow_spec(nbins,bin_width,&mag_rc,&phase_rc);
-
-    //Cout Block for testing RC power spectrum
-    // std::cout << mag_rc.size() << "    Is size of vector(rc)." << std::endl;
-    // std::cout << mag_rc.at(1) << "    Is first element(rc)." << std::endl;
-    // std::cout << mag_rc.at(500) << "    Is 500 element(rc)." << std::endl;
-    // std::cout << *std::max_element(mag_rc.begin(),mag_rc.end()) << "    Is MAX element(rc)." << std::endl;
-
-    double value_re[nbins];
-    double value_im[nbins];
-    double value_re1[nbins];
-    double value_im1[nbins];
-
-    for (int i=0;i<nbins;i++){
-      double freq;
-      if (i<=750){
-  	     freq = ((double)i/(double)nbins*2.)*1.0;
-      }
-      else{
-  	     freq = (((double)nbins-(double)i)/(double)nbins*2.)*1.0;
-      }
-      double rho = mag_raw.at(i)/ mag_rc.at(i) / mag_spe.at(i);
-      double phi = phase_raw.at(i) - phase_rc.at(i) - phase_spe.at(i);
-
-      //double rho = mag_raw.at(i);
-      //double phi = phase_raw.at(i);
-
-      if (i==0) rho = 0;
-
-      value_re[i] = rho * BandPassFilter(freq)* (cos(phi)/nbins)*2;
-      value_im[i] = rho * BandPassFilter(freq)* (sin(phi)/nbins)*2;
-
-      value_re1[i] = rho * (cos(phi)/nbins)*2 * HighFreqFilter(freq);
-      value_im1[i] = rho * (sin(phi)/nbins)*2 * HighFreqFilter(freq);
-
-      // if(i%50 == 0){
-      //   std::cout << "val_re of " << i <<  " is: " << value_re[i] << std::endl;
-      //   std::cout << "val_im of " << i <<  " is: " << value_im[i] << std::endl;
-      //   std::cout << "val_re1 of " << i <<  " is: " << value_re1[i] << std::endl;
-      //   std::cout << "val_im1 of " << i <<  " is: " << value_im1[i] << std::endl << std::endl;
-      // }
-    }
-
-    // ROI finding
-    TVirtualFFT *ifft = TVirtualFFT::FFT(1,&nbins,"C2R");
-    ifft->SetPointsComplex(value_re,value_im);
-    //ifft->SetPointsComplex(re,im);
-    ifft->Transform();
-
-    double *re_inv = new double[nbins]; //Real -> Magnitude
-    double *im_inv = new double[nbins]; //Imaginary -> Phase
-
-    ifft->GetPointsComplex(re_inv, im_inv);
-
-    std::vector<double> inverse_res;
-    inverse_res.resize(nbins);
-    for (int i = 0; i < nbins ; i++){
-      double value = re_inv[i];
-      inverse_res.at(i) = value;
-      //if (i%50 == 0) std::cout<< "ifft value: " <<value <<std::endl;
-    };
-    delete ifft;
-
-    // calcumate rms and mean ...
-    std::pair<double,double> results = cal_mean_rms(inverse_res, nbins);
-    // std::cout <<"mean: " << results.first << " rms: " << results.second << std::endl;
-    std::vector<double> hflag;
-    hflag.resize(nbins);
-    // TH1F *hflag = new TH1F("hflag","hflag",1500,0,1500);
-    for (int i=0;i<nbins;i++){
-      double content = inverse_res.at(i);
-      if (fabs(content-results.first)>5*results.second){
-	       for (int j=-20;j!=20;j++){
-	        //hflag->SetBinContent(i+j+1,1);
-          double flag =1.0;
-          if((i+j) >= 0 && (i+j) < 1500) hflag.at(i+j) = flag;
-	       }
-       }
-    }
-
-    // solve for baseline
-    TVirtualFFT *ifft1 = TVirtualFFT::FFT(1,&nbins,"C2R");
-    ifft1->SetPointsComplex(value_re1,value_im1);
-    ifft1->Transform();
-
-    double *re_inv1 = new double[nbins]; //Real -> Magnitude
-    double *im_inv1 = new double[nbins]; //Imaginary -> Phase
-
-    ifft1->GetPointsComplex(re_inv1, im_inv1);
-
     std::vector<double> inverse_res1;
-    inverse_res1.resize(nbins);
-    for (int i = 0; i < nbins ; i++){
-      double value = re_inv1[i];
-      inverse_res1.at(i) = value;
-      // if (i%50 == 0) std::cout<< "ifft value: " <<value <<std::endl;
-    };
-    double A11 = 0, A12 = 0, A21=0, A22=0;
-    double B1 = 0, B2 = 0;
-    double a=0, b=0;
-    for (int i=0;i!=1500;i++){
-      double bincenter = i+.5;
-      if (hflag.at(i)==0){
-      	B2 += inverse_res1.at(i);
-      	B1 += inverse_res1.at(i) * bincenter;
-      	A11 += pow(bincenter,2);
-      	A12 += bincenter;
-      	A21 += bincenter;
-      	A22 += 1;
-      }
-    }
+    inverse_res1 = Deconvolve(wfm);
 
-    if (A22>0){
-      a = (B1*A22-B2*A12)/(A11*A22-A21*A12);
-      b = (B1*A21-B2*A11)/(A22*A11-A12*A21);
-    }
-    // std::cout << a << " " << b << std::endl;
-    for (int i=0;i!=1500;i++){
-      //fb->SetBinContent(i+1,fb->GetBinContent(i+1) - a * fb->GetBinCenter(i+1) -b);
-      double bincenter = i+.5;
-      inverse_res1.at(i) = inverse_res1.at(i) - a * bincenter -b;
-    }
-    results = cal_mean_rms(inverse_res1, nbins);
-    for (int i=0;i!=1500;i++){
-      if (i<1500-4){
-	       //fb->SetBinContent(i+1,fb->GetBinContent(i+1)-results.first+0.01);
-         inverse_res1.at(i) = inverse_res1.at(i) -results.first+0.01;
-      }else{
-	       inverse_res1.at(i) = 0;
-      }
-    }
 
-    testPlot("ifft", inverse_res1);
+    testPlot("Deconvolved Waveform", inverse_res1);
 
     std::vector<double> totPE_v;
     totPE_v.resize(250);
@@ -515,6 +259,219 @@ void wcopreco::deconvolver::deconv_test()
      c1->SaveAs((Title + ".png").c_str());
      delete c1;
      return;
+   }
+
+   std::vector<double> deconvolver::Deconvolve(OpWaveform wfm) {
+     //BEGIN DECONVOLUTION MARKER
+     std::vector<double> wfm_doubles(wfm.begin(), wfm.end());
+     float bin_width = (1.0/(64e6) );
+     int nbins = wfm.size();
+
+     testPlot("raw_data", wfm_doubles);
+
+     //get power spectrum of data
+     //Create Mag and Phase vectors
+     std::vector<double> mag_raw;
+     std::vector<double> phase_raw;
+     mag_raw.resize(nbins);
+     phase_raw.resize(nbins);
+
+     //Get the input to the fourier transform ready
+     std::vector<double> power_spec_d(nbins,0);
+     power_spec_d = wfm_doubles;
+     double *in = power_spec_d.data();
+
+     //Start the fourier transform (real to complex)
+     TVirtualFFT *fftr2c = TVirtualFFT::FFT(1, &nbins, "R2C");
+     fftr2c->SetPoints(in);
+     fftr2c->Transform();
+     double *re = new double[nbins]; //Real -> Magnitude
+     double *im = new double[nbins]; //Imaginary -> Phase
+
+     fftr2c->GetPointsComplex(re, im); //Put the values in the arrays
+
+     for (int index =nbins-1; index>nbins/2; index--){
+       re[index] = re[(nbins-1) - index];
+       im[index] = im[(nbins-1) - index];
+
+     }
+
+     //Copy those array values into vectors passed in by reference.
+     // This is inefficient, but makes for an easier user interface.
+     double im_i =0;
+     double re_i = 0;
+     for (int i =0; i<nbins; i++){
+       //Calculate the phase_raw
+       im_i = im[i];
+       re_i = re[i];
+       double ph = 0;
+       // fft->GetPointComplex(ind, re, im);
+       if (TMath::Abs(re_i) > 1e-13){
+          //ph = TMath::ATan(im_i/re_i);
+          ph = atan2(im_i , re_i);
+
+       }
+       phase_raw.at(i) = ph;
+       //End of phase_raw calc
+
+       //Calculate the mag_v
+       double magnitude = TMath::Sqrt(re[i]*re[i]+im[i]*im[i]);
+       mag_raw[i] = magnitude;
+       //if (i%50 == 0) std::cout<<"Magnitude is " << mag_raw[i] <<std::endl;
+       //End of mag_v calc
+     }
+
+
+
+     delete fftr2c;
+     double max_freq_MHz = 64*1500*2*TMath::Pi();
+
+     testPlot("wfm_mag", mag_raw);
+     testPlot("wfm_phase", phase_raw);
+
+
+
+     std::string word = "SPE_wfm" ;
+
+     UB_spe spe(word, true);
+     // spe.gain = 1;
+
+     std::vector<double> mag_spe;
+     std::vector<double> phase_spe;
+
+     spe.Get_pow_spec(nbins,bin_width,&mag_spe,&phase_spe);
+
+     std::string word2 = "RC_Wfm";
+     UB_rc rc(word2,true);
+
+     std::vector<double> vec_rc = rc.Get_wfm(nbins,bin_width);
+
+
+     std::vector<double> mag_rc;
+     std::vector<double> phase_rc;
+
+     rc.Get_pow_spec(nbins,bin_width,&mag_rc,&phase_rc);
+
+
+     double value_re[nbins];
+     double value_im[nbins];
+     double value_re1[nbins];
+     double value_im1[nbins];
+
+     for (int i=0;i<nbins;i++){
+       double freq;
+       if (i<=750){
+   	     freq = ((double)i/(double)nbins*2.)*1.0;
+       }
+       else{
+   	     freq = (((double)nbins-(double)i)/(double)nbins*2.)*1.0;
+       }
+       double rho = mag_raw.at(i)/ mag_rc.at(i) / mag_spe.at(i);
+       double phi = phase_raw.at(i) - phase_rc.at(i) - phase_spe.at(i);
+
+       //double rho = mag_raw.at(i);
+       //double phi = phase_raw.at(i);
+
+       if (i==0) rho = 0;
+
+       value_re[i] = rho * BandPassFilter(freq)* (cos(phi)/nbins)*2;
+       value_im[i] = rho * BandPassFilter(freq)* (sin(phi)/nbins)*2;
+
+       value_re1[i] = rho * (cos(phi)/nbins)*2 * HighFreqFilter(freq);
+       value_im1[i] = rho * (sin(phi)/nbins)*2 * HighFreqFilter(freq);
+
+
+     }
+
+     // ROI finding
+     TVirtualFFT *ifft = TVirtualFFT::FFT(1,&nbins,"C2R");
+     ifft->SetPointsComplex(value_re,value_im);
+     //ifft->SetPointsComplex(re,im);
+     ifft->Transform();
+
+     double *re_inv = new double[nbins]; //Real -> Magnitude
+     double *im_inv = new double[nbins]; //Imaginary -> Phase
+
+     ifft->GetPointsComplex(re_inv, im_inv);
+
+     std::vector<double> inverse_res;
+     inverse_res.resize(nbins);
+     for (int i = 0; i < nbins ; i++){
+       double value = re_inv[i];
+       inverse_res.at(i) = value;
+     };
+     delete ifft;
+
+     // calcumate rms and mean ...
+     std::pair<double,double> results = cal_mean_rms(inverse_res, nbins);
+     std::vector<double> hflag;
+     hflag.resize(nbins);
+     // TH1F *hflag = new TH1F("hflag","hflag",1500,0,1500);
+     for (int i=0;i<nbins;i++){
+       double content = inverse_res.at(i);
+       if (fabs(content-results.first)>5*results.second){
+ 	       for (int j=-20;j!=20;j++){
+ 	        //hflag->SetBinContent(i+j+1,1);
+           double flag =1.0;
+           if((i+j) >= 0 && (i+j) < 1500) hflag.at(i+j) = flag;
+ 	       }
+        }
+     }
+
+     // solve for baseline
+     TVirtualFFT *ifft1 = TVirtualFFT::FFT(1,&nbins,"C2R");
+     ifft1->SetPointsComplex(value_re1,value_im1);
+     ifft1->Transform();
+
+     double *re_inv1 = new double[nbins]; //Real -> Magnitude
+     double *im_inv1 = new double[nbins]; //Imaginary -> Phase
+
+     ifft1->GetPointsComplex(re_inv1, im_inv1);
+
+     std::vector<double> inverse_res1;
+     inverse_res1.resize(nbins);
+     for (int i = 0; i < nbins ; i++){
+       double value = re_inv1[i];
+       inverse_res1.at(i) = value;
+     };
+
+
+
+     double A11 = 0, A12 = 0, A21=0, A22=0;
+     double B1 = 0, B2 = 0;
+     double a=0, b=0;
+     for (int i=0;i!=1500;i++){
+       double bincenter = i+.5;
+       if (hflag.at(i)==0){
+       	B2 += inverse_res1.at(i);
+       	B1 += inverse_res1.at(i) * bincenter;
+       	A11 += pow(bincenter,2);
+       	A12 += bincenter;
+       	A21 += bincenter;
+       	A22 += 1;
+       }
+     }
+
+     if (A22>0){
+       a = (B1*A22-B2*A12)/(A11*A22-A21*A12);
+       b = (B1*A21-B2*A11)/(A22*A11-A12*A21);
+     }
+     for (int i=0;i!=1500;i++){
+       //fb->SetBinContent(i+1,fb->GetBinContent(i+1) - a * fb->GetBinCenter(i+1) -b);
+       double bincenter = i+.5;
+       inverse_res1.at(i) = inverse_res1.at(i) - a * bincenter -b;
+     }
+     results = cal_mean_rms(inverse_res1, nbins);
+     for (int i=0;i!=1500;i++){
+       if (i<1500-4){
+ 	       //fb->SetBinContent(i+1,fb->GetBinContent(i+1)-results.first+0.01);
+          inverse_res1.at(i) = inverse_res1.at(i) -results.first+0.01;
+       }else{
+ 	       inverse_res1.at(i) = 0;
+       }
+     }
+     //END OF DECONVOLUTION
+     return inverse_res1;
    }
 
 }

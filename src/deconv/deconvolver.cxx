@@ -36,6 +36,7 @@ void wcopreco::deconvolver::deconv_test()
     //Create array of vectors to process the waveforms
     int nbins;
     std::vector<double> inverse_res1[32];
+    std::vector<double> decon_v[32];
     std::vector<double> totPE_v(250,0);
     std::vector<double> mult_v(250,0);
     std::vector<double> l1_totPE_v(250,0);
@@ -49,17 +50,109 @@ void wcopreco::deconvolver::deconv_test()
       Remove_Baseline_Secondary(&wfm);
       inverse_res1[ch] = Deconvolve(wfm);
 
-      if (ch == 0) {testPlot("Deconvolved Waveform", inverse_res1[0]);}
-
       //totPE mult, and their l1 versions are additive (each element is always +=). Each iteration of ch will add to these values.
       Perform_L1( inverse_res1[ch],
+                  decon_v,
                   &totPE_v,
                   &mult_v,
                   &l1_totPE_v,
-                  &l1_mult_v);
+                  &l1_mult_v,
+                  ch);
       //std::cout << totPE_v.at(249) << " Total PE in spot 249 after " << ch << " channels\n";
-
     }//End of 32 Channel Forloop
+
+    //BEGIN FLASH CODE
+    // Now working on the flashes ...
+      // [-2,78)
+
+      std::vector<int> flash_time;
+      std::vector<double> flash_pe;
+
+
+      double prev_pe_a[32];
+      double curr_pe_a[32];
+      TH1F *prev_hpe = new TH1F("prev_hpe","prev_hpe",32,0,32);
+      TH1F *curr_hpe = new TH1F("curr_hpe","curr_hpe",32,0,32);
+      double diff =99;
+      double array =0;
+      double histo =0;
+
+
+
+      for (int i=0;i!=250;i++){
+        double pe = totPE_v.at(i);
+        double mult = mult_v.at(i);
+        // careteria: multiplicity needs to be higher than 3, PE needs to be higher than 6
+        //std::cout << pe << " " << mult << std::endl;
+        if (pe >= 6 && mult >= 3){
+          bool flag_save = false;
+          if (flash_time.size()==0){
+    	       flag_save = true;
+    	       for (int j=0;j!=32;j++){
+                prev_hpe->SetBinContent(j+1,decon_v[j].at(i));
+    	          prev_pe_a[j] = decon_v[j].at(i);
+    	       }
+          }
+          else{
+    	       for (int j=0;j!=32;j++){
+    	          curr_hpe->SetBinContent(j+1,decon_v[j].at(i));
+                curr_pe_a[j] = decon_v[j].at(i);
+    	       }
+    	       if (i - flash_time.back() >= 78){
+    	          flag_save = true;
+    	  // start one, and open a window of 8 us, if anything above it, not the next 2 bin
+    	  // if find one is bigger than this, save a flash ... start a new flash?
+             }
+             else if (i-flash_time.back() > 4 && pe > flash_pe.back()){
+    	          if (i-flash_time.back()>15){
+    	             flag_save = true;
+    	          }
+                else{
+    	             // if (curr_hpe->KolmogorovTest(prev_hpe,"M")>0.1){
+                   if (true){ //KolmogorovTest() >0.1
+                     std::sort(prev_pe_a,prev_pe_a+sizeof(prev_pe_a)/sizeof(prev_pe_a[0]));
+                     std::sort(curr_pe_a,curr_pe_a+sizeof(curr_pe_a)/sizeof(curr_pe_a[0]));
+
+                     array =TMath::KolmogorovTest(32, prev_pe_a, 32, curr_pe_a, "M");
+                     histo =curr_hpe->KolmogorovTest(prev_hpe,"M");
+                     diff = fabs(histo-array);
+                     std::cout << "Test According to Histograms: " << histo << " For i " << i <<"\n";
+                     std::cout << "Test According to Arrays: " << array  << " For i " << i<< "\n";
+                     std::cout << diff<<" Is the difference between the two methods\n\n";
+
+    	                flag_save = true;
+    	             }
+
+
+    	          }
+    	       }
+
+             for (int j=0;j!=32;j++){
+    	          // prev_hpe->SetBinContent(j+1,hdecon[j]->GetBinContent(i+1));
+                prev_pe_a[j] = decon_v[j].at(i);
+    	       }
+          }
+
+          if (flag_save){
+            	flash_time.push_back(i);
+            	flash_pe.push_back(pe);
+          }
+          else{
+    	       if (i - flash_time.back()<=6 && pe > flash_pe.back())
+               {
+               flash_pe.back()=pe;
+             }
+          }
+        }
+      }
+
+
+    //END FLASH CODE
+
+
+
+
+    testPlot("Deconvolved Waveform", inverse_res1[0]);
     testPlot("mult_v", mult_v);
     testPlot("l1_mult_v", l1_mult_v);
     testPlot("totPE_v", totPE_v);
@@ -149,11 +242,15 @@ void wcopreco::deconvolver::deconv_test()
    }
 
    void deconvolver::Perform_L1(std::vector<double> inverse_res1,
+                                std::vector<double> decon_v[32],
                                 std::vector<double> *totPE_v,
                                 std::vector<double> *mult_v,
                                 std::vector<double> *l1_totPE_v,
-                                std::vector<double> *l1_mult_v)
+                                std::vector<double> *l1_mult_v,
+                                int ch
+                                )
    {
+
      // prepare L1 fit ...
      std::vector<float> rebin_v;
      rebin_v.resize(250);
@@ -175,11 +272,11 @@ void wcopreco::deconvolver::deconv_test()
                    inverse_res1.at(6*i+4) +
                    inverse_res1.at(6*i+5) ;
      }
-     std::vector<double> decon_v;
-     decon_v.resize(250);
+     // std::vector<double> decon_v;
+     decon_v[ch].resize(250);
      for (int i=0;i!=250;i++){
        // hdecon[j]->SetBinContent(i+1,hrebin->GetBinContent(i+1));
-       decon_v[i] = rebin_v[i];
+       decon_v[ch].at(i) = rebin_v[i];
      }
 
 
@@ -238,7 +335,7 @@ void wcopreco::deconvolver::deconv_test()
      // testPlot("L1test", l1_v);
 
      for (int j=0;j!=250;j++){
-       double content = decon_v.at(j);
+       double content = decon_v[ch].at(j);
        if (content >0.2) {
            // h_totPE->SetBinContent(j+1,h_totPE->GetBinContent(j+1) + content);
            totPE_v->at(j)= totPE_v->at(j) + content;
@@ -271,6 +368,7 @@ void wcopreco::deconvolver::deconv_test()
      }
      hist->Draw();
      c1->SaveAs((Title + ".png").c_str());
+     delete hist;
      delete c1;
      return;
    }

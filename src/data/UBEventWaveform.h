@@ -7,7 +7,6 @@
 #include "OpWaveformCollection.h"
 #include "EventOpWaveforms.h"
 #include "UBEventWaveform.h"
-#include "datareader_j.h"
 
 //root includes
 #include "TObject.h"

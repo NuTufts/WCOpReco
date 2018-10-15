@@ -7,14 +7,17 @@ namespace wcopreco {
  wcopreco::kernel_fourier::kernel_fourier(std::string nm, bool mult_flag)
   {
     name = nm;
-    std::cout <<"Kernel Name is set to:   || " <<  name << " ||" << std::endl;
+
 
     mult_div = mult_flag;
     std::string optioned;
-    if (mult_div) {optioned = "|| Multiply || this kernel.";}
-    else if (not mult_div) {optioned = "|| Divide || this kernel.";}
-    else {optioned = " Bool not true or false...";}
-    std::cout << "Flag is set to:  " << mult_div  << "   This means "<< optioned << std::endl;
+
+    //Kernel Diagnosis:
+    // std::cout <<"Kernel Name is set to:   || " <<  name << " ||" << std::endl;
+    // if (mult_div) {optioned = "|| Multiply || this kernel.";}
+    // else if (not mult_div) {optioned = "|| Divide || this kernel.";}
+    // else {optioned = " Bool not true or false...";}
+    // std::cout << "Flag is set to:  " << mult_div  << "   This means "<< optioned << std::endl;
 
 
 
@@ -106,9 +109,9 @@ namespace wcopreco {
 
 
 
-
-      std::cout << nbins << " bins POWER  " << tick_width_ns << "  tick width POWER" << std::endl;
-      std::cout << nbins*tick_width_ns << " Is total width of wfm" << std::endl <<std::endl;
+      // Kernel Fourier Diagnosis
+      // std::cout << nbins << " bins POWER  " << tick_width_ns << "  tick width POWER" << std::endl;
+      // std::cout << nbins*tick_width_ns << " Is total width of wfm" << std::endl <<std::endl;
       return ;
     }
 

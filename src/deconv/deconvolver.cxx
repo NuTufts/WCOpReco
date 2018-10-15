@@ -12,44 +12,58 @@ void wcopreco::deconvolver::deconv_test()
     std::string file = "src/data/celltree.root";
     wcopreco::DataReader reader(file);
     std::cout << "Filepath is set to:   " << file << std::endl;
-    int EVENT_NUM = 3;
+    int EVENT_NUM = 4;
     int TYPE_OF_COLLECTION =0;
-    int WFM_INDEX =0;
-    int SIGNAL_INDEX =2;
+    int WFM_INDEX =2;
+    int SIGNAL_INDEX =1;
     wcopreco::UBEventWaveform _UB_Ev_wfm;
 
     _UB_Ev_wfm = reader.Reader(EVENT_NUM);
-    OpWaveform wfm = ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] );
-    int nbins = wfm.size();
-
-    //remove baseline (baseline here means leading edge)
-    // std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element before any baseline removed" <<std::endl;
-
-    Remove_Baseline_Leading_Edge(&wfm);
-    // std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element after 1st baseline removed" <<std::endl;
-    Remove_Baseline_Secondary(&wfm);
-    // std::cout << *std::max_element(wfm.begin(),wfm.end()) << " Is max in element after 2nd baseline removed" <<std::endl;
-
-    std::vector<double> inverse_res1;
-    inverse_res1 = Deconvolve(wfm);
+    // std::cout << std::endl << (  ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).at(SIGNAL_INDEX))     <<  "   Attempt at Reading a Waveform Signal Value  " <<SIGNAL_INDEX << std::endl;
+    // std::cout << (  ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).at(( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()-1))     <<  "   Attempt at Reading a Waveform Signal Value  " <<( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()-1 << std::endl;
+    // std::cout << (  ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()     <<  "   How many bins in the waveform? (1500 or 40)" <<std::endl;
+    // std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] ).size()      <<  "  How many waveforms in the collection (depends)?" <<std::endl;
+    // std::cout << (  ( _UB_Ev_wfm ).get__wfm_v() ) .size()      <<  "   How many Collections in the Event (4)?" <<std::endl <<std::endl;
 
 
-    testPlot("Deconvolved Waveform", inverse_res1);
 
-    std::vector<double> totPE_v;
-    totPE_v.resize(250);
-    std::vector<double> mult_v;
-    mult_v.resize(250);
-    std::vector<double> l1_totPE_v;
-    l1_totPE_v.resize(250);
-    std::vector<double> l1_mult_v;
-    l1_mult_v.resize(250);
+    OpWaveform wfm =( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] );
 
-    Perform_L1( inverse_res1,
-                &totPE_v,
-                &mult_v,
-                &l1_totPE_v,
-                &l1_mult_v);
+
+
+    //Process the Beam:
+    //Note that the following code is supposed to only deal with beam waveforms, 32 channels and 1500 bin wfms.
+    //Create array of vectors to process the waveforms
+    int nbins;
+    std::vector<double> inverse_res1[32];
+    std::vector<double> totPE_v(250,0);
+    std::vector<double> mult_v(250,0);
+    std::vector<double> l1_totPE_v(250,0);
+    std::vector<double> l1_mult_v(250,0);
+
+    for (int ch=0; ch<32; ch++){
+      wfm = ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [ch] );
+      nbins = wfm.size();
+      //remove baselines (baseline here are determined by the start of the waveform)
+      Remove_Baseline_Leading_Edge(&wfm);
+      Remove_Baseline_Secondary(&wfm);
+      inverse_res1[ch] = Deconvolve(wfm);
+
+      if (ch == 0) {testPlot("Deconvolved Waveform", inverse_res1[0]);}
+
+      //totPE mult, and their l1 versions are additive (each element is always +=). Each iteration of ch will add to these values.
+      Perform_L1( inverse_res1[ch],
+                  &totPE_v,
+                  &mult_v,
+                  &l1_totPE_v,
+                  &l1_mult_v);
+      //std::cout << totPE_v.at(249) << " Total PE in spot 249 after " << ch << " channels\n";
+
+    }//End of 32 Channel Forloop
+    testPlot("mult_v", mult_v);
+    testPlot("l1_mult_v", l1_mult_v);
+    testPlot("totPE_v", totPE_v);
+    testPlot("l1_totPE_v", l1_totPE_v);
 
   }//End of Deconv_test
 
@@ -221,7 +235,7 @@ void wcopreco::deconvolver::deconv_test()
          l1_v[vals_bin.at(i)] = beta(i);
      }
 
-     testPlot("L1test", l1_v);
+     // testPlot("L1test", l1_v);
 
      for (int j=0;j!=250;j++){
        double content = decon_v.at(j);
@@ -267,7 +281,7 @@ void wcopreco::deconvolver::deconv_test()
      float bin_width = (1.0/(64e6) );
      int nbins = wfm.size();
 
-     testPlot("raw_data", wfm_doubles);
+     // testPlot("raw_data", wfm_doubles);
 
      //get power spectrum of data
      //Create Mag and Phase vectors
@@ -326,8 +340,8 @@ void wcopreco::deconvolver::deconv_test()
      delete fftr2c;
      double max_freq_MHz = 64*1500*2*TMath::Pi();
 
-     testPlot("wfm_mag", mag_raw);
-     testPlot("wfm_phase", phase_raw);
+     // testPlot("wfm_mag", mag_raw);
+     // testPlot("wfm_phase", phase_raw);
 
 
 
@@ -470,6 +484,9 @@ void wcopreco::deconvolver::deconv_test()
  	       inverse_res1.at(i) = 0;
        }
      }
+     // std::vector<short> shortvec(inverse_res1.begin(), inverse_res1.end());
+     // OpWaveform output(wfm.get_type(), wfm.get_time_from_trigger(), wfm.get_type(), shortvec);
+
      //END OF DECONVOLUTION
      return inverse_res1;
    }

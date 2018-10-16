@@ -11,7 +11,7 @@ void wcopreco::deconvolver::deconv_test()
     //load raw data
     std::string file = "src/data/celltree.root";
     wcopreco::DataReader reader(file);
-    std::cout << "Filepath is set to:   " << file << std::endl;
+    std::cout << "\n\n\nFilepath is set to:   " << file << std::endl;
     int EVENT_NUM = 4;
     int TYPE_OF_COLLECTION =0;
     int WFM_INDEX =2;

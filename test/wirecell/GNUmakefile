@@ -15,8 +15,10 @@ INCLUDES  += $(addprefix -I,$(EIGENSPACE))
 
 SRCS := $(wildcard *.cxx)
 OBJS := $(SRCS:.cxx=.o)
+BINS = $(SRCS:.cxx=)
 
-all: $(OBJS)
+all: $(BINS)
+
 %.o: %.cxx %.h
-#	@echo "<<compiling $@>>"
+	@echo "<<compiling $@>>"
 	$(CXX) $(CFLAGS) $(INCLUDES) -c $< -o $@

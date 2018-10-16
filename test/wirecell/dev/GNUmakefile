@@ -6,8 +6,12 @@ CFLAGS   += `root-config --cflags` -DUSE_OPENCV=1
 INCLUDES  = `root-config --incdir`
 
 LDFLAGS   = `root-config --ldflags` -lstdc++
-LDLIBS    = `root-config --libs`
-LDLIBS   += `wc-config --libs`
+ROOTLIBS    = `root-config --libs`
+
+LDLIBS   += $(LDFLAGS) $(ROOTLIBS)
+
+LIBS      = ../
+LDLIBS   += -Llib $(addprefix -l, $(LIBS))
 
 HEADERS   = $(wildcard *.h)
 
@@ -16,6 +20,7 @@ INCLUDES  += $(addprefix -I,$(EIGENSPACE))
 INCLUDES  += -I. -I$(WC_BASEDIR)
 
 SRCS := $(wildcard *.cxx)
+OBJS := $(SRCS:.cxx=.o)
 BINS = $(SRCS:.cxx=)
 
 all: $(BINS)

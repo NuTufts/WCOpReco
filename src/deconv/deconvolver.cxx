@@ -37,6 +37,9 @@ void wcopreco::deconvolver::deconv_test()
     int nbins;
     std::vector<double> inverse_res1[32];
     std::vector<double> decon_v[32];
+    double beam_dt[32];
+    OpflashSelection beam_flashes;
+
     std::vector<double> totPE_v(250,0);
     std::vector<double> mult_v(250,0);
     std::vector<double> l1_totPE_v(250,0);
@@ -49,6 +52,8 @@ void wcopreco::deconvolver::deconv_test()
       Remove_Baseline_Leading_Edge(&wfm);
       Remove_Baseline_Secondary(&wfm);
       inverse_res1[ch] = Deconvolve(wfm);
+      beam_dt[ch] = wfm.get_time_from_trigger();
+      // std::cout << std::fixed <<beam_dt[ch] << " Is time from trigger \n" ;
 
       //totPE mult, and their l1 versions are additive (each element is always +=). Each iteration of ch will add to these values.
       Perform_L1( inverse_res1[ch],
@@ -66,6 +71,7 @@ void wcopreco::deconvolver::deconv_test()
       // [-2,78)
 
       std::vector<int> flash_time;
+      flash_time.reserve(250);
       std::vector<double> flash_pe;
 
 
@@ -100,7 +106,6 @@ void wcopreco::deconvolver::deconv_test()
     	          }
                 else{
                    if (KS_maxdiff(32,prev_pe_a,curr_pe_a) > 0.1){
-                     std::cout << "Made it into the KS at i " << i<<"\n";
     	               flag_save = true;
     	             }
 
@@ -125,28 +130,31 @@ void wcopreco::deconvolver::deconv_test()
           }
         }
       }
-      //
-      // //  std::cout << flash_time.size() << " " << flash_pe.size() << std::endl;
-      // //  for a flash, examine the L1 one to decide if add in more time ...?
-      // for (size_t i=0; i!=flash_time.size(); i++){
-      //   //std::cout << flash_time.at(i) << " " << flash_pe.at(i) << std::endl;
-      //   int start_bin = flash_time.at(i)-2;
-      //   if (start_bin <0) start_bin = 0;
-      //
-      //   int end_bin = start_bin + 78; // default
-      //   if (end_bin > 250) end_bin = 250;
-      //   if (i+1<flash_time.size()){
-      //     if (end_bin > flash_time.at(i+1)-2) {
-      //       end_bin = flash_time.at(i+1)-2;
-      //     }
-      //   }
-      //   //  std::cout << start_bin << " " << end_bin << std::endl;
-      //   //check with the next bin content ...
-      //   Opflash *flash = new Opflash(hdecon, beam_dt[0], start_bin, end_bin);
-      //   flash->Add_l1info(h_l1_totPE, h_l1_mult, beam_dt[0], start_bin, end_bin);
-      //   // std::cout << flash->get_time() << " " <<flash->get_total_PE() << " " << flash->get_num_fired() << std::endl;
-      //   beam_flashes.push_back(flash);
-      // }
+
+       // std::cout << flash_time.size() << " " << flash_pe.size() << std::endl;
+       // for a flash, examine the L1 one to decide if add in more time ...?
+
+      for (size_t i=0; i!=flash_time.size(); i++){
+        //std::cout << flash_time.at(i) << " " << flash_pe.at(i) << std::endl;
+        int start_bin = flash_time.at(i)-2;
+        if (start_bin <0) start_bin = 0;
+
+        int end_bin = start_bin + 78; // default
+        if (end_bin > 250) end_bin = 250;
+        if (i+1<flash_time.size()){
+          if (end_bin > flash_time.at(i+1)-2) {
+            end_bin = flash_time.at(i+1)-2;
+          }
+        }
+        //  std::cout << start_bin << " " << end_bin << std::endl;
+        //check with the next bin content ...
+        std::cout << "Josho, we got issues to spare " << start_bin << " " << end_bin<< "\n\n\n\n\n" ;
+
+        Opflash *flash = new Opflash(decon_v, beam_dt[0], start_bin, end_bin);
+        flash->Add_l1info(&l1_totPE_v, &l1_mult_v, beam_dt[0], start_bin, end_bin);
+        // std::cout << flash->get_time() << " " <<flash->get_total_PE() << " " << flash->get_num_fired() << std::endl;
+        beam_flashes.push_back(flash);
+      }
 
 
     //END FLASH CODE

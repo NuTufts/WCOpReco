@@ -6,7 +6,7 @@
 #include <math.h> //need this if cutting out root
 
 
-namespace WireCell{
+namespace wcopreco{
 
   class COphit{
   public:

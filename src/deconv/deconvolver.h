@@ -11,6 +11,8 @@
 #include "WCOpReco/LassoModel.h"
 #include "WCOpReco/ElasticNetModel.h"
 #include "WCOpReco/LinearModel.h"
+#include "WCOpReco/Opflash.h"
+#include "WCOpReco/COphit.h"
 
 //data
 #include "WCOpReco/DataReader.h"

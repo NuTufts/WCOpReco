@@ -2,9 +2,9 @@
 #include <algorithm>
 #include <iostream>
 
-using namespace WireCell;
+using namespace wcopreco;
 
-WireCell::Opflash::Opflash(COphitSelection &ophits)
+wcopreco::Opflash::Opflash(COphitSelection &ophits)
   : type(1)
   , flash_id (-1)
 {
@@ -34,7 +34,7 @@ WireCell::Opflash::Opflash(COphitSelection &ophits)
 
 }
 
-WireCell::Opflash::Opflash(std::vector<double> **hist, double start_time, int start_bin, int end_bin, float bin_width)
+wcopreco::Opflash::Opflash(std::vector<double> *vec, double start_time, int start_bin, int end_bin, float bin_width)
   : type(2)
   , flash_id (-1)
 {
@@ -53,7 +53,7 @@ WireCell::Opflash::Opflash(std::vector<double> **hist, double start_time, int st
     double peak = 0;
     double mult = 0;
     for (int j=0;j!=32;j++){
-      double content = hist[j]->at(i+1);
+      double content = vec[j].at(i);
       if (content < 0.2) content = 0;
       peak += content;
       PE[j] += content;
@@ -101,11 +101,11 @@ WireCell::Opflash::Opflash(std::vector<double> **hist, double start_time, int st
 
 }
 
-WireCell::Opflash::~Opflash(){
+wcopreco::Opflash::~Opflash(){
 
 }
 
-void WireCell::Opflash::swap_channels(){
+void wcopreco::Opflash::swap_channels(){
   //harded coded for now ...
   for (auto it = fired_channels.begin(); it!=fired_channels.end(); it++){
     if (*it == 26) *it = 27;
@@ -134,12 +134,12 @@ void WireCell::Opflash::swap_channels(){
   PE_err[26] = temp;
 }
 
-void WireCell::Opflash::Add_l1info(std::vector<double> *hist_tot_pe, std::vector<double> *hist_mult, double start_time, int start_bin, int end_bin, float bin_width){
+void wcopreco::Opflash::Add_l1info(std::vector<double> *totPE_v, std::vector<double> *mult_v, double start_time, int start_bin, int end_bin, float bin_width){
   std::vector<int> fired_bin;
   std::vector<double> fired_pe;
   for (int i=start_bin; i!=end_bin;i++){
-    double pe = hist_tot_pe->at(i+1);
-    double mult = hist_mult->at(i+1);
+    double pe = totPE_v->at(i);
+    double mult = mult_v->at(i);
     if (pe >=10 && mult>=3){
       fired_bin.push_back(i);
       fired_pe.push_back(pe);
@@ -170,7 +170,7 @@ void WireCell::Opflash::Add_l1info(std::vector<double> *hist_tot_pe, std::vector
 }
 
 
-bool WireCell::Opflash::get_fired(int ch){
+bool wcopreco::Opflash::get_fired(int ch){
   if (std::find(fired_channels.begin(),fired_channels.end(),ch)==fired_channels.end()){
     return false;
   }else{

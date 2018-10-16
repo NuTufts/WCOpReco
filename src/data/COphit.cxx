@@ -1,8 +1,8 @@
 #include "COphit.h"
 
-using namespace WireCell;
+using namespace wcopreco;
 
-WireCell::COphit::COphit(int ch_no, std::vector<double> *hist, double time, double gain, double gain_err) //TH1S
+wcopreco::COphit::COphit(int ch_no, std::vector<double> *hist, double time, double gain, double gain_err) //TH1S
   : channel_no(ch_no)
   , time(time)
   , gain(gain)
@@ -62,10 +62,10 @@ WireCell::COphit::COphit(int ch_no, std::vector<double> *hist, double time, doub
 
 }
 
-WireCell::COphit::~COphit(){
+wcopreco::COphit::~COphit(){
 }
 
-double WireCell::COphit::cal_integral(double peak){
+double wcopreco::COphit::cal_integral(double peak){
   double content;
   if (peak <=4000){
     content = 1.06241e+01 * peak + 2.01214e-04 * pow(peak,2);

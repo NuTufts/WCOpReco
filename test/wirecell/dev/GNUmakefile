@@ -1,28 +1,24 @@
-CXX       = g++
-
-CFLAGS    = -g -fPIC -std=c++11
+CXX      =  g++
+CFLAGS   =   -g -fPIC
 CFLAGS   += `root-config --cflags` -DUSE_OPENCV=1
 
-INCLUDES  = `root-config --incdir`
+INCLUDES = -I$(OPENCV_INCDIR)
+INCLUDES += -I$(EIGEN_INC_DIR)
 
-LDFLAGS   = `root-config --ldflags` -lstdc++
-ROOTLIBS    = `root-config --libs`
+LDFLAGS  =  `root-config --ldflags` -lstdc++
+LIBS     =  `root-config --libs`
+LIBS     += -L$(OPENCV_LIBDIR) -lopencv_core
 
-LDLIBS   += $(LDFLAGS) $(ROOTLIBS)
+LIB = ../libWC_test.so
+WCLIBDIR = ..
 
-HEADERS   = $(wildcard *.h)
+all: $(LIB) main
 
-EIGENSPACE = /usr/include/eigen3
-INCLUDES  += $(addprefix -I,$(EIGENSPACE))
-INCLUDES  += -I. -I$(WC_BASEDIR)
-
-SRCS := $(wildcard *.cxx)
-OBJS := $(SRCS:.cxx=.o)
-BINS = $(SRCS:.cxx=)
-
-all: $(BINS)
-%: %.cxx
-	@echo "<<compiling binary $@>>"
-	$(CXX) $(CFLAGS) $(INCLUDES) -c $^ -o $@.o
-	@echo "<<link $@ >> "
-	$(CXX) $(LDFLAGS) -o $@ $@.o -L../ -lWC_test $(LDLIBS) 
+../libWC_test.so: ../COphit.o  ../ElasticNetModel.o  ../LassoModel.o ../LinearModel.o  ../Opflash.o  ../ToyLightReco.o
+	$(CXX) $(LDFLAGS) -shared -o $@ $^ $(LIBS)
+#	$(CXX) -shared $(LDFLAGS) -o $@ $^ $(LIBS)
+%.o: %.cxx %.h
+	@echo "<< compiling $< >>"
+	$(CXX) $(CFLAGS) $(INCLUDES) -c $< -o $@
+main: $(LIB) main.cxx
+	$(CXX) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $@ $@.cxx $(LIBS) -L$(WCLIBDIR) -lWC_test

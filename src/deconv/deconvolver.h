@@ -45,8 +45,12 @@ namespace wcopreco{
     void Perform_L1(std::vector<double> inverse_res1, std::vector<double> decon_v[32], std::vector<double> *totPE_v, std::vector<double> *mult_v, std::vector<double> *l1_totPE_v, std::vector<double> *l1_mult_v, int ch);
     std::pair<double,double> cal_mean_rms(std::vector<double> wfm, int nbin);
     void testPlot(std::string Title, std::vector<double> input);
-
-
+    double KS_maxdiff(int n, double *array1, double *array2);
+    /*
+    The KS_maxdiff function takes two array PDFs of n elements, and transforms
+    them into CDFs then it finds the maximum difference between the CDFs and
+    returns it.
+    */
 
   protected:
 

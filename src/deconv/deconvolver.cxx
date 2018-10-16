@@ -71,13 +71,6 @@ void wcopreco::deconvolver::deconv_test()
 
       double prev_pe_a[32];
       double curr_pe_a[32];
-      TH1F *prev_hpe = new TH1F("prev_hpe","prev_hpe",32,0,32);
-      TH1F *curr_hpe = new TH1F("curr_hpe","curr_hpe",32,0,32);
-      double diff =99;
-      double array =0;
-      double histo =0;
-
-
 
       for (int i=0;i!=250;i++){
         double pe = totPE_v.at(i);
@@ -89,13 +82,11 @@ void wcopreco::deconvolver::deconv_test()
           if (flash_time.size()==0){
     	       flag_save = true;
     	       for (int j=0;j!=32;j++){
-                prev_hpe->SetBinContent(j+1,decon_v[j].at(i));
     	          prev_pe_a[j] = decon_v[j].at(i);
     	       }
           }
           else{
     	       for (int j=0;j!=32;j++){
-    	          curr_hpe->SetBinContent(j+1,decon_v[j].at(i));
                 curr_pe_a[j] = decon_v[j].at(i);
     	       }
     	       if (i - flash_time.back() >= 78){
@@ -108,19 +99,9 @@ void wcopreco::deconvolver::deconv_test()
     	             flag_save = true;
     	          }
                 else{
-    	             // if (curr_hpe->KolmogorovTest(prev_hpe,"M")>0.1){
-                   if (true){ //KolmogorovTest() >0.1
-                     std::sort(prev_pe_a,prev_pe_a+sizeof(prev_pe_a)/sizeof(prev_pe_a[0]));
-                     std::sort(curr_pe_a,curr_pe_a+sizeof(curr_pe_a)/sizeof(curr_pe_a[0]));
-
-                     array =TMath::KolmogorovTest(32, prev_pe_a, 32, curr_pe_a, "M");
-                     histo =curr_hpe->KolmogorovTest(prev_hpe,"M");
-                     diff = fabs(histo-array);
-                     std::cout << "Test According to Histograms: " << histo << " For i " << i <<"\n";
-                     std::cout << "Test According to Arrays: " << array  << " For i " << i<< "\n";
-                     std::cout << diff<<" Is the difference between the two methods\n\n";
-
-    	                flag_save = true;
+                   if (KS_maxdiff(32,prev_pe_a,curr_pe_a) > 0.1){
+                     std::cout << "Made it into the KS at i " << i<<"\n";
+    	               flag_save = true;
     	             }
 
 
@@ -128,7 +109,6 @@ void wcopreco::deconvolver::deconv_test()
     	       }
 
              for (int j=0;j!=32;j++){
-    	          // prev_hpe->SetBinContent(j+1,hdecon[j]->GetBinContent(i+1));
                 prev_pe_a[j] = decon_v[j].at(i);
     	       }
           }
@@ -145,6 +125,28 @@ void wcopreco::deconvolver::deconv_test()
           }
         }
       }
+      //
+      // //  std::cout << flash_time.size() << " " << flash_pe.size() << std::endl;
+      // //  for a flash, examine the L1 one to decide if add in more time ...?
+      // for (size_t i=0; i!=flash_time.size(); i++){
+      //   //std::cout << flash_time.at(i) << " " << flash_pe.at(i) << std::endl;
+      //   int start_bin = flash_time.at(i)-2;
+      //   if (start_bin <0) start_bin = 0;
+      //
+      //   int end_bin = start_bin + 78; // default
+      //   if (end_bin > 250) end_bin = 250;
+      //   if (i+1<flash_time.size()){
+      //     if (end_bin > flash_time.at(i+1)-2) {
+      //       end_bin = flash_time.at(i+1)-2;
+      //     }
+      //   }
+      //   //  std::cout << start_bin << " " << end_bin << std::endl;
+      //   //check with the next bin content ...
+      //   Opflash *flash = new Opflash(hdecon, beam_dt[0], start_bin, end_bin);
+      //   flash->Add_l1info(h_l1_totPE, h_l1_mult, beam_dt[0], start_bin, end_bin);
+      //   // std::cout << flash->get_time() << " " <<flash->get_total_PE() << " " << flash->get_num_fired() << std::endl;
+      //   beam_flashes.push_back(flash);
+      // }
 
 
     //END FLASH CODE
@@ -371,6 +373,24 @@ void wcopreco::deconvolver::deconv_test()
      delete hist;
      delete c1;
      return;
+   }
+
+   double deconvolver::KS_maxdiff(int n, double *array1, double *array2){
+
+     for (int index =1; index<n; index++){
+       array1[index] += array1[index-1];
+       array2[index] += array2[index-1];
+     }
+     double maxdiff=0;
+     double thisdiff=0;
+     for (int index=0; index<n; index++){
+       array1[index] = array1[index]/array1[n-1];
+       array2[index] = array2[index]/array2[n-1];
+       thisdiff =fabs(array1[index]-array2[index]);
+       if (thisdiff > maxdiff) {maxdiff = thisdiff;}
+       // std::cout << prev_pe_a[index] << " Prev PE " << index << "    " << curr_pe_a[index]<< " Curr PE\n";
+     }
+     return maxdiff;
    }
 
    std::vector<double> deconvolver::Deconvolve(OpWaveform wfm) {

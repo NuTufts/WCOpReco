@@ -10,9 +10,6 @@ ROOTLIBS    = `root-config --libs`
 
 LDLIBS   += $(LDFLAGS) $(ROOTLIBS)
 
-LIBS      = ../
-LDLIBS   += -Llib $(addprefix -l, $(LIBS))
-
 HEADERS   = $(wildcard *.h)
 
 EIGENSPACE = /usr/include/eigen3
@@ -28,4 +25,4 @@ all: $(BINS)
 	@echo "<<compiling binary $@>>"
 	$(CXX) $(CFLAGS) $(INCLUDES) -c $^ -o $@.o
 	@echo "<<link $@ >> "
-	$(CXX) $(LDFLAGS) -o $@ $@.o $(LDLIBS)
+	$(CXX) $(LDFLAGS) -o $@ $@.o -L../ -lWC_test $(LDLIBS) 

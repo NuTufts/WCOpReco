@@ -56,7 +56,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
         return UB_Ev;
       }
     tree->GetEntry(event_num);
-    std::cout << "THE TRIGGER TIME IS:                                  "<<std::fixed<< triggerTime << "\n\n\n";
+    // std::cout << "THE TRIGGER TIME IS:                                  "<<std::fixed<< triggerTime << "\n\n\n";
       //Make an EventOpWaveforms for this event:
 
       std::vector<OpWaveformCollection> empty_vec;
@@ -214,7 +214,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
 
       //This IF statement enforces cosmic wf to have 40 bins, and Beam to have 1500
       if (((type == 0)||(type==1) )&& n-1 > 1000 ){
-          wcopreco::OpWaveform wfm(ch[j], timestamp[j]-triggerTime, type, n-1);
+          wcopreco::OpWaveform wfm(ch[j]%100, timestamp[j]-triggerTime, type, n-1);
           //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41
           memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*(n-1));
           // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
@@ -222,7 +222,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
         }
 
       if (((type == 2)||(type==3) )&& n-1 < 100 ){
-          wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n-1);
+          wcopreco::OpWaveform wfm(ch[j]%100, timestamp[j], type, n-1);
           //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41
           memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*(n-1));
           // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection

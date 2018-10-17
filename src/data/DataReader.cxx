@@ -226,6 +226,9 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
           memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*(n-1));
           // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
           wfm_collection.emplace_back(std::move(wfm));
+          wfm_collection.insert_channel2index(wfm.get_ChannelNum(), wfm_collection.size());
+          wfm_collection.insert_index2channel(wfm_collection.size(), wfm.get_ChannelNum());
+
         }
 
       if (((type == 2)||(type==3) )&& n-1 < 100 ){
@@ -234,9 +237,14 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
           memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*(n-1));
           // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
           wfm_collection.emplace_back(std::move(wfm));
+          wfm_collection.insert_channel2index(wfm.get_ChannelNum(), wfm_collection.size());
+          wfm_collection.insert_index2channel(wfm_collection.size(), wfm.get_ChannelNum());
         }
 
-
+        //test map for channel number
+        // std::map<int,int> ch2in = wfm_collection.get_channel2index();
+        // std::map<int,int> in2ch = wfm_collection.get_index2channel();
+        // std::cout << "CH2IN MAP TEST: " << in2ch[10] << std::endl;
 
 
       // std::cout << "length: " << wfm_collection.size() << std::endl;

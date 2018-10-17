@@ -212,7 +212,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
       //Declare wfm, size of n-1 to get rid of underflow bin
 
 
-      //This IF statement enforces cosmic wf to have 40 bins, and Beam to have 1500
+      //These IF statements enforces cosmic wf to have 40 bins, and Beam to have 1500
       if (((type == 0)||(type==1) )&& n-1 > 1000 ){
           wcopreco::OpWaveform wfm(ch[j]%100, timestamp[j]-triggerTime, type, n-1);
           //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41

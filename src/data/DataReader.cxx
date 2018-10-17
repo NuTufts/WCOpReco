@@ -226,6 +226,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
           memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*(n-1));
           // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
           wfm_collection.emplace_back(std::move(wfm));
+
           wfm_collection.insert_channel2index(wfm.get_ChannelNum(), wfm_collection.size());
           wfm_collection.insert_index2channel(wfm_collection.size(), wfm.get_ChannelNum());
 

@@ -39,7 +39,7 @@ namespace wcopreco {
   class UBEventWaveform : public EventOpWaveforms {
   public:
 
-    typedef enum {kbeam_hg = 0, kbeam_lg, kcosmic_hg, kcosmic_lg, kNumTypes } UBOpWaveformForm_t;
+    typedef enum {kbeam_hg = 0, kbeam_lg, kcosmic_hg, kcosmic_lg, kbeam_saturated, kcosmic_saturated, kNumTypes } UBOpWaveformForm_t;
 
     UBEventWaveform();
     virtual ~UBEventWaveform() {};

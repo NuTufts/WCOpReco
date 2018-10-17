@@ -21,4 +21,4 @@ all: $(LIB) main
 	@echo "<< compiling $< >>"
 	$(CXX) $(CFLAGS) $(INCLUDES) -c $< -o $@
 main: $(LIB) main.cxx
-	$(CXX) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $@ $@.cxx $(LIBS) -L$(WCLIBDIR) -lWC_test
+	$(CXX) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o $@ $@.cxx  -L$(WCLIBDIR) -lWC_test $(LIBS)

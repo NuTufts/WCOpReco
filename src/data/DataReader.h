@@ -59,6 +59,7 @@ namespace wcopreco  {
     std::vector<double> * cosmic_lg_timestamp = 0; //or =NULL if it complains
     std::vector<double> * beam_hg_timestamp = 0; //or =NULL if it complains
     std::vector<double> * beam_lg_timestamp = 0; //or =NULL if it complains
+    double triggerTime;
 
     TClonesArray * cosmic_hg_wf;
     TClonesArray * cosmic_lg_wf;

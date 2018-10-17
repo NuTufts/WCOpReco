@@ -35,6 +35,29 @@ void wcopreco::deconvolver::deconv_test()
 
     OpWaveform wfm =( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] );
 
+    // //Diagnosis Code:
+    // OpWaveform wfm2 =( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [1] )  [WFM_INDEX] );
+    // OpWaveform wfm3 =( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [2] )  [WFM_INDEX] );
+    // OpWaveform wfm4 =( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [3] )  [WFM_INDEX] );
+    //
+    // std::cout << wfm.get_type() << "Type of waveform 1\n";
+    // std::cout << wfm2.get_type() << "Type of waveform 2\n";
+    // // std::cout << wfm3.get_type() << "Type of waveform 3\n";
+    // // std::cout << wfm4.get_type() << "Type of waveform 4\n";
+    // double value = 0;
+    // int i=0;
+    //
+    // while (value<2070){
+    //   std::cout << wfm.at(i) <<"\n";
+    //   std::cout << wfm2.at(i)<<"\n\n";
+    //   value = wfm.at(i);
+    //   i++;
+    //   // std::cout << wfm3.at(i) <<"\n";
+    //   // std::cout << wfm4.at(i)<<"\n\n";
+    //
+    // }
+    // //End Diagnosis Code
+
 ////////////////SPACE HERE FOR PRE PROCESS BEAM STUFF////////////////////
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
@@ -149,7 +172,7 @@ void wcopreco::deconvolver::deconv_test()
       Remove_Baseline_Secondary(&wfm);
       inverse_res1[ch] = Deconvolve(wfm);
       beam_dt[ch] = wfm.get_time_from_trigger();
-      std::cout << std::fixed <<beam_dt[ch]/1000000 << " Is time from trigger \n" ;
+      std::cout << std::fixed <<beam_dt[ch] << " Is time from trigger \n" ;
 
       //totPE mult, and their l1 versions are additive (each element is always +=). Each iteration of ch will add to these values.
       Perform_L1( inverse_res1[ch],

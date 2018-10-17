@@ -17,6 +17,8 @@ wcopreco::DataReader::DataReader(std::string filepath)
     //Get branches to different types of events
     tree = (TTree *) file->Get("Event/Sim");
     tree->SetBranchAddress("eventNo",&eventNo);
+    tree->SetBranchAddress("triggerTime",&triggerTime);
+
 
     cosmic_hg_wf = new TClonesArray("TH1S");
     cosmic_lg_wf = new TClonesArray("TH1S");
@@ -41,6 +43,7 @@ wcopreco::DataReader::DataReader(std::string filepath)
     //Acquire # of Entries in file
     nevents = tree->GetEntries();
     std::cout << "Number of Events Constructed:    " << tree->GetEntries() << std::endl;
+
   }
 
 UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
@@ -53,7 +56,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
         return UB_Ev;
       }
     tree->GetEntry(event_num);
-
+    std::cout << "THE TRIGGER TIME IS:                                  "<<std::fixed<< triggerTime << "\n\n\n";
       //Make an EventOpWaveforms for this event:
 
       std::vector<OpWaveformCollection> empty_vec;
@@ -208,17 +211,17 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
       Int_t n = waveform->GetNbinsX();
       //Declare wfm, size of n-1 to get rid of underflow bin
 
-  
+
       //This IF statement enforces cosmic wf to have 40 bins, and Beam to have 1500
-      if (((type == 0)||(type==1) )&& n-1 == 1500 ){
-          wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n-1);
+      if (((type == 0)||(type==1) )&& n-1 > 1000 ){
+          wcopreco::OpWaveform wfm(ch[j], timestamp[j]-triggerTime, type, n-1);
           //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41
           memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*(n-1));
           // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
           wfm_collection.emplace_back(std::move(wfm));
         }
 
-      if (((type == 2)||(type==3) )&& n-1 == 40 ){
+      if (((type == 2)||(type==3) )&& n-1 < 100 ){
           wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n-1);
           //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41
           memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*(n-1));

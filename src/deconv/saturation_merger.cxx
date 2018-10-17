@@ -24,6 +24,19 @@ namespace wcopreco {
     std::cout << "BeamLGWF_COPY 1 AFTER  Scaling: " << BLG_WFs.at(18).at(750) << "\n";
     std::cout << "CosmicLGWF_COPY 1 AFTER  Scaling: " << CLG_WFs.at(18).at(20) << "\n";
 
+    //testing makeBeamPairs (event 18)
+    OpWaveform BHG_wfm = BHG_WFs.at(18);
+    OpWaveform BLG_wfm = BLG_WFs.at(18);
+
+    //saturation_merger::timeOrder_wfm ordered_wfms(BHG_wfm,BLG_wfm);
+
+    // typedef std::set<OpWaveform,timeOrder_wfm> pmtSet;
+    // typedef std::map<short,pmtSet> pmtMapSet;
+    // typedef std::pair<OpWaveform,OpWaveform> pmtPair;
+    // typedef std::map<short,pmtPair> pmtMapPair;
+    // pmtMapPair makeBeamPairs(pmtMapSet &high, pmtMapSet &low);
+
+
 
 
 
@@ -90,6 +103,18 @@ namespace wcopreco {
     delete h;
     return baseline;
   }//End of Function
+
+
+saturation_merger::pmtMapPair saturation_merger::makeBeamPairs(saturation_merger::pmtMapSet &high, saturation_merger::pmtMapSet &low){
+  saturation_merger::pmtMapPair result;
+  for(auto h=high.begin(); h!=high.end(); h++){
+    saturation_merger::pmtPair tempPair;
+    tempPair.first = *h->second.begin();
+    tempPair.second = *low[h->first].begin();
+    result[h->first] = tempPair;
+  }
+  return result;
+}//End of Function
 
 
   float saturation_merger::findScaling(int channel){

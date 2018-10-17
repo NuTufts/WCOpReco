@@ -17,19 +17,18 @@ namespace wcopreco{
     // mergecosmic(){};
 
   protected:
+    // typedef std::vector<std::pair<short,short> > saturationTick;
     float findScaling(int channel);
     void scale_lowgains(OpWaveformCollection *BLG, OpWaveformCollection *CLG);
     double findBaselineLg(OpWaveform *wfm, int nbin);
+    std::vector<std::pair<short,short> > findSaturationTick(OpWaveform *wfm, short saturation_threshold );
 
-    struct timeOrder_wfm{
-      bool operator()(const OpWaveform& a, const OpWaveform& b) const
-      {return a.get_time_from_trigger() < b.get_time_from_trigger();}
-    };
-    typedef std::set<OpWaveform,timeOrder_wfm> pmtSet;
-    typedef std::map<short,pmtSet> pmtMapSet;
-    typedef std::pair<OpWaveform,OpWaveform> pmtPair;
-    typedef std::map<short,pmtPair> pmtMapPair;
-    pmtMapPair makeBeamPairs(pmtMapSet &high, pmtMapSet &low);
+    OpWaveformCollection beam_merger(OpWaveformCollection *BHG, OpWaveformCollection *BLG, short saturation_threshold=4080);
+    //This function is designed to merge a OpWaveformCollection of Beam High Gain Waveforms
+    //with Beam Low Gain Waveforms. High gains are the first argument, and low gains are the
+    //second argument.
+
+
 
   };
 

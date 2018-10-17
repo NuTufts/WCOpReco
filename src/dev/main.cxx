@@ -40,9 +40,14 @@ int main(){
   wcopreco::DataReader reader(file);
   std::cout << "\n\n\nFilepath is set to:   " << file << std::endl;
   wcopreco::UBEventWaveform _UB_Ev_wfm;
-  int EVENT_NUM =4;
+  int EVENT_NUM =50;
   _UB_Ev_wfm = reader.Reader(EVENT_NUM);
   wcopreco::saturation_merger merger(_UB_Ev_wfm);
+
+  // for (int EVENT_NUM=0;EVENT_NUM<53;EVENT_NUM++){
+  //   _UB_Ev_wfm = reader.Reader(EVENT_NUM);
+  //   wcopreco::saturation_merger merger(_UB_Ev_wfm);
+  // }
 
 
 

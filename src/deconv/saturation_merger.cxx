@@ -4,7 +4,6 @@
 namespace wcopreco {
 
   saturation_merger::saturation_merger(UBEventWaveform UB_Ev) {
-    std::cout << "\nYou've crafted a class, soft clap. Now get to work!\n\n" ;
 
     OpWaveformCollection BHG_WFs;
     OpWaveformCollection BLG_WFs;
@@ -16,18 +15,18 @@ namespace wcopreco {
     CHG_WFs = (UB_Ev.get__wfm_v() [2]);
     CLG_WFs = (UB_Ev.get__wfm_v() [3]);
 
-    std::cout << "BeamLowGainWf 1 BEFORE Scaling: " << UB_Ev.get__wfm_v().at(1).at(18).at(750) << "\n";
-    std::cout << "CosmicLowGainWf 1 BEFORE  Scaling: " << UB_Ev.get__wfm_v().at(3).at(18).at(20) << "\n";
+    // std::cout << "BeamLowGainWf 1 BEFORE Scaling: " << UB_Ev.get__wfm_v().at(1).at(18).at(750) << "\n";
+    // std::cout << "CosmicLowGainWf 1 BEFORE  Scaling: " << UB_Ev.get__wfm_v().at(3).at(18).at(20) << "\n";
 
     scale_lowgains(&BLG_WFs,&CLG_WFs);
     //Note the original waveforms in UB_Ev do not change, just those in our copies
-    std::cout << "BeamLGWF_COPY 1 AFTER  Scaling: " << BLG_WFs.at(18).at(750) << "\n";
-    std::cout << "CosmicLGWF_COPY 1 AFTER  Scaling: " << CLG_WFs.at(18).at(20) << "\n";
+    // std::cout << "BeamLGWF_COPY 1 AFTER  Scaling: " << BLG_WFs.at(18).at(750) << "\n";
+    // std::cout << "CosmicLGWF_COPY 1 AFTER  Scaling: " << CLG_WFs.at(18).at(20) << "\n";
 
     //testing makeBeamPairs (event 18)
     OpWaveform BHG_wfm = BHG_WFs.at(18);
     OpWaveform BLG_wfm = BLG_WFs.at(18);
-
+    OpWaveformCollection merged_beam = beam_merger(&BHG_WFs, &BLG_WFs);
     //saturation_merger::timeOrder_wfm ordered_wfms(BHG_wfm,BLG_wfm);
 
     // typedef std::set<OpWaveform,timeOrder_wfm> pmtSet;
@@ -104,18 +103,71 @@ namespace wcopreco {
     return baseline;
   }//End of Function
 
+OpWaveformCollection saturation_merger::beam_merger(OpWaveformCollection* BHG, OpWaveformCollection* BLG, short saturation_threshold) {
+  OpWaveformCollection merged_beam;
 
-saturation_merger::pmtMapPair saturation_merger::makeBeamPairs(saturation_merger::pmtMapSet &high, saturation_merger::pmtMapSet &low){
-  saturation_merger::pmtMapPair result;
-  for(auto h=high.begin(); h!=high.end(); h++){
-    saturation_merger::pmtPair tempPair;
-    tempPair.first = *h->second.begin();
-    tempPair.second = *low[h->first].begin();
-    result[h->first] = tempPair;
+  if ((BHG->size() != BLG->size() ) && (BHG->size()>0)) {
+    std::cout << "Beam High Gain Collection and Beam Low Gain Collection do not have the same number of entries. Returning Empy merge\n";
+    return merged_beam;
+  }
+  int n_wfms = BHG->size();
+  bool is_saturated;
+  int count_bin_sat=0;
+  //Loop through each waveform
+  //(generally one per channel or 32 or 36 waveforms for each gain of beam)
+  for(int i =0; i<n_wfms; i++){
+    is_saturated = false;
+    count_bin_sat=0;
+    //Now loop through HG wfm to see if saturated (3+ ticks at value  >4050)
+    for (int bin =0; bin<BHG->at(i).size(); bin++){
+      if (BHG->at(i).at(bin) > saturation_threshold) {
+        count_bin_sat++ ;
+        std::cout << count_bin_sat << " Have been counted lated at "<< bin<<"\n";
+        if(count_bin_sat >= 3){
+          is_saturated = true ;
+          break;
+        }
+      }
+    }
+    if(is_saturated) {
+          std::cout << "Well josh you ended up not in kansas no more\n";
+           // std::cout << "Xin: " << b->second.first.channel <<  " " << b->second.first.wfm.at(0) << " " << b->second.second.wfm.at(0) << std::endl;
+          std::vector<std::pair<short,short> > tickVec = findSaturationTick(&BHG->at(i), saturation_threshold);
+          // b->second.first.wfm = replaceSaturatedBin(b->second.first.wfm,b->second.second.wfm,tickVec);
+          // b->second.first.wfm = b->second.second.wfm;
+        }
+    // result[b->first] = b->second.first;
+  }
+
+
+
+
+  std::cout << "\nStill only merging a beam? That's proving tough?\n\n" ;
+
+  return merged_beam;
+}
+
+
+std::vector<std::pair<short,short> > saturation_merger::findSaturationTick(OpWaveform *wfm, short saturation_threshold){
+  std::vector<std::pair<short,short> > result;
+  bool saturatedStatus = false;
+  std::pair<short,short> tempPair;
+
+
+  for(int i=0; i<(int)wfm->size(); i++){
+    if(wfm->at(i)>saturation_threshold){
+      if(saturatedStatus == false){ tempPair.first = i; }
+      saturatedStatus = true;
+    }
+    if(wfm->at(i)<saturation_threshold && saturatedStatus == true){
+      saturatedStatus = false;
+      tempPair.second = i;
+      std::cout << i << " Index At which Saturation Occurs\n";
+      result.push_back(tempPair);
+    }
   }
   return result;
-}//End of Function
-
+}
 
   float saturation_merger::findScaling(int channel){
     if(channel == 0){ return 10.13; }

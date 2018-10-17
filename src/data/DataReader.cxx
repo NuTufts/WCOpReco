@@ -102,10 +102,17 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
 
       //Here we are filling the _UB_Ev_wfm with all the different types of waveforms in the event.
       _UB_Ev_wfm.add_entry(BHG_wfm_collection, 0, 0 );
+      _UB_Ev_wfm.insert_type2index(0,0);
+      _UB_Ev_wfm.insert_index2type(0,0);
       _UB_Ev_wfm.add_entry(BLG_wfm_collection, 1, 1 );
+      _UB_Ev_wfm.insert_type2index(1,1);
+      _UB_Ev_wfm.insert_index2type(1,1);
       _UB_Ev_wfm.add_entry(CHG_wfm_collection, 2, 2 );
+      _UB_Ev_wfm.insert_type2index(2,2);
+      _UB_Ev_wfm.insert_index2type(2,2);
       _UB_Ev_wfm.add_entry(CLG_wfm_collection, 3, 3 );
-
+      _UB_Ev_wfm.insert_type2index(3,3);
+      _UB_Ev_wfm.insert_index2type(3,3);
       std::map <int,int> testmap = _UB_Ev_wfm.get_type2index();
 
     /*Structure

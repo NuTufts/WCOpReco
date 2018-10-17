@@ -10,7 +10,7 @@ namespace wcopreco{
 
   class COphit{
   public:
-    COphit(int ch_no, std::vector<double> *hist, double time, double gain, double gain_err); //TH1S
+    COphit(int ch_no, std::vector<double> *vec, double time, double gain, double gain_err); //TH1S
     ~COphit();
 
     double get_time(){return time;};

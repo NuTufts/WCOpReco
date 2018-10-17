@@ -17,23 +17,120 @@ void wcopreco::deconvolver::deconv_test()
     int WFM_INDEX =2;
     int SIGNAL_INDEX =1;
     wcopreco::UBEventWaveform _UB_Ev_wfm;
+    //Still can't use enum
+    // UBOpWaveformForm_t blarg;
+    // blarg = UBOpWaveformForm_t.kbeam_hg;
 
     _UB_Ev_wfm = reader.Reader(EVENT_NUM);
-    // std::cout << std::endl << (  ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).at(SIGNAL_INDEX))     <<  "   Attempt at Reading a Waveform Signal Value  " <<SIGNAL_INDEX << std::endl;
-    // std::cout << (  ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).at(( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()-1))     <<  "   Attempt at Reading a Waveform Signal Value  " <<( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()-1 << std::endl;
-    // std::cout << (  ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()     <<  "   How many bins in the waveform? (1500 or 40)" <<std::endl;
-    // std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] ).size()      <<  "  How many waveforms in the collection (depends)?" <<std::endl;
-    // std::cout << (  ( _UB_Ev_wfm ).get__wfm_v() ) .size()      <<  "   How many Collections in the Event (4)?" <<std::endl <<std::endl;
+    std::cout << std::endl  <<(  ( _UB_Ev_wfm ).get__wfm_v() ) .size()      <<  "   How many Collections in the Event (4)?" <<std::endl ;
+    std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] ).size()      <<  "  How many waveforms in the collection (depends)? " <<TYPE_OF_COLLECTION <<std::endl;
+    std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [1] ).size()      <<  "  How many waveforms in the collection (depends)? " << 1 <<std::endl;
+    std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [2] ).size()      <<  "  How many waveforms in the collection (depends)? " << 2 <<std::endl;
+    std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [3] ).size()      <<  "  How many waveforms in the collection (depends)? " << 3 <<std::endl;
+
+    std::cout << (  ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).at(SIGNAL_INDEX))     <<  "   Attempt at Reading a Waveform Signal Value  " <<SIGNAL_INDEX << std::endl;
+    std::cout << (  ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).at(( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()-1))     <<  "   Attempt at Reading a Waveform Signal Value  " <<( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()-1 << std::endl << std::endl;
 
 
 
     OpWaveform wfm =( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] );
 
+////////////////SPACE HERE FOR PRE PROCESS BEAM STUFF////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+// std::vector<COphitSelection> ophits_group;
+//   COphitSelection left_ophits;
+//   for (int i=32;i!=fop_femch->size();i++){
+//     COphit *op_hit = new COphit(fop_femch->at(i), (TH1S*)fop_wf->At(i), fop_timestamp->at(i) - triggerTime, op_gain->at(fop_femch->at(i)), op_gainerror->at(fop_femch->at(i)));
+//     op_hits.push_back(op_hit);
+//
+//     //std::cout << i << " " << fop_timestamp->at(i) << " " <<  triggerTime << std::endl;
+//
+//     if (op_hit->get_type()){ // what type  good baseline ???
+//       bool flag_used = false;
+//       if (ophits_group.size()==0){
+//   	COphitSelection ophits;
+//   	ophits.push_back(op_hit);
+//   	ophits_group.push_back(ophits);
+//   	flag_used = true;
+//       }else{
+//   	for (size_t j=0; j!=ophits_group.size();j++){
+//   	  for (size_t k=0; k!= ophits_group.at(j).size(); k++){
+//   	    if (fabs(op_hit->get_time() - ophits_group.at(j).at(k)->get_time()) < 0.1 ){  // time unit??? 0.1 us?
+//   	      ophits_group.at(j).push_back(op_hit);
+//   	      flag_used = true;
+//   	      break;
+//   	    }
+//   	  }
+//   	  if (flag_used)
+//   	    break;
+//   	}
+//       }
+//       if (!flag_used){
+//   	COphitSelection ophits;
+//   	ophits.push_back(op_hit);
+//   	ophits_group.push_back(ophits);
+//       }
+//     }else{
+//       left_ophits.push_back(op_hit);
+//     }
+//   }
+//
+//   for (size_t i=0;i!=left_ophits.size();i++){
+//     bool flag_used = false;
+//     for (size_t j=0; j!=ophits_group.size();j++){
+//       for (size_t k=0; k!= ophits_group.at(j).size(); k++){
+//   	if (fabs(left_ophits.at(i)->get_time() - ophits_group.at(j).at(k)->get_time())<0.1){ // time unit??? 0.1 us?
+//   	  ophits_group.at(j).push_back(left_ophits.at(i));
+//   	  flag_used = true;
+//   	  break;
+//   	}
+//       }
+//       if (flag_used)
+//   	break;
+//     }
+//   }
+//
+//   for (size_t j=0; j!=ophits_group.size();j++){
+//     Opflash *flash = new Opflash(ophits_group.at(j));
+//     if (flash->get_total_PE()!=0){
+//       cosmic_flashes.push_back(flash);
+//     }else{
+//       delete flash;
+//     }
+//     //    std::cout << ophits_group.at(j).size() << " " << flash->get_time() << std::endl;
+//   }
+//
+//   // std::cout << cosmic_flashes.size() << std::endl;
+//
+//   // for (auto flash : cosmic_flashes){
+//   //   std::cout << flash->get_time() << std::endl;
+//   // }
+//
+//
+//
+//   for (int i=0;i!=32;i++){
+//     TH1S *hsignal = (TH1S*)fop_wf->At(i);
+//     for (int j=0;j!=1500;j++){
+//       hraw[i]->SetBinContent(j+1,hsignal->GetBinContent(j+1)-2050);
+//     }
+//     gain[i] = op_gain->at(i);
+//     beam_dt[i] = fop_timestamp->at(i) - triggerTime;
+//   }
+
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////END SPACE FOR PRE PROCESS BEAM STUFF////////////////////
 
 
     //Process the Beam:
     //Note that the following code is supposed to only deal with beam waveforms, 32 channels and 1500 bin wfms.
     //Create array of vectors to process the waveforms
+    TYPE_OF_COLLECTION = 0;
     int nbins;
     std::vector<double> inverse_res1[32];
     std::vector<double> decon_v[32];
@@ -44,7 +141,6 @@ void wcopreco::deconvolver::deconv_test()
     std::vector<double> mult_v(250,0);
     std::vector<double> l1_totPE_v(250,0);
     std::vector<double> l1_mult_v(250,0);
-
     for (int ch=0; ch<32; ch++){
       wfm = ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [ch] );
       nbins = wfm.size();
@@ -53,7 +149,7 @@ void wcopreco::deconvolver::deconv_test()
       Remove_Baseline_Secondary(&wfm);
       inverse_res1[ch] = Deconvolve(wfm);
       beam_dt[ch] = wfm.get_time_from_trigger();
-      // std::cout << std::fixed <<beam_dt[ch] << " Is time from trigger \n" ;
+      std::cout << std::fixed <<beam_dt[ch]/1000000 << " Is time from trigger \n" ;
 
       //totPE mult, and their l1 versions are additive (each element is always +=). Each iteration of ch will add to these values.
       Perform_L1( inverse_res1[ch],
@@ -148,12 +244,63 @@ void wcopreco::deconvolver::deconv_test()
         }
         //  std::cout << start_bin << " " << end_bin << std::endl;
         //check with the next bin content ...
-        std::cout << "Josho, we got issues to spare " << start_bin << " " << end_bin<< "\n\n\n\n\n" ;
 
         Opflash *flash = new Opflash(decon_v, beam_dt[0], start_bin, end_bin);
         flash->Add_l1info(&l1_totPE_v, &l1_mult_v, beam_dt[0], start_bin, end_bin);
         // std::cout << flash->get_time() << " " <<flash->get_total_PE() << " " << flash->get_num_fired() << std::endl;
         beam_flashes.push_back(flash);
+
+
+
+        // //Start COSMICS flash section
+        // Opflash *prev_cflash = 0;
+        //
+        // for (size_t i=0; i!=cosmic_flashes.size();i++){
+        //   Opflash *cflash = cosmic_flashes.at(i);
+        //   //std::cout << cflash->get_time() << std::endl;
+        //   bool save = true;
+        //   for (size_t j=0; j!=beam_flashes.size();j++){
+        //     Opflash *bflash = beam_flashes.at(j);
+        //     if (cflash->get_time() >= bflash->get_low_time() && cflash->get_time() <= bflash->get_high_time())
+        //       {
+        //       save = false;
+        //       break;
+        //     }
+        //   }
+        //   if (save){
+        //     flashes.push_back(cflash);
+        //     if (prev_cflash==0 ){
+        //       if (cflash->get_time()<0)
+        //         {
+        //         prev_cflash = cflash;
+        //       }
+        //     }
+        //     else{
+        //       if (cflash->get_time() < 0 && cflash->get_time() > prev_cflash->get_time())
+        //         {
+        //         prev_cflash = cflash;
+        //       }
+        //     }
+        //   }
+        // }
+        // for (size_t j=0; j!=beam_flashes.size();j++){
+        //   Opflash *bflash = beam_flashes.at(j);
+        //   if (prev_cflash!=0){
+        //
+        //     //std::cout << prev_cflash->get_time() << std::endl;
+        //     if (bflash->get_time() - prev_cflash->get_time() < 2.4 && // veto for 3 us
+        //               bflash->get_total_PE() < 0.7 * prev_cflash->get_total_PE())
+        //               {continue;}
+        //     // std::cout << bflash->get_time() << " " << prev_cflash->get_time() << " " << bflash->get_total_PE() << " " << prev_cflash->get_total_PE() << std::endl;
+        //   }
+        //   flashes.push_back(bflash);
+        // }
+        // // std::cout << cosmic_flashes.size() << " " << beam_flashes.size() << " " << flashes.size() << std::endl;
+        // //END COSMIC FLASH SECTION
+
+
+
+
       }
 
 

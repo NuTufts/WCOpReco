@@ -203,21 +203,30 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     int count = 0;
     // TCanvas *c = new TCanvas("Title", "Name", 600,400);
 
-
-
-
-
     for (unsigned j=0; j < ch.size(); j++){
       TH1S *waveform = (TH1S*)Eventwaveform_root.At(j);
       Int_t n = waveform->GetNbinsX();
       //Declare wfm, size of n-1 to get rid of underflow bin
-      wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n-1);
 
-      //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1)
-      memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*(n-1));
+  
+      //This IF statement enforces cosmic wf to have 40 bins, and Beam to have 1500
+      if (((type == 0)||(type==1) )&& n-1 == 1500 ){
+          wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n-1);
+          //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41
+          memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*(n-1));
+          // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
+          wfm_collection.emplace_back(std::move(wfm));
+        }
 
-      // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
-      wfm_collection.emplace_back(std::move(wfm));
+      if (((type == 2)||(type==3) )&& n-1 == 40 ){
+          wcopreco::OpWaveform wfm(ch[j], timestamp[j], type, n-1);
+          //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41
+          memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*(n-1));
+          // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
+          wfm_collection.emplace_back(std::move(wfm));
+        }
+
+
 
 
       // std::cout << "length: " << wfm_collection.size() << std::endl;

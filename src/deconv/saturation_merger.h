@@ -24,6 +24,7 @@ namespace wcopreco{
     std::vector<std::pair<short,short> > findSaturationTick(OpWaveform *wfm, short saturation_threshold );
     OpWaveform replaceSaturatedBin(OpWaveform &high, OpWaveform &low, std::vector<std::pair<short,short>> saturation_ranges);
 
+    OpWaveformCollection* cosmic_merger(OpWaveformCollection* CHG, OpWaveformCollection* CLG, short saturation_threshold =4080);
 
     OpWaveformCollection* beam_merger(OpWaveformCollection *BHG, OpWaveformCollection *BLG, short saturation_threshold=4080);
     //This function is designed to merge a OpWaveformCollection of Beam High Gain Waveforms

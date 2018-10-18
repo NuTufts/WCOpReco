@@ -22,11 +22,13 @@ namespace wcopreco{
     void scale_lowgains(OpWaveformCollection *BLG, OpWaveformCollection *CLG);
     double findBaselineLg(OpWaveform *wfm, int nbin);
     std::vector<std::pair<short,short> > findSaturationTick(OpWaveform *wfm, short saturation_threshold );
+    OpWaveform replaceSaturatedBin(OpWaveform &high, OpWaveform &low, std::vector<std::pair<short,short>> saturation_ranges);
 
-    OpWaveformCollection beam_merger(OpWaveformCollection *BHG, OpWaveformCollection *BLG, short saturation_threshold=4080);
+
+    OpWaveformCollection* beam_merger(OpWaveformCollection *BHG, OpWaveformCollection *BLG, short saturation_threshold=4080);
     //This function is designed to merge a OpWaveformCollection of Beam High Gain Waveforms
     //with Beam Low Gain Waveforms. High gains are the first argument, and low gains are the
-    //second argument.
+    //second argument. It also assumes the elements in the collection are ordered by channel
 
 
 

@@ -26,14 +26,9 @@ namespace wcopreco {
     //testing makeBeamPairs (event 18)
     OpWaveform BHG_wfm = BHG_WFs.at(18);
     OpWaveform BLG_wfm = BLG_WFs.at(18);
-    OpWaveformCollection merged_beam = beam_merger(&BHG_WFs, &BLG_WFs);
-    //saturation_merger::timeOrder_wfm ordered_wfms(BHG_wfm,BLG_wfm);
+    OpWaveformCollection* merged_beam = beam_merger(&BHG_WFs, &BLG_WFs);
 
-    // typedef std::set<OpWaveform,timeOrder_wfm> pmtSet;
-    // typedef std::map<short,pmtSet> pmtMapSet;
-    // typedef std::pair<OpWaveform,OpWaveform> pmtPair;
-    // typedef std::map<short,pmtPair> pmtMapPair;
-    // pmtMapPair makeBeamPairs(pmtMapSet &high, pmtMapSet &low);
+
 
 
 
@@ -103,48 +98,56 @@ namespace wcopreco {
     return baseline;
   }//End of Function
 
-OpWaveformCollection saturation_merger::beam_merger(OpWaveformCollection* BHG, OpWaveformCollection* BLG, short saturation_threshold) {
-  OpWaveformCollection merged_beam;
-
+OpWaveformCollection* saturation_merger::beam_merger(OpWaveformCollection* BHG, OpWaveformCollection* BLG, short saturation_threshold) {
+  OpWaveformCollection* merged_beam;
   if ((BHG->size() != BLG->size() ) && (BHG->size()>0)) {
     std::cout << "Beam High Gain Collection and Beam Low Gain Collection do not have the same number of entries. Returning Empy merge\n";
     return merged_beam;
   }
-  int n_wfms = BHG->size();
+
+
+  int n_channels = BHG->size();
   bool is_saturated;
   int count_bin_sat=0;
+
+  int idx_ch_hg ;
+  int idx_ch_lg ;
+
   //Loop through each waveform
-  //(generally one per channel or 32 or 36 waveforms for each gain of beam)
-  for(int i =0; i<n_wfms; i++){
+  //(generally one per channel so 32 or 36 waveforms for each gain of beam)
+  for(int i =0; i<n_channels; i++){
+
+    //These calls get the index of the wfm that occurs at the channel i
+    //for each gain, in case the two Opwaveformcollections aren't ordered the
+    //same. The at(0) is because get_channel2index returns a vector of wfms
+    //occurring at channel i but for beam we expect just one wfm per channel
+
+    idx_ch_hg = BHG->get_channel2index(i).at(0);
+    idx_ch_lg = BLG->get_channel2index(i).at(0);
+
+
     is_saturated = false;
     count_bin_sat=0;
     //Now loop through HG wfm to see if saturated (3+ ticks at value  >4050)
     for (int bin =0; bin<BHG->at(i).size(); bin++){
-      if (BHG->at(i).at(bin) > saturation_threshold) {
+      if (BHG->at(idx_ch_hg).at(bin) > saturation_threshold) {
         count_bin_sat++ ;
-        std::cout << count_bin_sat << " Have been counted lated at "<< bin<<"\n";
         if(count_bin_sat >= 3){
+          //Consider it saturated
           is_saturated = true ;
           break;
         }
       }
     }
     if(is_saturated) {
-          std::cout << "Well josh you ended up not in kansas no more\n";
-           // std::cout << "Xin: " << b->second.first.channel <<  " " << b->second.first.wfm.at(0) << " " << b->second.second.wfm.at(0) << std::endl;
-          std::vector<std::pair<short,short> > tickVec = findSaturationTick(&BHG->at(i), saturation_threshold);
-          // b->second.first.wfm = replaceSaturatedBin(b->second.first.wfm,b->second.second.wfm,tickVec);
-          // b->second.first.wfm = b->second.second.wfm;
+          //If high gain waveform is saturated, replace the saturated sections with part of the low gain wfm
+          std::vector<std::pair<short,short> > tickVec = findSaturationTick(&BHG->at(idx_ch_hg), saturation_threshold);
+          BHG->at(i) = replaceSaturatedBin( (BHG->at(idx_ch_hg)), (BLG->at(idx_ch_lg)), tickVec);
+
         }
-    // result[b->first] = b->second.first;
   }
 
-
-
-
-  std::cout << "\nStill only merging a beam? That's proving tough?\n\n" ;
-
-  return merged_beam;
+  return BHG;
 }
 
 
@@ -152,7 +155,6 @@ std::vector<std::pair<short,short> > saturation_merger::findSaturationTick(OpWav
   std::vector<std::pair<short,short> > result;
   bool saturatedStatus = false;
   std::pair<short,short> tempPair;
-
 
   for(int i=0; i<(int)wfm->size(); i++){
     if(wfm->at(i)>saturation_threshold){
@@ -162,11 +164,20 @@ std::vector<std::pair<short,short> > saturation_merger::findSaturationTick(OpWav
     if(wfm->at(i)<saturation_threshold && saturatedStatus == true){
       saturatedStatus = false;
       tempPair.second = i;
-      std::cout << i << " Index At which Saturation Occurs\n";
       result.push_back(tempPair);
     }
   }
   return result;
+}
+
+OpWaveform wcopreco::saturation_merger::replaceSaturatedBin(OpWaveform &high, OpWaveform &low, std::vector<std::pair<short,short>> saturation_ranges){
+
+  for(int i=0; i<(int)saturation_ranges.size(); i++){
+    for(short j=saturation_ranges.at(i).first; j<saturation_ranges.at(i).second; j++){
+      high.at(j) = low.at(j);
+    }
+  }
+  return high;
 }
 
   float saturation_merger::findScaling(int channel){

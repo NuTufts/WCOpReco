@@ -105,9 +105,21 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
     std::cout << "HG size: " << CHG->size() <<std::endl;
     std::cout << "LG size: " << CLG->size() <<std::endl;
   };
-  //loop through smaller collection:
+  /*
+  Going to have to loop through the high gains, first we want to see if a waveform is
+  saturated. Is so we then need to see if it is isolated from all possible low gains
+  If it is isolated, at it to the output, we want that. If not isolated then add the low gain version
+  to the output instead. Those should be the 3 cases we care about. The output of this should
+  be the same size as the inputted CHGcollection, so we can just update that collection by reference
+  instead. That will save us memory.
+  */
 
- int count =0;
+  //loop through high gain (important) collection:
+bool is_saturated;
+int count_bin_sat;
+int count_paired =0;
+int count_sat_no_friends=0;
+int count_good_hg =0;
   for (int i = 0; i<CHG->size(); i++){
     //if abs(hightime-lowtime) < tickwindow*tick , then pair the wfms to merge
 
@@ -118,31 +130,51 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
     //   std::cout<< "time diff: " << Hwfm.get_time_from_trigger() - Lwfm.get_time_from_trigger() <<std::endl;
     // }
 
-    float time_High = CHG->at(i).get_time_from_trigger();
-    short ch_High = CHG->at(i).get_ChannelNum();
-
-    /*
-    Going to have to loop through the high gains, first we want to see if a waveform is
-    saturated. Is so we then need to see if it is isolated from all possible low gains
-    If it is isolated, at it to the output, we want that. If not isolated then add the low gain version
-    to the output instead. Those should be the 3 cases we care about. The output of this should
-    be the same size as the inputted CHGcollection, so we can just update that collection by reference
-    instead. That will save us memory.
-    */
-    for (int j = 0; j<CLG->size(); j++){
-      float time_Low = CLG->at(j).get_time_from_trigger();
-      short ch_Low = CLG->at(j).get_ChannelNum();
-      if (ch_Low == ch_High && abs(time_High-time_Low) < tick_window*tick){
-        // std::cout << "FOUND A PAIR!!!" << std::endl;
-        count ++;
+    is_saturated = false;
+    count_bin_sat =0;
+    //Loop through all bins in this waveform
+    for (int bin =0; bin<CHG->at(i).size(); bin++){
+      if (CHG->at(i).at(bin) > saturation_threshold) {
+        count_bin_sat++ ;
+        if(count_bin_sat >= 3){
+          //Consider it saturated
+          is_saturated = true ;
+          break;
+        }
       }
-      //else if (/*Code Here for if */) {
+    }
+    //If it's saturated then we need to look for a low gain pair
+    if (is_saturated){
+      //Get Channel and timestamp of CHG for matching
+      float time_High = CHG->at(i).get_time_from_trigger();
+      short ch_High = CHG->at(i).get_ChannelNum();
+
+      //Loop through all LG looking for a friend
+      for (int j = 0; j<CLG->size(); j++){
+        //Get potential friend's channel and timestamp
+        float time_Low = CLG->at(j).get_time_from_trigger();
+        short ch_Low = CLG->at(j).get_ChannelNum();
+
+        if (ch_Low == ch_High && abs(time_High-time_Low) < tick_window*tick){
+          // std::cout << "FOUND A PAIR!!!" << std::endl;
+          //Replace HG with it's pair
+          std::cout << CHG->at(j).at(1) << " 1st Bin Before Pair Substitution\n";
+          std::cout << CLG->at(j).at(1) << " 1st Bin Should Switch to this.\n";
 
 
-    //  }
+          CHG->at(j) = CLG->at(j);
+          std::cout << CHG->at(j).at(1) << " 1st Bin After  Pair Substitution\n\n";
+          count_paired ++;
+          break;
+        }
+
+
+
+      //  }
+      }
     }
   }
-  std::cout << count << "     I CAN Count to \n";
+  std::cout << count_paired << "     There are this many HG waveforms paired with friends! :)\n";
 
   return merged_cosmic;
 }
@@ -178,7 +210,7 @@ OpWaveformCollection* saturation_merger::beam_merger(OpWaveformCollection* BHG, 
     is_saturated = false;
     count_bin_sat=0;
     //Now loop through HG wfm to see if saturated (3+ ticks at value  >4050)
-    for (int bin =0; bin<BHG->at(i).size(); bin++){
+    for (int bin =0; bin<BHG->at(idx_ch_hg).size(); bin++){
       if (BHG->at(idx_ch_hg).at(bin) > saturation_threshold) {
         count_bin_sat++ ;
         if(count_bin_sat >= 3){

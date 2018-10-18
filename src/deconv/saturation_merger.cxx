@@ -107,28 +107,42 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
   };
   //loop through smaller collection:
 
+ int count =0;
+  for (int i = 0; i<CHG->size(); i++){
+    //if abs(hightime-lowtime) < tickwindow*tick , then pair the wfms to merge
 
-  // for (int i = 0; i<CHG->size(); i++){
-  //   //if abs(hightime-lowtime) < tickwindow*tick , then pair the wfms to merge
-  //
-  //   //check to make sure times aren't same
-  //   // OpWaveform Hwfm = CHG->at(i);
-  //   // OpWaveform Lwfm = CLG->at(i);
-  //   // if (i%20==0){
-  //   //   std::cout<< "time diff: " << Hwfm.get_time_from_trigger() - Lwfm.get_time_from_trigger() <<std::endl;
-  //   // }
-  //
-  //   float time_High = CHG->at(i).get_time_from_trigger();
-  //   short ch_High = CHG->at(i).get_ChannelNum();
-  //
-  //   for (int j = 0; j<CLG->size(); j++){
-  //     float time_Low = CLG->at(i).get_time_from_trigger();
-  //     short ch_Low = CLG->at(i).get_ChannelNum();
-  //     if (ch_Low == ch_High && abs(time_High-time_Low) < tick_window*tick){
-  //       std::cout << "FOUND A PAIR!!!" << std::endl;
-  //     }
-  //   }
-  //}
+    //check to make sure times aren't same
+    // OpWaveform Hwfm = CHG->at(i);
+    // OpWaveform Lwfm = CLG->at(i);
+    // if (i%20==0){
+    //   std::cout<< "time diff: " << Hwfm.get_time_from_trigger() - Lwfm.get_time_from_trigger() <<std::endl;
+    // }
+
+    float time_High = CHG->at(i).get_time_from_trigger();
+    short ch_High = CHG->at(i).get_ChannelNum();
+
+    /*
+    Going to have to loop through the high gains, first we want to see if a waveform is
+    saturated. Is so we then need to see if it is isolated from all possible low gains
+    If it is isolated, at it to the output, we want that. If not isolated then add the low gain version
+    to the output instead. Those should be the 3 cases we care about. The output of this should
+    be the same size as the inputted CHGcollection, so we can just update that collection by reference
+    instead. That will save us memory.
+    */
+    for (int j = 0; j<CLG->size(); j++){
+      float time_Low = CLG->at(j).get_time_from_trigger();
+      short ch_Low = CLG->at(j).get_ChannelNum();
+      if (ch_Low == ch_High && abs(time_High-time_Low) < tick_window*tick){
+        // std::cout << "FOUND A PAIR!!!" << std::endl;
+        count ++;
+      }
+      //else if (/*Code Here for if */) {
+
+
+    //  }
+    }
+  }
+  std::cout << count << "     I CAN Count to \n";
 
   return merged_cosmic;
 }

@@ -237,9 +237,11 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
           //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41
           memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*(n-1));
           // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
-          wfm_collection.emplace_back(std::move(wfm));
-          wfm_collection.insert_channel2index(wfm.get_ChannelNum(), wfm_collection.size()-1);
-          wfm_collection.insert_index2channel(wfm_collection.size()-1, wfm.get_ChannelNum());
+          wfm_collection.add_waveform(wfm);
+
+          // wfm_collection.emplace_back(std::move(wfm));
+          // wfm_collection.insert_channel2index(wfm.get_ChannelNum(), wfm_collection.size()-1);
+          // wfm_collection.insert_index2channel(wfm_collection.size()-1, wfm.get_ChannelNum());
         }
 
         //test map for channel number

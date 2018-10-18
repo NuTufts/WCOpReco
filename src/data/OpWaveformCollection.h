@@ -22,8 +22,8 @@ namespace wcopreco {
     void insert_index2channel(int index, int channel) {index2channel.insert(std::pair<int,int>(index,channel));};
     int get_index2channel(int index) {return index2channel[index];};
     std::vector<int> get_channel2index(int channel) {return channel2index[channel];};
+    void add_waveform(OpWaveform wfm);
 
-    
   protected:
 
     std::map <int,std::vector<int>> channel2index;

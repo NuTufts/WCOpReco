@@ -3,3 +3,4 @@ build/include/WCOpReco/*
 build/lib/*
 *.o
 *.png
+Possible_Improvements.txt

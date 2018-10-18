@@ -36,4 +36,10 @@ namespace wcopreco{
   void OpWaveformCollection::set_index2channel(std::map <int,int> input_map)
   {index2channel = input_map;}
 
+  void OpWaveformCollection::add_waveform(OpWaveform wfm) {
+    emplace_back(std::move(wfm));
+    insert_channel2index(wfm.get_ChannelNum(), size()-1);
+    insert_index2channel(size()-1, wfm.get_ChannelNum());
+  }
+
 };

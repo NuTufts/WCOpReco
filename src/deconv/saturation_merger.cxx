@@ -106,13 +106,29 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
     std::cout << "LG size: " << CLG->size() <<std::endl;
   };
   //loop through smaller collection:
-  int size;
-  if (CHG->size() >= CLG->size() ) {size = CLG->size();}
-  else {size = CHG->size();};
 
-  for (int i = 0; i<size; i++){
-    //if abs(hightime-lowtime) < tickwindow*tick , then pair the wfms to merge
-  }
+
+  // for (int i = 0; i<CHG->size(); i++){
+  //   //if abs(hightime-lowtime) < tickwindow*tick , then pair the wfms to merge
+  //
+  //   //check to make sure times aren't same
+  //   // OpWaveform Hwfm = CHG->at(i);
+  //   // OpWaveform Lwfm = CLG->at(i);
+  //   // if (i%20==0){
+  //   //   std::cout<< "time diff: " << Hwfm.get_time_from_trigger() - Lwfm.get_time_from_trigger() <<std::endl;
+  //   // }
+  //
+  //   float time_High = CHG->at(i).get_time_from_trigger();
+  //   short ch_High = CHG->at(i).get_ChannelNum();
+  //
+  //   for (int j = 0; j<CLG->size(); j++){
+  //     float time_Low = CLG->at(i).get_time_from_trigger();
+  //     short ch_Low = CLG->at(i).get_ChannelNum();
+  //     if (ch_Low == ch_High && abs(time_High-time_Low) < tick_window*tick){
+  //       std::cout << "FOUND A PAIR!!!" << std::endl;
+  //     }
+  //   }
+  //}
 
   return merged_cosmic;
 }

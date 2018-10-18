@@ -28,7 +28,7 @@ namespace wcopreco {
     OpWaveform BLG_wfm = BLG_WFs.at(18);
     OpWaveformCollection* merged_beam = beam_merger(&BHG_WFs, &BLG_WFs);
 
-    OpWaveformCollection merged_cosmic = cosmic_merger(&CHG_WFs, &CLG_WFs);
+    OpWaveformCollection* merged_cosmic = cosmic_merger(&CHG_WFs, &CLG_WFs);
 
 
   }//End of Class Constructor
@@ -93,8 +93,8 @@ namespace wcopreco {
     return baseline;
   }//End of Function
 
-OpWaveformCollection saturation_merger::cosmic_merger(OpWaveformCollection* CHG, OpWaveformCollection* CLG, short saturation_threshold){
-  OpWaveformCollection merged_cosmic;
+OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG, OpWaveformCollection* CLG, short saturation_threshold){
+  OpWaveformCollection* merged_cosmic;
   //first pair the low and high gain - can probably make as seperate function...
   //want to remove hard coded values eventually
   int tick_window = 20;

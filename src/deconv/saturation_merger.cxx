@@ -26,9 +26,12 @@ namespace wcopreco {
     //testing makeBeamPairs (event 18)
     OpWaveform BHG_wfm = BHG_WFs.at(18);
     OpWaveform BLG_wfm = BLG_WFs.at(18);
-    OpWaveformCollection* merged_beam = beam_merger(&BHG_WFs, &BLG_WFs);
 
+
+
+    OpWaveformCollection* merged_beam = beam_merger(&BHG_WFs, &BLG_WFs);
     OpWaveformCollection* merged_cosmic = cosmic_merger(&CHG_WFs, &CLG_WFs);
+
 
 
   }//End of Class Constructor
@@ -94,7 +97,6 @@ namespace wcopreco {
   }//End of Function
 
 OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG, OpWaveformCollection* CLG, short saturation_threshold){
-  OpWaveformCollection* merged_cosmic;
   //first pair the low and high gain - can probably make as seperate function...
   //want to remove hard coded values eventually
   int tick_window = 20;
@@ -115,68 +117,139 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
   */
 
   //loop through high gain (important) collection:
+
+  //Create a map to ensure we only use each lowgain wfm at most once.
+std::map<int,bool> is_used;
+for (int i =0;i<CLG->size();i++){
+  is_used[i] = false;
+}
 bool is_saturated;
+bool is_paired;
+int count_saturated =0;
 int count_bin_sat;
 int count_paired =0;
 int count_sat_no_friends=0;
 int count_good_hg =0;
-  for (int i = 0; i<CHG->size(); i++){
+int count_continues=0;
+int continues_this_hg;
+  for (int idx_chg = 0; idx_chg<CHG->size(); idx_chg++){
+    continues_this_hg=0;
     //if abs(hightime-lowtime) < tickwindow*tick , then pair the wfms to merge
 
     //check to make sure times aren't same
-    // OpWaveform Hwfm = CHG->at(i);
-    // OpWaveform Lwfm = CLG->at(i);
-    // if (i%20==0){
+    // OpWaveform Hwfm = CHG->at(idx_chg);
+    // OpWaveform Lwfm = CLG->at(idx_chg);
+    // if (idx_chg%20==0){
     //   std::cout<< "time diff: " << Hwfm.get_time_from_trigger() - Lwfm.get_time_from_trigger() <<std::endl;
     // }
 
     is_saturated = false;
     count_bin_sat =0;
     //Loop through all bins in this waveform
-    for (int bin =0; bin<CHG->at(i).size(); bin++){
-      if (CHG->at(i).at(bin) > saturation_threshold) {
+    for (int bin =0; bin<CHG->at(idx_chg).size(); bin++){
+      if (CHG->at(idx_chg).at(bin) > saturation_threshold) {
         count_bin_sat++ ;
         if(count_bin_sat >= 3){
           //Consider it saturated
           is_saturated = true ;
+          count_saturated++;
           break;
         }
       }
     }
     //If it's saturated then we need to look for a low gain pair
     if (is_saturated){
+      is_paired =0;
       //Get Channel and timestamp of CHG for matching
-      float time_High = CHG->at(i).get_time_from_trigger();
-      short ch_High = CHG->at(i).get_ChannelNum();
+      float time_High = CHG->at(idx_chg).get_time_from_trigger();
+      short ch_High = CHG->at(idx_chg).get_ChannelNum();
 
       //Loop through all LG looking for a friend
-      for (int j = 0; j<CLG->size(); j++){
+      for (int idx_clg = 0; idx_clg<CLG->size(); idx_clg++){
+        /*
+        If this lowgain waveform has already been used, skip to the next one
+        Meant to duplicate WC's deletion of the low gain wfm after use.
+        As far as I can tell all this is doing is saving you the trouble of
+        calculating the next few stuff for this waveform
+        */
+        if (is_used[idx_clg]) {
+          count_continues++;
+          continues_this_hg++;
+          continue;
+        }
         //Get potential friend's channel and timestamp
-        float time_Low = CLG->at(j).get_time_from_trigger();
-        short ch_Low = CLG->at(j).get_ChannelNum();
+        float time_Low = CLG->at(idx_clg).get_time_from_trigger();
+        short ch_Low = CLG->at(idx_clg).get_ChannelNum();
 
         if (ch_Low == ch_High && abs(time_High-time_Low) < tick_window*tick){
+
+
           // std::cout << "FOUND A PAIR!!!" << std::endl;
           //Replace HG with it's pair
-          std::cout << CHG->at(j).at(1) << " 1st Bin Before Pair Substitution\n";
-          std::cout << CLG->at(j).at(1) << " 1st Bin Should Switch to this.\n";
-
-
-          CHG->at(j) = CLG->at(j);
-          std::cout << CHG->at(j).at(1) << " 1st Bin After  Pair Substitution\n\n";
+          // std::cout << idx_chg << " index changed \n";
+          // std::cout << idx_chg << "   high gain index\n";
+          //
+          // std::cout << idx_clg << "   Low gain index\n";
+          CHG->at(idx_chg) = CLG->at(idx_clg);
+          is_used[idx_clg] = true; //set this LG wfm to true so we don't use it again.
+          is_paired = true;
           count_paired ++;
           break;
         }
 
+      }//End of loop through low gains
+      //Check to see if no low gain pair found
+      if(is_paired == false) {
+        //Do nothing to change this high gain waveform, is saturated and unfixable
+        //Keep it in the collection to be returned
 
-
-      //  }
+        // std::cout << "No friend found, waveform not paired with a lowgain, and saturated\n";
+        count_sat_no_friends ++;
       }
     }
-  }
-  std::cout << count_paired << "     There are this many HG waveforms paired with friends! :)\n";
+    //Since this is a boolean it should always be true or false, but else if for check
+    else if (is_saturated ==false){
+      //Do nothing to this waveform, it was unsaturated.
+      //Keep it in the collection to be returned.
 
-  return merged_cosmic;
+      // std::cout << "Waveform wasn't saturated, happy just the way it is\n";
+      count_good_hg ++;
+    }
+    else {
+      std::cout << "XXXXXXXXXXXXXXXXXXXXXXXxxxxxxxx PROBLEM HG meets no criteria! xxxxxxxxxxxxxXxXXXXXXXXXXXX";
+    }
+    // std::cout << continues_this_hg << "    The number of times continued for HG wfm    " << idx_chg << "\n";
+  }
+  //Now we add in all the unpaired low gain waveforms.
+  for (int idx_clg=0; idx_clg<CLG->size(); idx_clg++){
+    if (is_used[idx_clg] ==false ){
+      std::cout << CHG->size() <<"  Size Before\n";
+      //Option A
+      CHG->add_waveform( CLG->at(idx_clg) );
+
+      //Option B (Hardcoded the function add_waveform)
+      // CHG->emplace_back(std::move(CLG->at(idx_clg)));
+      // std::cout << "  Got A \n\n\n\n";
+      // CHG->insert_channel2index(CLG->at(idx_clg).get_ChannelNum(), CHG->size()-1);
+      // std::cout << "  Got B \n\n\n\n";
+      //
+      // CHG->insert_index2channel(CHG->size()-1, CLG->at(idx_clg).get_ChannelNum());
+      std::cout << CHG->size() <<"  Size After\n\n";
+    }
+  }
+
+  std::cout << count_saturated << "     This many saturated HG \n\n";
+
+  std::cout << count_paired << "     There are this many HG waveforms paired with friends! :)\n";
+  std::cout << count_sat_no_friends << "     There are this many HG waveforms saturated, but without friends! :(\n";
+  std::cout << count_good_hg << "     There are this many HG waveforms not looking for friends!! :D\n";
+  std::cout << CHG->size() << "    Is the total number of waveforms returned\n";
+  std::cout << count_continues << "    The number of times continued\n\n";
+
+
+
+
+  return CHG;
 }
 
 OpWaveformCollection* saturation_merger::beam_merger(OpWaveformCollection* BHG, OpWaveformCollection* BLG, short saturation_threshold) {
@@ -223,7 +296,7 @@ OpWaveformCollection* saturation_merger::beam_merger(OpWaveformCollection* BHG, 
     if(is_saturated) {
           //If high gain waveform is saturated, replace the saturated sections with part of the low gain wfm
           std::vector<std::pair<short,short> > tickVec = findSaturationTick(&BHG->at(idx_ch_hg), saturation_threshold);
-          BHG->at(i) = replaceSaturatedBin( (BHG->at(idx_ch_hg)), (BLG->at(idx_ch_lg)), tickVec);
+          BHG->at(idx_ch_hg) = replaceSaturatedBin( (BHG->at(idx_ch_hg)), (BLG->at(idx_ch_lg)), tickVec);
 
         }
   }

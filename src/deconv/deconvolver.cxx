@@ -184,7 +184,9 @@ void wcopreco::deconvolver::deconv_test()
 
 
 
-        // //Start COSMICS flash section
+        // //Start COSMICS flash section - to do this, I think we need the hitfinder first
+        // // -see how cosmic_flashes is defined in ToyLightReco (K)
+        
         // Opflash *prev_cflash = 0;
         //
         // for (size_t i=0; i!=cosmic_flashes.size();i++){

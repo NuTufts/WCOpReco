@@ -29,7 +29,10 @@ namespace wcopreco {
       //    op_hits.push_back(op_hit);
       //
       //   if (op_hit->get_type()){ // what type  good baseline ???
+      // //get_type returns good baseline...for some reason
       //     bool flag_used = false;
+
+      //     //first time through, make ophits_group
       //     if (ophits_group.size()==0){
       //     	COphitSelection ophits;
       //     	ophits.push_back(op_hit);
@@ -37,9 +40,11 @@ namespace wcopreco {
       //     	ophits_group.push_back(ophits);
       //     	flag_used = true;
       //     }
+
       //     else{
       //     	for (size_t j=0; j!=ophits_group.size();j++){
       //     	  for (size_t k=0; k!= ophits_group.at(j).size(); k++){
+      //        //I think this is some sort of time ordering
       //     	    if (fabs(op_hit->get_time() - ophits_group.at(j).at(k)->get_time()) < 0.1 ){  // time unit??? 0.1 us?
       //     	      ophits_group.at(j).push_back(op_hit);
       //     	      flag_used = true;
@@ -50,6 +55,7 @@ namespace wcopreco {
       //     	    break;
       //     	}
       //     }
+      //     //if it doesn't fit between any of the other times, put it at the end
       //     if (!flag_used){
       //     	COphitSelection ophits;
       //     	ophits.push_back(op_hit);
@@ -57,12 +63,13 @@ namespace wcopreco {
       //     }
       //   }
       //
-      //
+      //   //if not good baseline??
       //   else{
       //     left_ophits.push_back(op_hit);
       //   }
       // }
       //
+      // //put in the hits with bad baselines in time order
       // for (size_t i=0;i!=left_ophits.size();i++){
       //   bool flag_used = false;
       //   for (size_t j=0; j!=ophits_group.size();j++){
@@ -78,6 +85,9 @@ namespace wcopreco {
       //   }
       // }
       //
+      // // should this chunk be with the flash code? either way we have to return something
+      // // (either cosmic_flashes or ophits_group)
+
       // for (size_t j=0; j!=ophits_group.size();j++){
       //   Opflash *flash = new Opflash(ophits_group.at(j));
       //   if (flash->get_total_PE()!=0){

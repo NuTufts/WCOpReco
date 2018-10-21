@@ -3,6 +3,7 @@
 
 #include "WCOpReco/DataReader.h"
 #include "WCOpReco/COphit.h"
+#include "WCOpReco/Opflash.h"
 
 namespace wcopreco{
 

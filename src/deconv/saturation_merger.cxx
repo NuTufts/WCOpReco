@@ -34,6 +34,7 @@ namespace wcopreco {
 
 
 
+
   }//End of Class Constructor
 
   // void wcopreco::saturation_merger::deconv_test()
@@ -119,19 +120,19 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
   //loop through high gain (important) collection:
 
   //Create a map to ensure we only use each lowgain wfm at most once.
-std::map<int,bool> is_used;
-for (int i =0;i<CLG->size();i++){
-  is_used[i] = false;
-}
-bool is_saturated;
-bool is_paired;
-int count_saturated =0;
-int count_bin_sat;
-int count_paired =0;
-int count_sat_no_friends=0;
-int count_good_hg =0;
-int count_continues=0;
-int continues_this_hg;
+  std::map<int,bool> is_used;
+  for (int i =0;i<CLG->size();i++){
+    is_used[i] = false;
+  }
+  bool is_saturated;
+  bool is_paired;
+  int count_saturated =0;
+  int count_bin_sat;
+  int count_paired =0;
+  int count_sat_no_friends=0;
+  int count_good_hg =0;
+  int count_continues=0;
+  int continues_this_hg;
   for (int idx_chg = 0; idx_chg<CHG->size(); idx_chg++){
     continues_this_hg=0;
     //if abs(hightime-lowtime) < tickwindow*tick , then pair the wfms to merge

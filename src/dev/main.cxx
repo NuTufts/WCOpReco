@@ -35,7 +35,7 @@ int main(){
   // std::cout << "Deconvolver declared!" << std::endl;
   // tester.deconv_test();
 
-  //This tests the saturation_merger:
+  //This tests the saturation_merger and HitFinder:
   std::string file = "src/data/celltree.root";
   wcopreco::DataReader reader(file);
   std::cout << "\n\n\nFilepath is set to:   " << file << std::endl;
@@ -44,10 +44,12 @@ int main(){
   _UB_Ev_wfm = reader.Reader(EVENT_NUM);
   wcopreco::saturation_merger merger(_UB_Ev_wfm);
 
+  //need to add test for HitFinder
+
   // for (int EVENT_NUM=0;EVENT_NUM<53;EVENT_NUM++){
   //   _UB_Ev_wfm = reader.Reader(EVENT_NUM);
   //   wcopreco::saturation_merger merger(_UB_Ev_wfm);
-  // }
+  //}
 
 
 

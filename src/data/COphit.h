@@ -1,6 +1,7 @@
 #ifndef COphit_h
 #define COphit_h
 
+#include "OpWaveform.h"
 //#include "TH1S.h"
 #include <vector>
 #include <math.h> //need this if cutting out root
@@ -10,7 +11,7 @@ namespace wcopreco{
 
   class COphit{
   public:
-    COphit(int ch_no, std::vector<double> *vec, double time, double gain, double gain_err); //TH1S
+    COphit(int ch_no, OpWaveform *wfm, double time, double gain, double gain_err); //TH1S
     ~COphit();
 
     double get_time(){return time;};

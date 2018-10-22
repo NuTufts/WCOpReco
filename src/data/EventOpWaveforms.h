@@ -23,7 +23,7 @@ namespace wcopreco {
     void insert_type2index(int type, int index) {type2index.insert(std::pair<int,int>(type,index));};
     void insert_index2type(int index, int type) {index2type.insert(std::pair<int,int>(index,type));};
 
-    void add_entry(OpWaveformCollection, int, int );
+    void add_entry(OpWaveformCollection, int type);
     void push_back_wfm( int type, const OpWaveform& wfm );
     // void emplace_back( int type, const OpWaveform& wfm );
 

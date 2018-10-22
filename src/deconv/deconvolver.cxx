@@ -34,6 +34,8 @@ void wcopreco::deconvolver::deconv_test()
 
 
     OpWaveform wfm =( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] );
+    op_gain = _UB_Ev_wfm.get_op_gain();
+    std::cout <<_UB_Ev_wfm.get_op_gain().size() << "               SIZE HERE BLARG\n";
 
     // //Diagnosis Code:
     // OpWaveform wfm2 =( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [1] )  [WFM_INDEX] );
@@ -81,7 +83,6 @@ void wcopreco::deconvolver::deconv_test()
       Remove_Baseline_Secondary(&wfm);
       inverse_res1[ch] = Deconvolve(wfm);
       beam_dt[ch] = wfm.get_time_from_trigger();
-      std::cout << std::fixed <<beam_dt[ch] << " Is time from trigger \n" ;
 
       //totPE mult, and their l1 versions are additive (each element is always +=). Each iteration of ch will add to these values.
       Perform_L1( inverse_res1[ch],
@@ -186,7 +187,7 @@ void wcopreco::deconvolver::deconv_test()
 
         // //Start COSMICS flash section - to do this, I think we need the hitfinder first
         // // -see how cosmic_flashes is defined in ToyLightReco (K)
-        
+
         // Opflash *prev_cflash = 0;
         //
         // for (size_t i=0; i!=cosmic_flashes.size();i++){
@@ -551,8 +552,11 @@ void wcopreco::deconvolver::deconv_test()
 
 
      std::string word = "SPE_wfm" ;
+  
 
-     UB_spe spe(word, true);
+
+     // std::cout << op_gain->at(wfm.get_ChannelNum()) << " Is gain of the channel!";
+     UB_spe spe(word, true, op_gain.at(wfm.get_ChannelNum()));
      // spe.gain = 1;
 
      std::vector<double> mag_spe;

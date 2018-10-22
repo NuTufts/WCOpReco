@@ -11,6 +11,12 @@ namespace wcopreco{
     saturation_merger(UBEventWaveform);
     ~saturation_merger() {};
 
+    OpWaveformCollection get_merged_beam() {return merged_beam;}
+    OpWaveformCollection get_merged_cosmic() {return merged_cosmic;}
+    UBEventWaveform get_merged_UB_Ev() {return UB_Ev_Merged;}
+
+
+
     // makebeampair(){};
     // makecosmicpai(){};
     // mergebeam(){};
@@ -25,8 +31,11 @@ namespace wcopreco{
     OpWaveform replaceSaturatedBin(OpWaveform &high, OpWaveform &low, std::vector<std::pair<short,short>> saturation_ranges);
 
     OpWaveformCollection* cosmic_merger(OpWaveformCollection *CHG, OpWaveformCollection *CLG, short saturation_threshold =4080);
-
     OpWaveformCollection* beam_merger(OpWaveformCollection *BHG, OpWaveformCollection *BLG, short saturation_threshold=4080);
+    OpWaveformCollection merged_cosmic;
+    OpWaveformCollection merged_beam;
+    UBEventWaveform UB_Ev_Merged;
+
     //This function is designed to merge a OpWaveformCollection of Beam High Gain Waveforms
     //with Beam Low Gain Waveforms. High gains are the first argument, and low gains are the
     //second argument. It also assumes the elements in the collection are ordered by channel

@@ -3,7 +3,7 @@
 #include "OpWaveformCollection.h"
 namespace wcopreco {
 
-   UBEventWaveform::UBEventWaveform(){
+   UBEventWaveform::UBEventWaveform()  {
 
     // setup the eventwaveform map for our types
     EventOpWaveforms::_wfm_v.resize(4);
@@ -21,4 +21,5 @@ namespace wcopreco {
   void UBEventWaveform::addWaveform( UBOpWaveformForm_t type, const OpWaveform& wfm ) {
     push_back_wfm( (int)type, wfm );
   }
+
 }

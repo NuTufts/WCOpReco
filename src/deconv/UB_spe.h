@@ -18,7 +18,7 @@ namespace wcopreco {
 
   class UB_spe : public kernel_fourier {
   public:
-     UB_spe(std::string nm, bool mult_flag);
+     UB_spe(std::string nm, bool mult_flag, float gain);
      virtual ~UB_spe() {};
 
     std::vector<double> Get_wfm(int nbins, float tick_width_ns);

@@ -5,7 +5,7 @@
 namespace wcopreco {
 
 wcopreco::DataReader::DataReader(std::string filepath) :
-  cosmic_hg_opch(nullptr),  
+  cosmic_hg_opch(nullptr),
   cosmic_lg_opch(nullptr),
   beam_hg_opch(nullptr),
   beam_lg_opch(nullptr),
@@ -61,7 +61,7 @@ wcopreco::DataReader::DataReader(std::string filepath) :
   }
 
 UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
-    // IAMTHENIGHT();
+    IAMTHENIGHT();
     std::cout << "You have chosen to read out event number: " << event_num << " out of " << nevents << std::endl;
     if ( event_num > nevents)
       {
@@ -73,8 +73,13 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     // std::cout << "THE TRIGGER TIME IS:                                  "<<std::fixed<< triggerTime << "\n\n\n";
       //Make an EventOpWaveforms for this event:
 
+
+
       std::vector<OpWaveformCollection> empty_vec;
       _UB_Ev_wfm.set__wfm_v( empty_vec );
+      _UB_Ev_wfm.set_op_gain(*op_gain);
+      _UB_Ev_wfm.set_op_gainerror(*op_gainerror);
+
 
       //Get Vectors of pmt channel and timestamp for each type of waveform, cosmic/beam and high/low gain
       std::vector<short> CHG_Channel = *cosmic_hg_opch;
@@ -115,18 +120,14 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
 
 
       //Here we are filling the _UB_Ev_wfm with all the different types of waveforms in the event.
-      _UB_Ev_wfm.add_entry(BHG_wfm_collection, 0, 0 );
-      _UB_Ev_wfm.insert_type2index(0,0);
-      _UB_Ev_wfm.insert_index2type(0,0);
-      _UB_Ev_wfm.add_entry(BLG_wfm_collection, 1, 1 );
-      _UB_Ev_wfm.insert_type2index(1,1);
-      _UB_Ev_wfm.insert_index2type(1,1);
-      _UB_Ev_wfm.add_entry(CHG_wfm_collection, 2, 2 );
-      _UB_Ev_wfm.insert_type2index(2,2);
-      _UB_Ev_wfm.insert_index2type(2,2);
-      _UB_Ev_wfm.add_entry(CLG_wfm_collection, 3, 3 );
-      _UB_Ev_wfm.insert_type2index(3,3);
-      _UB_Ev_wfm.insert_index2type(3,3);
+      _UB_Ev_wfm.add_entry(BHG_wfm_collection, 0 );
+
+      _UB_Ev_wfm.add_entry(BLG_wfm_collection, 1 );
+
+      _UB_Ev_wfm.add_entry(CHG_wfm_collection, 2 );
+
+      _UB_Ev_wfm.add_entry(CLG_wfm_collection, 3 );
+
       std::map <int,int> testmap = _UB_Ev_wfm.get_type2index();
 
     /*Structure

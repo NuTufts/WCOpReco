@@ -37,10 +37,10 @@ namespace wcopreco {
 
     }
   }
-  void EventOpWaveforms::add_entry(OpWaveformCollection input_collection, int index, int type ) {
+  void EventOpWaveforms::add_entry(OpWaveformCollection input_collection, int type ) {
     _wfm_v.emplace_back(std::move(input_collection));
-    type2index.insert(std::pair<int,int>(type,index));
-    index2type.insert(std::pair<int,int>(index,type));
+    type2index.insert(std::pair<int,int>(type,_wfm_v.size()-1));
+    index2type.insert(std::pair<int,int>(_wfm_v.size()-1,type));
   }
 
   void EventOpWaveforms::push_back_wfm( int type, const OpWaveform& wfm ) {

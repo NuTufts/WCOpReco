@@ -5,10 +5,10 @@
 
 namespace wcopreco {
 
-wcopreco::UB_spe::UB_spe(std::string nm, bool mult_flag)
+wcopreco::UB_spe::UB_spe(std::string nm, bool mult_flag, float op_gain)
 : kernel_fourier (nm,mult_flag)
  {
-   gain = 1;
+   gain = op_gain;
  }
 
 std::vector<double> wcopreco::UB_spe::Get_wfm(int nbins, float tick_width_ns)
@@ -23,7 +23,8 @@ std::vector<double> wcopreco::UB_spe::Get_wfm(int nbins, float tick_width_ns)
 
     for (int i=0; i<size; i++) {
       X = (double(i)+0.5);
-      //std::cout << X << std::endl;
+      // std::cout << gain << std::endl;
+
       value = 1./19.6348*pow(X/parameter_1,4)*exp(-X/parameter_1)*gain;
 
       // if (i%100 ==0) {std::cout << value << " Is value of the analytical function at X: " << X << "   and i value: "<< i << std::endl;}

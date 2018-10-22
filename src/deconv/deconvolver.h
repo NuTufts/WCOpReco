@@ -55,7 +55,7 @@ namespace wcopreco{
     */
 
   protected:
-
+    std::vector<float>  op_gain;
   };
 
 }

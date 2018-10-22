@@ -23,16 +23,15 @@ namespace wcopreco {
     // std::cout << "BeamLGWF_COPY 1 AFTER  Scaling: " << BLG_WFs.at(18).at(750) << "\n";
     // std::cout << "CosmicLGWF_COPY 1 AFTER  Scaling: " << CLG_WFs.at(18).at(20) << "\n";
 
-    //testing makeBeamPairs (event 18)
-    OpWaveform BHG_wfm = BHG_WFs.at(18);
-    OpWaveform BLG_wfm = BLG_WFs.at(18);
 
+    //Set data member merged versions of waveforms
+    merged_beam = *beam_merger(&BHG_WFs, &BLG_WFs);
+    merged_cosmic = *cosmic_merger(&CHG_WFs, &CLG_WFs);
 
-
-    OpWaveformCollection* merged_beam = beam_merger(&BHG_WFs, &BLG_WFs);
-    OpWaveformCollection* merged_cosmic = cosmic_merger(&CHG_WFs, &CLG_WFs);
-
-
+    UB_Ev_Merged.add_entry(merged_beam,   5 );
+    UB_Ev_Merged.add_entry(merged_cosmic, 6 );
+    UB_Ev_Merged.set_op_gain(   UB_Ev.get_op_gain()   );
+    UB_Ev_Merged.set_op_gainerror( UB_Ev.get_op_gainerror()   );
 
 
   }//End of Class Constructor
@@ -103,11 +102,11 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
   int tick_window = 20;
   float tick = .015625;
 
-  if (CHG->size()!=CLG->size()){
-    std::cout << "HG AND LG NOT SAME SIZE!!" << std::endl;
-    std::cout << "HG size: " << CHG->size() <<std::endl;
-    std::cout << "LG size: " << CLG->size() <<std::endl;
-  };
+  // if (CHG->size()!=CLG->size()){
+  //   std::cout << "HG AND LG NOT SAME SIZE!!" << std::endl;
+  //   std::cout << "HG size: " << CHG->size() <<std::endl;
+  //   std::cout << "LG size: " << CLG->size() <<std::endl;
+  // };
   /*
   Going to have to loop through the high gains, first we want to see if a waveform is
   saturated. Is so we then need to see if it is isolated from all possible low gains
@@ -237,14 +236,13 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
     }
   }
 
-  std::cout << count_saturated << "     This many saturated HG \n\n";
-
-  std::cout << count_paired << "     There are this many HG waveforms paired with friends! :)\n";
-  std::cout << count_sat_no_friends << "     There are this many HG waveforms saturated, but without friends! :(\n";
-  std::cout << count_good_hg << "     There are this many HG waveforms not looking for friends!! :D\n";
-  std::cout << CHG->size() << "    Is the total number of waveforms returned\n";
-  std::cout << count_continues << "    The number of times continued\n\n";
-
+  // std::cout << count_saturated << "     This many saturated HG \n\n";
+  //
+  // std::cout << count_paired << "     There are this many HG waveforms paired with friends! :)\n";
+  // std::cout << count_sat_no_friends << "     There are this many HG waveforms saturated, but without friends! :(\n";
+  // std::cout << count_good_hg << "     There are this many HG waveforms not looking for friends!! :D\n";
+  // std::cout << CHG->size() << "    Is the total number of waveforms returned\n";
+  // std::cout << count_continues << "    The number of times continued\n\n";
 
 
 

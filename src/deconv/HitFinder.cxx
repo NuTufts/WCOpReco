@@ -29,7 +29,7 @@ over stuff I've changed tomorrow or revert if I do something wrong
       */
 
 
-
+      std::cout << merged_cosmic->size() << "   Is the number of waveforms in merged_cosmic\n";
       for (int i=0; i!=merged_cosmic->size(); i++){
         // our code: COphit(int ch_no, OpWaveform *wfm, double time, double gain, double gain_err)
         // original WC: COphit *op_hit = new COphit(fop_femch->at(i), (TH1S*)fop_wf->At(i), fop_timestamp->at(i) - triggerTime, op_gain->at(fop_femch->at(i)), op_gainerror->at(fop_femch->at(i)));
@@ -102,14 +102,20 @@ over stuff I've changed tomorrow or revert if I do something wrong
 
       // should this chunk be with the flash code? either way we have to return something
       // (either cosmic_flashes or ophits_group)
-
+      int count =0;
+      int count_d=0;
       for (size_t j=0; j!=ophits_group.size();j++){
         Opflash *flash = new Opflash(ophits_group.at(j));
         if (flash->get_total_PE()!=0){
+          count++;
+          std::cout << count << " Is now the count of the flashes\n";
           cosmic_flashes.push_back(flash);
         }
         else{
           delete flash;
+          count_d++;
+          std::cout << count_d << " Have been deleted\n";
+
         }
         //    std::cout << ophits_group.at(j).size() << " " << flash->get_time() << std::endl;
       }

@@ -28,6 +28,15 @@ namespace wcopreco {
     merged_beam = *beam_merger(&BHG_WFs, &BLG_WFs);
     merged_cosmic = *cosmic_merger(&CHG_WFs, &CLG_WFs);
 
+    //Make all the individual waveforms the new type (merged beam or merged cosmic (5 and 6))
+    for (int n = 0; n< merged_beam.size(); n++){
+      merged_beam.at(n).set_type(5);
+    }
+    for (int n = 0; n< merged_cosmic.size(); n++){
+      merged_cosmic.at(n).set_type(6);
+    }
+
+
     UB_Ev_Merged.add_entry(merged_beam,   5 );
     UB_Ev_Merged.add_entry(merged_cosmic, 6 );
     UB_Ev_Merged.set_op_gain(   UB_Ev.get_op_gain()   );

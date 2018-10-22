@@ -31,12 +31,10 @@
 namespace wcopreco{
 
 
-  class deconvolver {
+  class Deconvolver {
   public:
-    deconvolver() {
-      std::cout<< "object" <<std::endl;
-    }; //OpWaveform op_wfm, kernel_fourier_shape kernel_fourier, noise_remover noise, std::vector<short???> LL_shape
-    ~deconvolver() {};
+    Deconvolver(OpWaveformCollection *merged_beam); //OpWaveform op_wfm, kernel_fourier_shape kernel_fourier, noise_remover noise, std::vector<short???> LL_shape
+    ~Deconvolver() {};
 
     void deconv_test();
     double HighFreqFilter(double frequency);
@@ -48,6 +46,7 @@ namespace wcopreco{
     std::pair<double,double> cal_mean_rms(std::vector<double> wfm, int nbin);
     void testPlot(std::string Title, std::vector<double> input);
     double KS_maxdiff(int n, double *array1, double *array2);
+    
     /*
     The KS_maxdiff function takes two array PDFs of n elements, and transforms
     them into CDFs then it finds the maximum difference between the CDFs and

@@ -13,6 +13,7 @@ LDLIBS   += $(WCLIBS)
 LDLIBS   += $(LDFLAGS) $(ROOTLIBS)
 
 HEADERS   = $(wildcard *.h)
+PACKAGE_HEADERS = $(wildcard $(WCOPRECO_INCDIR)/WCOpReco/*.h)
 #Need to include eigen namespace
 EIGENSPACE = /usr/include/eigen3
 #build/bin build/lib build/python src/algo
@@ -26,7 +27,8 @@ BINS = $(SRCS:.cxx=)
 all: $(BINS)
 
 
-%: %.cxx
+%: %.cxx  # $(PACKAGE_HEADERS) For some Reason this prerequisite doesn't work. Hacked with a touch main.cxx in the toplevel GNUMakefile
+#	@echo "<<Package Headers Directory: $(PACKAGE_HEADERS) "
 	@echo "<<compiling binary $@>>"
 	$(CXX) $(CFLAGS) $(INCLUDES) -c $^ -o $@.o
 	@echo "<< link $@ >> "

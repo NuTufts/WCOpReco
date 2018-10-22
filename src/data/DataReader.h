@@ -50,22 +50,28 @@ namespace wcopreco  {
     TFile *file;
     TTree *tree;
     //These will be branches we'll need to read
-    std::vector<short> * cosmic_hg_opch = 0; //or =NULL if it complains
-    std::vector<short> * cosmic_lg_opch = 0; //or =NULL if it complains
-    std::vector<short> * beam_hg_opch = 0; //or =NULL if it complains
-    std::vector<short> * beam_lg_opch = 0; //or =NULL if it complains
+    std::vector<short> * cosmic_hg_opch;  
+    std::vector<short> * cosmic_lg_opch;
+    std::vector<short> * beam_hg_opch;
+    std::vector<short> * beam_lg_opch;
 
-    std::vector<double> * cosmic_hg_timestamp = 0; //or =NULL if it complains
-    std::vector<double> * cosmic_lg_timestamp = 0; //or =NULL if it complains
-    std::vector<double> * beam_hg_timestamp = 0; //or =NULL if it complains
-    std::vector<double> * beam_lg_timestamp = 0; //or =NULL if it complains
+    std::vector<double> * cosmic_hg_timestamp;
+    std::vector<double> * cosmic_lg_timestamp;
+    std::vector<double> * beam_hg_timestamp;
+    std::vector<double> * beam_lg_timestamp;
+
+    std::vector<float> * op_gain;
+    std::vector<float> * op_gainerror;
     double triggerTime;
+    double test;
 
     TClonesArray * cosmic_hg_wf;
     TClonesArray * cosmic_lg_wf;
     TClonesArray * beam_hg_wf;
     TClonesArray * beam_lg_wf;
     int eventNo;
+
+
 
     UBEventWaveform _UB_Ev_wfm;
     int type;

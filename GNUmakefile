@@ -4,8 +4,8 @@ SUBDIRS = src
 
 all: obj
 
-
 obj:
+	touch src/dev/main.cxx
 	@for i in $(SUBDIRS); do ( echo "" && echo "Compiling $$i..." && cd $$i && $(MAKE) ) || exit $$?; done
 
 clean:

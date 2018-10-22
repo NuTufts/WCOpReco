@@ -4,9 +4,20 @@
 
 namespace wcopreco {
 
-wcopreco::DataReader::DataReader(std::string filepath)
+wcopreco::DataReader::DataReader(std::string filepath) :
+  cosmic_hg_opch(nullptr),  
+  cosmic_lg_opch(nullptr),
+  beam_hg_opch(nullptr),
+  beam_lg_opch(nullptr),
 
+  cosmic_hg_timestamp(nullptr),
+  cosmic_lg_timestamp(nullptr),
+  beam_hg_timestamp(nullptr),
+  beam_lg_timestamp(nullptr),
+  op_gain(nullptr),
+  op_gainerror(nullptr)
   {
+
     //Set datamembers
     file = TFile::Open(filepath.c_str());
     if (file==0)
@@ -40,6 +51,9 @@ wcopreco::DataReader::DataReader(std::string filepath)
     tree->SetBranchAddress("beam_hg_wf",&beam_hg_wf);
     tree->SetBranchAddress("beam_lg_wf",&beam_lg_wf);
 
+    tree->SetBranchAddress("op_gain", &op_gain);
+    tree->SetBranchAddress("op_gainerror", &op_gainerror);
+
     //Acquire # of Entries in file
     nevents = tree->GetEntries();
     std::cout << "Number of Events Constructed:    " << tree->GetEntries() << std::endl;
@@ -47,7 +61,7 @@ wcopreco::DataReader::DataReader(std::string filepath)
   }
 
 UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
-    IAMTHENIGHT();
+    // IAMTHENIGHT();
     std::cout << "You have chosen to read out event number: " << event_num << " out of " << nevents << std::endl;
     if ( event_num > nevents)
       {

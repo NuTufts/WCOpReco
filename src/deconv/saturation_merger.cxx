@@ -224,7 +224,6 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
   //Now we add in all the unpaired low gain waveforms.
   for (int idx_clg=0; idx_clg<CLG->size(); idx_clg++){
     if (is_used[idx_clg] ==false ){
-      std::cout << CHG->size() <<"  Size Before\n";
       //Option A
       CHG->add_waveform( CLG->at(idx_clg) );
 
@@ -235,7 +234,6 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
       // std::cout << "  Got B \n\n\n\n";
       //
       // CHG->insert_index2channel(CHG->size()-1, CLG->at(idx_clg).get_ChannelNum());
-      std::cout << CHG->size() <<"  Size After\n\n";
     }
   }
 

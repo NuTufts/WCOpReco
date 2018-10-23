@@ -7,11 +7,12 @@ namespace wcopreco {
 
     int type = merged_beam->at(0).get_type();
     op_gain = merged_beam->get_op_gain();
+    kernel_container_v.resize(32);
+
 
     //Default way to construct the deconvolver is with spe and rc
     if (standard_run){
       //Construct the vector of kernel containers (one container per channel)
-      kernel_container_v.resize(32);
       UB_rc rc(true);
       for (int i =0 ; i<32; i++){
         UB_spe *spe = new UB_spe(true, op_gain.at(i)); //Place UB_spe on heap, so object not deleted

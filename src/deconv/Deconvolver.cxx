@@ -4,12 +4,9 @@ namespace wcopreco {
 
 
   wcopreco::Deconvolver::Deconvolver(OpWaveformCollection *merged_beam, bool standard_run){
-    std::cout << merged_beam->size() << "Size of merged beam container_v \n\n\n\n";
 
     int type = merged_beam->at(0).get_type();
-    std::cout << merged_beam->size() << "Size of merged beam container_v \n\n\n\n";
     op_gain = merged_beam->get_op_gain();
-    std::cout << merged_beam->size() << "Size of merged beam container_v \n\n\n\n";
 
     //Default way to construct the deconvolver is with spe and rc
     if (standard_run){

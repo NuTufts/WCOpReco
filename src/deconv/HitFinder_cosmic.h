@@ -1,5 +1,5 @@
-#ifndef HITFINDER_H
-#define HITFINDER_H
+#ifndef HITFINDER_COSMIC_H
+#define HITFINDER_COSMIC_H
 
 #include "WCOpReco/DataReader.h"
 #include "WCOpReco/COphit.h"
@@ -8,10 +8,10 @@
 namespace wcopreco{
 
 
-  class HitFinder {
+  class HitFinder_cosmic {
   public:
-    HitFinder(OpWaveformCollection* merged_cosmic, std::vector<float> *op_gain,std::vector<float> *op_gainerror);
-    ~HitFinder() {};
+    HitFinder_cosmic(OpWaveformCollection* merged_cosmic, std::vector<float> *op_gain,std::vector<float> *op_gainerror);
+    ~HitFinder_cosmic() {};
 
     OpflashSelection              get_cosmic_flashes() {return cosmic_flashes;}
     std::vector<COphitSelection>  get_ophits_group() {return ophits_group;}

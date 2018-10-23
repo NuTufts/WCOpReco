@@ -5,7 +5,7 @@
 #include "WCOpReco/DataReader.h"
 #include "WCOpReco/Deconvolver.h"
 #include "WCOpReco/saturation_merger.h"
-#include "WCOpReco/HitFinder.h"
+#include "WCOpReco/HitFinder_cosmic.h"
 
 //root includes
 #include "TH1S.h"
@@ -52,7 +52,7 @@ int main(){
   // std::cout << "Deconvolver declared!" << std::endl;
   // tester.deconv_test();
 
-  
+
   // //Create the Hitfinder for COSMICS (Currently this also does the flashes for cosmics)
   // wcopreco::HitFinder hits_found(&merged_cosmic, &op_gain, &op_gainerror);
   // wcopreco::OpflashSelection flashes = hits_found.get_cosmic_flashes();

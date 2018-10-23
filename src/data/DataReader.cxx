@@ -105,9 +105,20 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
       //Each collection has waveforms from a single event of a specific type
       // OpWaveformCollection CHG_wfm_collection(CHG_NHist);
       OpWaveformCollection CHG_wfm_collection;
+      CHG_wfm_collection.set_op_gain(*op_gain);
+      CHG_wfm_collection.set_op_gainerror(*op_gainerror);
+
       OpWaveformCollection CLG_wfm_collection;
+      CLG_wfm_collection.set_op_gain(*op_gain);
+      CLG_wfm_collection.set_op_gainerror(*op_gainerror);
+
       OpWaveformCollection BHG_wfm_collection;
+      BHG_wfm_collection.set_op_gain(*op_gain);
+      BHG_wfm_collection.set_op_gainerror(*op_gainerror);
+
       OpWaveformCollection BLG_wfm_collection;
+      BLG_wfm_collection.set_op_gain(*op_gain);
+      BLG_wfm_collection.set_op_gainerror(*op_gainerror);
 
 
       //Fill up wfm collections

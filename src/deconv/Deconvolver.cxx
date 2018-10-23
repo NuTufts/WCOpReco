@@ -3,265 +3,69 @@
 namespace wcopreco {
 
 
-  wcopreco::Deconvolver::Deconvolver(OpWaveformCollection *merged_beam){
+  wcopreco::Deconvolver::Deconvolver(OpWaveformCollection *merged_beam, bool standard_run){
+    std::cout << merged_beam->size() << "Size of merged beam container_v \n\n\n\n";
+
     int type = merged_beam->at(0).get_type();
-    if (type == 5 ){
-      std::cout << "Got the right type, a merged beam waveform collection\n";
+    std::cout << merged_beam->size() << "Size of merged beam container_v \n\n\n\n";
+    op_gain = merged_beam->get_op_gain();
+    std::cout << merged_beam->size() << "Size of merged beam container_v \n\n\n\n";
+
+    //Default way to construct the deconvolver is with spe and rc
+    if (standard_run){
+      //Construct the vector of kernel containers (one container per channel)
+      kernel_container_v.resize(32);
+      UB_rc rc(true);
+      for (int i =0 ; i<32; i++){
+        UB_spe *spe = new UB_spe(true, op_gain.at(i)); //Place UB_spe on heap, so object not deleted
+        kernel_container_v.at(i).add_kernel(spe);
+        kernel_container_v.at(i).add_kernel(&rc);
+      }
     }
-    else{
-      std::cout <<" Empty collection passed to deconvolver\n";
-    }
+
   }
 
 
 
-  void wcopreco::Deconvolver::deconv_test()
+  void wcopreco::Deconvolver::Deconvolve_Collection(OpWaveformCollection * merged_beam)
 
     {
 
-      float bin_width = (1.0/(64e6) );
-
-      //load raw data
-      std::string file = "src/data/celltree.root";
-      wcopreco::DataReader reader(file);
-      std::cout << "\n\n\nFilepath is set to:   " << file << std::endl;
-      int EVENT_NUM = 4;
-      int TYPE_OF_COLLECTION =0;
-      int WFM_INDEX =2;
-      int SIGNAL_INDEX =1;
-      wcopreco::UBEventWaveform _UB_Ev_wfm;
-      //Still can't use enum
-      // UBOpWaveformForm_t blarg;
-      // blarg = UBOpWaveformForm_t.kbeam_hg;
-
-      _UB_Ev_wfm = reader.Reader(EVENT_NUM);
-      std::cout << std::endl  <<(  ( _UB_Ev_wfm ).get__wfm_v() ) .size()      <<  "   How many Collections in the Event (4)?" <<std::endl ;
-      std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] ).size()      <<  "  How many waveforms in the collection (depends)? " <<TYPE_OF_COLLECTION <<std::endl;
-      std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [1] ).size()      <<  "  How many waveforms in the collection (depends)? " << 1 <<std::endl;
-      std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [2] ).size()      <<  "  How many waveforms in the collection (depends)? " << 2 <<std::endl;
-      std::cout << (  ( ( _UB_Ev_wfm ).get__wfm_v() ) [3] ).size()      <<  "  How many waveforms in the collection (depends)? " << 3 <<std::endl;
-
-      std::cout << (  ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).at(SIGNAL_INDEX))     <<  "   Attempt at Reading a Waveform Signal Value  " <<SIGNAL_INDEX << std::endl;
-      std::cout << (  ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).at(( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()-1))     <<  "   Attempt at Reading a Waveform Signal Value  " <<( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] ).size()-1 << std::endl << std::endl;
-
-
-
-      OpWaveform wfm =( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [WFM_INDEX] );
-      op_gain = _UB_Ev_wfm.get_op_gain();
-      std::cout <<_UB_Ev_wfm.get_op_gain().size() << "               SIZE HERE BLARG\n";
-
-      // //Diagnosis Code:
-      // OpWaveform wfm2 =( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [1] )  [WFM_INDEX] );
-      // OpWaveform wfm3 =( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [2] )  [WFM_INDEX] );
-      // OpWaveform wfm4 =( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [3] )  [WFM_INDEX] );
-      //
-      // std::cout << wfm.get_type() << "Type of waveform 1\n";
-      // std::cout << wfm2.get_type() << "Type of waveform 2\n";
-      // // std::cout << wfm3.get_type() << "Type of waveform 3\n";
-      // // std::cout << wfm4.get_type() << "Type of waveform 4\n";
-      // double value = 0;
-      // int i=0;
-      //
-      // while (value<2070){
-      //   std::cout << wfm.at(i) <<"\n";
-      //   std::cout << wfm2.at(i)<<"\n\n";
-      //   value = wfm.at(i);
-      //   i++;
-      //   // std::cout << wfm3.at(i) <<"\n";
-      //   // std::cout << wfm4.at(i)<<"\n\n";
-      //
-      // }
-      // //End Diagnosis Code
-
-
       //Process the Beam:
       //Note that the following code is supposed to only deal with beam waveforms, 32 channels and 1500 bin wfms.
-      //Create array of vectors to process the waveforms
-      TYPE_OF_COLLECTION = 0;
-      int nbins;
-      std::vector<double> inverse_res1[32];
-      std::vector<double> decon_v[32];
-      double beam_dt[32];
-      OpflashSelection beam_flashes;
+      OpWaveform wfm(0,0,0,0);
 
-      std::vector<double> totPE_v(250,0);
-      std::vector<double> mult_v(250,0);
-      std::vector<double> l1_totPE_v(250,0);
-      std::vector<double> l1_mult_v(250,0);
       for (int ch=0; ch<32; ch++){
-        wfm = ( ( ( ( _UB_Ev_wfm ).get__wfm_v() ) [TYPE_OF_COLLECTION] )  [ch] );
+        wfm = merged_beam->at(ch);
         nbins = wfm.size();
+
         //remove baselines (baseline here are determined by the start of the waveform)
         Remove_Baseline_Leading_Edge(&wfm);
         Remove_Baseline_Secondary(&wfm);
-        inverse_res1[ch] = Deconvolve(wfm);
-        beam_dt[ch] = wfm.get_time_from_trigger();
 
-        //totPE mult, and their l1 versions are additive (each element is always +=). Each iteration of ch will add to these values.
-        Perform_L1( inverse_res1[ch],
-                    decon_v,
-                    &totPE_v,
-                    &mult_v,
-                    &l1_totPE_v,
-                    &l1_mult_v,
-                    ch);
-        //std::cout << totPE_v.at(249) << " Total PE in spot 249 after " << ch << " channels\n";
-      }//End of 32 Channel Forloop
-
-      //BEGIN FLASH CODE
-      // Now working on the flashes ...
-        // [-2,78)
-
-        std::vector<int> flash_time;
-        flash_time.reserve(250);
-        std::vector<double> flash_pe;
-
-
-        double prev_pe_a[32];
-        double curr_pe_a[32];
-
-        for (int i=0;i!=250;i++){
-          double pe = totPE_v.at(i);
-          double mult = mult_v.at(i);
-          // careteria: multiplicity needs to be higher than 3, PE needs to be higher than 6
-          //std::cout << pe << " " << mult << std::endl;
-          if (pe >= 6 && mult >= 3){
-            bool flag_save = false;
-            if (flash_time.size()==0){
-      	       flag_save = true;
-      	       for (int j=0;j!=32;j++){
-      	          prev_pe_a[j] = decon_v[j].at(i);
-      	       }
-            }
-            else{
-      	       for (int j=0;j!=32;j++){
-                  curr_pe_a[j] = decon_v[j].at(i);
-      	       }
-      	       if (i - flash_time.back() >= 78){
-      	          flag_save = true;
-      	  // start one, and open a window of 8 us, if anything above it, not the next 2 bin
-      	  // if find one is bigger than this, save a flash ... start a new flash?
-               }
-               else if (i-flash_time.back() > 4 && pe > flash_pe.back()){
-      	          if (i-flash_time.back()>15){
-      	             flag_save = true;
-      	          }
-                  else{
-                     if (KS_maxdiff(32,prev_pe_a,curr_pe_a) > 0.1){
-      	               flag_save = true;
-      	             }
-
-
-      	          }
-      	       }
-
-               for (int j=0;j!=32;j++){
-                  prev_pe_a[j] = decon_v[j].at(i);
-      	       }
-            }
-
-            if (flag_save){
-              	flash_time.push_back(i);
-              	flash_pe.push_back(pe);
-            }
-            else{
-      	       if (i - flash_time.back()<=6 && pe > flash_pe.back())
-                 {
-                 flash_pe.back()=pe;
-               }
-            }
-          }
-        }
-
-         // std::cout << flash_time.size() << " " << flash_pe.size() << std::endl;
-         // for a flash, examine the L1 one to decide if add in more time ...?
-
-        for (size_t i=0; i!=flash_time.size(); i++){
-          //std::cout << flash_time.at(i) << " " << flash_pe.at(i) << std::endl;
-          int start_bin = flash_time.at(i)-2;
-          if (start_bin <0) start_bin = 0;
-
-          int end_bin = start_bin + 78; // default
-          if (end_bin > 250) end_bin = 250;
-          if (i+1<flash_time.size()){
-            if (end_bin > flash_time.at(i+1)-2) {
-              end_bin = flash_time.at(i+1)-2;
-            }
-          }
-          //  std::cout << start_bin << " " << end_bin << std::endl;
-          //check with the next bin content ...
-
-          Opflash *flash = new Opflash(decon_v, beam_dt[0], start_bin, end_bin);
-          flash->Add_l1info(&l1_totPE_v, &l1_mult_v, beam_dt[0], start_bin, end_bin);
-          // std::cout << flash->get_time() << " " <<flash->get_total_PE() << " " << flash->get_num_fired() << std::endl;
-          beam_flashes.push_back(flash);
-
-
-
-          // //Start COSMICS flash section - to do this, I think we need the hitfinder first
-          // // -see how cosmic_flashes is defined in ToyLightReco (K)
-
-          // Opflash *prev_cflash = 0;
-          //
-          // for (size_t i=0; i!=cosmic_flashes.size();i++){
-          //   Opflash *cflash = cosmic_flashes.at(i);
-          //   //std::cout << cflash->get_time() << std::endl;
-          //   bool save = true;
-          //   for (size_t j=0; j!=beam_flashes.size();j++){
-          //     Opflash *bflash = beam_flashes.at(j);
-          //     if (cflash->get_time() >= bflash->get_low_time() && cflash->get_time() <= bflash->get_high_time())
-          //       {
-          //       save = false;
-          //       break;
-          //     }
-          //   }
-          //   if (save){
-          //     flashes.push_back(cflash);
-          //     if (prev_cflash==0 ){
-          //       if (cflash->get_time()<0)
-          //         {
-          //         prev_cflash = cflash;
-          //       }
-          //     }
-          //     else{
-          //       if (cflash->get_time() < 0 && cflash->get_time() > prev_cflash->get_time())
-          //         {
-          //         prev_cflash = cflash;
-          //       }
-          //     }
-          //   }
-          // }
-          // for (size_t j=0; j!=beam_flashes.size();j++){
-          //   Opflash *bflash = beam_flashes.at(j);
-          //   if (prev_cflash!=0){
-          //
-          //     //std::cout << prev_cflash->get_time() << std::endl;
-          //     if (bflash->get_time() - prev_cflash->get_time() < 2.4 && // veto for 3 us
-          //               bflash->get_total_PE() < 0.7 * prev_cflash->get_total_PE())
-          //               {continue;}
-          //     // std::cout << bflash->get_time() << " " << prev_cflash->get_time() << " " << bflash->get_total_PE() << " " << prev_cflash->get_total_PE() << std::endl;
-          //   }
-          //   flashes.push_back(bflash);
-          // }
-          // // std::cout << cosmic_flashes.size() << " " << beam_flashes.size() << " " << flashes.size() << std::endl;
-          // //END COSMIC FLASH SECTION
-
-
-
+        //Do deconvolution (need to add a way to incorporate kernels)
+        inverse_res1[ch] = Deconvolve_One_Wfm(wfm, kernel_container_v.at(wfm.get_ChannelNum()));
 
         }
 
+    }//End of Deconvolve_Collection
 
-      //END FLASH CODE
 
+    void Deconvolver::add_kernel_container_entry(kernel_fourier *kernel, int channel) {
 
-      testPlot("Deconv_ours", inverse_res1[0]);
-      testPlot("mult_v", mult_v);
-      testPlot("l1_mult_v", l1_mult_v);
-      testPlot("totPE_v", totPE_v);
-      testPlot("l1_totPE_v", l1_totPE_v);
+      //If channel is ommitted from the function arguments then we add the kernel to all
+      if (channel <0) {
+        for (int i =0 ; i<32; i++){
+          kernel_container_v.at(i).add_kernel(kernel);
+        }
+      }
+      else if (channel < 32) {
+        kernel_container_v.at(channel).add_kernel(kernel);
+      }
+      else
+      {std::cout << "You're asking to add a kernel to a nonexistant channel. Options are 0-31 for individual beam channels or input channel < 0 to apply to all channels\n";}
 
-    }//End of Deconv_test
+    }
 
     //toy light reco f2
     double Deconvolver::HighFreqFilter(double frequency)
@@ -344,121 +148,6 @@ namespace wcopreco {
         return std::make_pair(mean,rms);
      }
 
-     void Deconvolver::Perform_L1(std::vector<double> inverse_res1,
-                                  std::vector<double> decon_v[32],
-                                  std::vector<double> *totPE_v,
-                                  std::vector<double> *mult_v,
-                                  std::vector<double> *l1_totPE_v,
-                                  std::vector<double> *l1_mult_v,
-                                  int ch
-                                  )
-     {
-
-       // prepare L1 fit ...
-       std::vector<float> rebin_v;
-       rebin_v.resize(250);
-       // TH1F *rrebin = new TH1F("hrebin","hrebin",250,0,250);
-
-       for (int i=0;i!=250;i++){
-         // hrebin->SetBinContent(i+1,
-   			//        fb->GetBinContent(6*i+1) +
-   			//        fb->GetBinContent(6*i+2) +
-   			//        fb->GetBinContent(6*i+3) +
-   			//        fb->GetBinContent(6*i+4) +
-   			//        fb->GetBinContent(6*i+5) +
-   			//        fb->GetBinContent(6*i+6) );
-
-         rebin_v[i] = inverse_res1.at(6*i) +
-                     inverse_res1.at(6*i+1) +
-                     inverse_res1.at(6*i+2) +
-                     inverse_res1.at(6*i+3) +
-                     inverse_res1.at(6*i+4) +
-                     inverse_res1.at(6*i+5) ;
-       }
-       // std::vector<double> decon_v;
-       decon_v[ch].resize(250);
-       for (int i=0;i!=250;i++){
-         // hdecon[j]->SetBinContent(i+1,hrebin->GetBinContent(i+1));
-         decon_v[ch].at(i) = rebin_v[i];
-       }
-
-
-       // work on the L1 ...
-       std::vector<double> vals_y;
-       std::vector<double> vals_x;
-       std::vector<int> vals_bin;
-
-       for (int i=0;i!=250;i++){
-         double content = rebin_v[i];
-         if (content>0.3){
-         	vals_y.push_back(content);
-         	vals_x.push_back(i+0.5);
-         	vals_bin.push_back(i);
-
-         	// global_vals_y.push_back(content);
-         	// global_vals_x.push_back(hrebin->GetBinCenter(i+1));
-         	// global_vals_bin.push_back(i);
-         	// global_vals_pmtid.push_back(j);
-         }
-       }
-
-       int nbin_fit = vals_x.size();
-       Eigen::VectorXd W = Eigen::VectorXd::Zero(nbin_fit);
-       Eigen::MatrixXd G = Eigen::MatrixXd::Zero(nbin_fit,nbin_fit);
-       for (int i=0;i!=nbin_fit;i++){
-           W(i) = vals_y.at(i) / sqrt(vals_y.at(i));
-           double t1 = vals_x.at(i); // measured time
-           for (int k=0;k!=nbin_fit;k++){
-             	double t2 = vals_x.at(k); // real time
-             	if (t1>t2) {
-               	  G(i,k) = (0.75 * (exp(-((t1-t2)*6*15.625/1000.-3*15.625/1000.)/1.5)-exp(-((t1-t2)*6*15.625/1000.+3*15.625/1000.)/1.5))) / sqrt(vals_y.at(i));
-             	}
-               else if (t1==t2){
-               	  G(i,k) = (0.25 + 0.75 *(1-exp(-3*15.625/1000./1.5))) / sqrt(vals_y.at(i));
-             	}
-               else{
-               	  continue;
-             	}
-           }
-       }
-
-       double lambda = 5;//1/2.;
-       wcopreco::LassoModel m2(lambda, 100000, 0.05);
-       m2.SetData(G, W);
-       m2.Fit();
-       Eigen::VectorXd beta = m2.Getbeta();
-       //Make vector to hold L1 fit values
-       std::vector<double> l1_v;
-       l1_v.resize(250);
-       for (int i=0;i!=nbin_fit;i++){
-           // hl1[j]->SetBinContent(vals_bin.at(i)+1,beta(i));
-           l1_v[vals_bin.at(i)] = beta(i);
-       }
-
-       // testPlot("L1test", l1_v);
-
-       for (int j=0;j!=250;j++){
-         double content = decon_v[ch].at(j);
-         if (content >0.2) {
-             // h_totPE->SetBinContent(j+1,h_totPE->GetBinContent(j+1) + content);
-             totPE_v->at(j)= totPE_v->at(j) + content;
-           }
-         if (content > 1.5) {// ~2 PE threshold ...
-             mult_v->at(j)= mult_v->at(j) + 1 ;
-             // h_mult->SetBinContent(j+1,h_mult->GetBinContent(j+1)+1);
-           }
-
-         // content = hl1[i]->GetBinContent(j+1);
-         content = l1_v.at(j);
-         // h_l1_totPE->SetBinContent(j+1,h_l1_totPE->GetBinContent(j+1)+content);
-         l1_totPE_v->at(j) = l1_totPE_v->at(j) + content;
-         if (content > 1) {// 1 PE threshold
-             // h_l1_mult->SetBinContent(j+1,h_l1_mult->GetBinContent(j+1)+1);
-               l1_mult_v->at(j) = l1_mult_v->at(j) +1;
-           }
-         }
-
-     }
 
      void Deconvolver::testPlot(std::string Title, std::vector<double> input){
        //makes a hsitogram in root to test output and saves as png
@@ -494,8 +183,9 @@ namespace wcopreco {
        return maxdiff;
      }
 
-     std::vector<double> Deconvolver::Deconvolve(OpWaveform wfm) {
+     std::vector<double> Deconvolver::Deconvolve_One_Wfm(OpWaveform wfm, kernel_fourier_container kernel_container) {
        //BEGIN DECONVOLUTION MARKER
+       std::cout << "Starting the deconvolution of a waveform!\n";
        std::vector<double> wfm_doubles(wfm.begin(), wfm.end());
        float bin_width = (1.0/(64e6) );
        int nbins = wfm.size();
@@ -563,13 +253,8 @@ namespace wcopreco {
        // testPlot("wfm_phase", phase_raw);
 
 
-
-       std::string word = "SPE_wfm" ;
-
-
-
        // std::cout << op_gain->at(wfm.get_ChannelNum()) << " Is gain of the channel!";
-       UB_spe spe(word, true, op_gain.at(wfm.get_ChannelNum()));
+       UB_spe spe(true, op_gain.at(wfm.get_ChannelNum()));
        // spe.gain = 1;
 
        std::vector<double> mag_spe;
@@ -577,11 +262,9 @@ namespace wcopreco {
 
        spe.Get_pow_spec(nbins,bin_width,&mag_spe,&phase_spe);
 
-       std::string word2 = "RC_Wfm";
-       UB_rc rc(word2,true);
+       UB_rc rc(true);
 
        std::vector<double> vec_rc = rc.Get_wfm(nbins,bin_width);
-
 
        std::vector<double> mag_rc;
        std::vector<double> phase_rc;

@@ -8,11 +8,15 @@
 
 namespace wcopreco {
 
-  class kernel_fourier_container : public std::vector<kernel_fourier> {
+  class kernel_fourier_container : public std::vector<kernel_fourier*> {
 
   public:
     kernel_fourier_container();
     virtual ~kernel_fourier_container() {};
+
+
+    void add_kernel(kernel_fourier *kernel) { emplace_back(std::move(kernel));}
+    void clear_kernels_v() {clear();}
 
 
   protected:

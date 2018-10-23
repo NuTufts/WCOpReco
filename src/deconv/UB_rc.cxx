@@ -2,8 +2,8 @@
 
 using namespace wcopreco;
 
- UB_rc::UB_rc(std::string nm, bool mult_flag)
- : kernel_fourier (nm,mult_flag)
+ UB_rc::UB_rc(bool mult_flag)
+ : kernel_fourier ("UB_RC",mult_flag)
   {
 
   }

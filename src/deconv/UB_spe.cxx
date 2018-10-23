@@ -5,8 +5,8 @@
 
 namespace wcopreco {
 
-wcopreco::UB_spe::UB_spe(std::string nm, bool mult_flag, float op_gain)
-: kernel_fourier (nm,mult_flag)
+wcopreco::UB_spe::UB_spe(bool mult_flag, float op_gain)
+: kernel_fourier ("UB_SPE",mult_flag)
  {
    gain = op_gain;
  }

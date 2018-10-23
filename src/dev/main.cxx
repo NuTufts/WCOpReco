@@ -40,6 +40,9 @@ int main(){
   _UB_Ev_wfm = reader.Reader(EVENT_NUM);
   std::vector<float> op_gain = _UB_Ev_wfm.get_op_gain();
   std::vector<float> op_gainerror = _UB_Ev_wfm.get_op_gainerror();
+  std::cout << op_gain.size() << "SIZE OUTSIDE\n";
+
+
 
   //create the merger and then get a Merged UBEventWaveform UB_Ev_Merged
   wcopreco::saturation_merger merger(_UB_Ev_wfm);
@@ -47,14 +50,22 @@ int main(){
   wcopreco::OpWaveformCollection merged_cosmic = merger.get_merged_cosmic(); //This is inside UB_Ev_Merged
   wcopreco::UBEventWaveform UB_Ev_Merged = merger.get_merged_UB_Ev();
 
+  
+  std::cout << op_gain.size() << "SIZE OUTSIDE\n";
+
+
   // Create the Deconvolver (This should just deconvolves the BEAM)
-  wcopreco::Deconvolver tester(&merged_beam);
+  wcopreco::Deconvolver tester(&merged_beam, true);
   // std::cout << "Deconvolver declared!" << std::endl;
-  // tester.deconv_test();
+  std::vector<wcopreco::kernel_fourier_container> kernel_container_v = tester.get_kernel_container_v();
+
+  wcopreco::OpWaveform wfm = merged_beam.at(0);
+  std::cout << kernel_container_v.size() << "Size of kernel container_v \n\n\n\n";
+  tester.Deconvolve_One_Wfm(wfm, kernel_container_v.at(wfm.get_ChannelNum()));
 
 
   // //Create the Hitfinder for COSMICS (Currently this also does the flashes for cosmics)
-  // wcopreco::HitFinder hits_found(&merged_cosmic, &op_gain, &op_gainerror);
+  // wcopreco::HitFinder_cosmic hits_found(&merged_cosmic, &op_gain, &op_gainerror);
   // wcopreco::OpflashSelection flashes = hits_found.get_cosmic_flashes();
   // std::cout << flashes.size() << " flashes were found in the cosmic selection\n";
 

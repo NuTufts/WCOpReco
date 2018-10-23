@@ -13,7 +13,7 @@ namespace wcopreco {
 
   class UB_rc : public kernel_fourier {
   public:
-     UB_rc(std::string word, bool flag);
+     UB_rc(bool flag);
      virtual ~UB_rc() {};
 
     std::vector<double> Get_wfm(int nbins, float tick_width_ns);

@@ -231,14 +231,17 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     for (unsigned j=0; j < ch.size(); j++){
       TH1S *waveform = (TH1S*)Eventwaveform_root.At(j);
       Int_t n = waveform->GetNbinsX();
+
       //Declare wfm, size of n-1 to get rid of underflow bin
 
 
       //These IF statements enforces cosmic wf to have 40 bins, and Beam to have 1500
       if (((type == 0)||(type==1) )&& n-1 > 1000 ){
-          wcopreco::OpWaveform wfm(ch[j]%100, timestamp[j]-triggerTime, type, n-1);
+          wcopreco::OpWaveform wfm(ch[j]%100, timestamp[j]-triggerTime, type, n);
           //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41
-          memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*(n-1));
+          for (int bin=0; bin<n; bin++) {
+            wfm[bin]=((double)waveform->GetBinContent(bin+1));
+          }
           // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
           wfm_collection.add_waveform(wfm);
           // wfm_collection.emplace_back(std::move(wfm));
@@ -248,9 +251,12 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
         }
 
       if (((type == 2)||(type==3) )&& n-1 < 100 ){
-          wcopreco::OpWaveform wfm(ch[j]%100, timestamp[j]-triggerTime, type, n-1);
+          wcopreco::OpWaveform wfm(ch[j]%100, timestamp[j]-triggerTime, type, n);
           //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41
-          memcpy(wfm.data(),waveform->GetArray()+sizeof(short),sizeof(short)*(n-1));
+
+          for (int bin=0; bin<n; bin++) {
+            wfm[bin]=((double)waveform->GetBinContent(bin+1));
+          }
           // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
           wfm_collection.add_waveform(wfm);
 
@@ -260,10 +266,6 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
         }
 
         //test map for channel number
-
-
-
-
 
       // std::cout << "length: " << wfm_collection.size() << std::endl;
       // std::cout << "capacity: " << wfm_collection.capacity() << std::endl;
@@ -275,13 +277,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
       // };
 
     };
-    // c->cd();
-    // TH1S *waveform = (TH1S*)Eventwaveform_root.At(0);
-    // waveform->Draw("hist");
-    // c->SaveAs("canvas.png");
-    // for (int i=1;i<waveform->GetNbinsX(); i++)
-    // {std::cout << waveform->GetBinContent(i) <<std::endl;}
-    // std::cout << count << "COUNTED WITH 1500" << std::endl << std::endl;
+
     Eventwaveform_root.Clear();
     return;
   };

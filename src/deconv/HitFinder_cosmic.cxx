@@ -3,9 +3,7 @@
 namespace wcopreco {
 
   wcopreco::HitFinder_cosmic::HitFinder_cosmic(OpWaveformCollection* merged_cosmic, std::vector<float> *op_gain, std::vector<float> *op_gainerror){
-    //Module for hit finding
-    //input should be the output of the saturation merger - but I'm not confident in this at all
-
+    //Module for hit finding for cosmics
     //Much of this code can be left the way it is in WC
 
       std::cout << merged_cosmic->size() << "   Is the number of waveforms in merged_cosmic\n";

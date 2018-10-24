@@ -44,7 +44,7 @@ namespace wcopreco{
 
 
     void set_filter_status(bool status) {filter_status = status;}
-    void Deconvolve_Collection(OpWaveformCollection * merged_beam);
+    OpWaveformCollection Deconvolve_Collection(OpWaveformCollection * merged_beam);
     double HighFreqFilter(double frequency);
     double LateLightFilter(double frequency2);
     void Remove_Baseline_Leading_Edge(OpWaveform *wfm);

@@ -30,7 +30,7 @@ namespace wcopreco {
 
 
 
-  void wcopreco::Deconvolver::Deconvolve_Collection(OpWaveformCollection * merged_beam)
+  OpWaveformCollection wcopreco::Deconvolver::Deconvolve_Collection(OpWaveformCollection * merged_beam)
 
     {
 
@@ -50,7 +50,7 @@ namespace wcopreco {
         deconvolved_collection.add_waveform(Deconvolve_One_Wfm(wfm, kernel_container_v.at(wfm.get_ChannelNum())));
 
         }
-
+    return deconvolved_collection;
     }//End of Deconvolve_Collection
 
 

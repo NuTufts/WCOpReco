@@ -71,14 +71,17 @@ int main(){
   // wcopreco::OpflashSelection flashes = flashes_found.get_cosmic_flashes();
   // std::cout << flashes.size() << " flashes were found in the cosmic selection\n";
 
+  std::cout << "\n";
+  // Create the Deconvolver (This should just deconvolves the BEAM)
+  wcopreco::Deconvolver Does_Nothing(&merged_beam, false, false);
+  // wcopreco::OpWaveformCollection DN = Does_Nothing.Deconvolve_Collection(& merged_beam);
 
   std::cout << "\n";
   // Create the Deconvolver (This should just deconvolves the BEAM)
-  wcopreco::Deconvolver All_At_Once(&merged_beam, false, false);
-  wcopreco::OpWaveformCollection AAO = All_At_Once.Deconvolve_Collection(& merged_beam);
+  wcopreco::Deconvolver All_At_Once(&merged_beam, true, true);
+  // wcopreco::OpWaveformCollection AAO = All_At_Once.Deconvolve_Collection(& merged_beam);
   std::cout << "\n";
-  //
-  //
+
   // // create the deconvolver in 2 steps
   // wcopreco::Deconvolver Step_One(&merged_beam, true, false);
   // wcopreco::OpWaveformCollection S1 = Step_One.Deconvolve_Collection(& merged_beam);
@@ -88,19 +91,34 @@ int main(){
   // wcopreco::OpWaveformCollection S2 = Step_One.Deconvolve_Collection(& S1);
   // std::cout << "\n";
   //
+  //Remove Baselines from Original
   wcopreco::OpWaveform orig = merged_beam.at(0);
-  wcopreco::OpWaveform aao = AAO.at(0);
+  All_At_Once.Remove_Baseline_Leading_Edge(&orig);
+  All_At_Once.Remove_Baseline_Secondary(&orig);
+
+  std::vector<wcopreco::kernel_fourier_container> kernel_container_v_dn = Does_Nothing.get_kernel_container_v();
+  wcopreco::OpWaveform dn = Does_Nothing.Deconvolve_One_Wfm(orig, kernel_container_v_dn.at(orig.get_ChannelNum()));
+  All_At_Once.Remove_Baseline_Leading_Edge(&dn);
+  All_At_Once.Remove_Baseline_Secondary(&dn);
+
+
+  std::vector<wcopreco::kernel_fourier_container> kernel_container_v = All_At_Once.get_kernel_container_v();
+  wcopreco::OpWaveform aao = All_At_Once.Deconvolve_One_Wfm(orig, kernel_container_v.at(orig.get_ChannelNum()));
+  All_At_Once.Remove_Baseline_Leading_Edge(&aao);
+  All_At_Once.Remove_Baseline_Secondary(&aao);
   // wcopreco::OpWaveform s2 = S2.at(0);
-  //
-  for (int i=0; i<1500;i++){
-    if (i%100 ==0) {
-      std::cout << aao.at(i) << " All at once method\n";
+  std::cout << "=================================================\n";
+  for (int i=0; i<50;i++){
+    // if (i%100 ==0) {
       std::cout << orig.at(i) << " Original Waveform\n";
+      std::cout << dn.at(i) << " 'Does Nothing' Waveform\n";
+
+      std::cout << aao.at(i) << " All at once method\n\n";
 
 
       // std::cout << s2.at(i) << " Two Step\n";
 
-    }
+    // }
   }
 
 

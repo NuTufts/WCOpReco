@@ -4,8 +4,6 @@
 //deconv functions
 #include "kernel_fourier.h"
 #include "kernel_fourier_container.h"
-#include "noise_remover.h"
-#include "noise_container.h"
 #include "UB_spe.h"
 #include "UB_rc.h"
 #include "WCOpReco/LassoModel.h"

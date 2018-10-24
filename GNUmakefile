@@ -12,3 +12,4 @@ clean:
 	find . -name '*.o' -delete
 	find . -name '*.so' -delete
 	find . -name 'main' -delete
+	rm build/include/WCOpReco/*

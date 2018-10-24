@@ -6,8 +6,9 @@
 #include "WCOpReco/LassoModel.h"
 #include "WCOpReco/ElasticNetModel.h"
 #include "WCOpReco/LinearModel.h"
-#include "WCOpReco/Deconvolver.h"
 #include "WCOpReco/OpWaveformCollection.h"
+
+#include "Deconvolver.h"
 
 //c++ includes
 #include <vector>

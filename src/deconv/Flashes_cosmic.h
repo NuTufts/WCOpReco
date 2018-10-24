@@ -2,9 +2,8 @@
 #define FLASHES_COSMIC_H
 
 #include "WCOpReco/DataReader.h"
-#include "WCOpReco/COphit.h"
 #include "WCOpReco/Opflash.h"
-#include "WCOpReco/HitFinder_cosmic.h"
+#include "HitFinder_cosmic.h"
 
 namespace wcopreco{
 

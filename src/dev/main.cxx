@@ -98,6 +98,8 @@ int main(){
 
   std::vector<wcopreco::kernel_fourier_container> kernel_container_v_dn = Does_Nothing.get_kernel_container_v();
   wcopreco::OpWaveform dn = Does_Nothing.Deconvolve_One_Wfm(orig, kernel_container_v_dn.at(orig.get_ChannelNum()));
+  wcopreco::OpWaveform dn2 = Does_Nothing.Deconvolve_One_Wfm(dn, kernel_container_v_dn.at(orig.get_ChannelNum()));
+
   // All_At_Once.Remove_Baseline_Leading_Edge(&dn);
   // All_At_Once.Remove_Baseline_Secondary(&dn);
 
@@ -109,6 +111,9 @@ int main(){
 
   All_At_Once.testPlot("Original", orig);
   All_At_Once.testPlot("Do Nothing Dec", dn);
+  All_At_Once.testPlot("Do Nothing Dec 2", dn2);
+
+
   All_At_Once.testPlot("All at Once", aao);
 
 
@@ -116,6 +121,7 @@ int main(){
   std::cout << "=================================================\n";
   for (int i=0; i<1500;i++){
     if (i%100 ==0) {
+      std::cout << orig.at(i) - dn.at(i) << "\n";
       std::cout << orig.at(i) << " Original Waveform\n";
       std::cout << dn.at(i) << " 'Does Nothing' Waveform\n";
       std::cout << aao.at(i) << " All at once method\n\n";

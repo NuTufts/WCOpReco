@@ -156,7 +156,7 @@ namespace wcopreco {
        //makes a hsitogram in root to test output and saves as png
        TCanvas *c1 = new TCanvas(Title.c_str(), Title.c_str(), 600, 400);
        int nbins = input.size();
-       TH1D * hist = new TH1D(Title.c_str() ,Title.c_str(), nbins, 0., (double) nbins-1);
+       TH1D * hist = new TH1D(Title.c_str() ,Title.c_str(), nbins-1, 0., (double) nbins);
        for (int i=0; i<nbins; i++) {
          hist->SetBinContent(i,input.at(i));
          //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
@@ -171,7 +171,7 @@ namespace wcopreco {
        //makes a hsitogram in root to test output and saves as png
        TCanvas *c1 = new TCanvas(Title.c_str(), Title.c_str(), 600, 400);
        int nbins = input.size();
-       TH1D * hist = new TH1D(Title.c_str() ,Title.c_str(), nbins, 0., (double) nbins-1);
+       TH1D * hist = new TH1D(Title.c_str() ,Title.c_str(), nbins-1, 0., (double) nbins);
        for (int i=0; i<nbins; i++) {
          hist->SetBinContent(i,input.at(i));
          //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
@@ -229,12 +229,12 @@ namespace wcopreco {
        double *im = new double[nbins]; //Imaginary -> Phase
 
        fftr2c->GetPointsComplex(re, im); //Put the values in the arrays
-
-       for (int index =nbins-1; index>nbins/2; index--){
-         re[index] = re[(nbins-1) - index];
-         im[index] = im[(nbins-1) - index];
-
-       }
+       //
+       // for (int index =nbins-1; index>nbins/2; index--){
+       //   re[index] = re[(nbins-1) - index];
+       //   im[index] = im[(nbins-1) - index];
+       //
+       // }
 
        //Copy those array values into vectors passed in by reference.
        // This is inefficient, but makes for an easier user interface.
@@ -324,17 +324,17 @@ namespace wcopreco {
          if (i==0) rho = 0;
          //Perform Decon with Filters
          if (filter_status){
-           value_re[i] = rho * (cos(phi)/nbins)*2 * LateLightFilter(freq);
-           value_im[i] = rho * (sin(phi)/nbins)*2 * LateLightFilter(freq);
-           value_re1[i] = rho * (cos(phi)/nbins)*2 * HighFreqFilter(freq);
-           value_im1[i] = rho * (sin(phi)/nbins)*2 * HighFreqFilter(freq);
+           value_re[i] = rho * (cos(phi)/nbins) * LateLightFilter(freq);
+           value_im[i] = rho * (sin(phi)/nbins) * LateLightFilter(freq);
+           value_re1[i] = rho * (cos(phi)/nbins) * HighFreqFilter(freq);
+           value_im1[i] = rho * (sin(phi)/nbins) * HighFreqFilter(freq);
          }
          //Perform Decon without Filters
          else{
-           value_re[i] = rho * (cos(phi)/nbins)*2 ;
-           value_im[i] = rho * (sin(phi)/nbins)*2 ;
-           value_re1[i] = rho * (cos(phi)/nbins)*2 ;
-           value_im1[i] = rho * (sin(phi)/nbins)*2 ;
+           value_re[i] = rho * (cos(phi)/nbins) ;
+           value_im[i] = rho * (sin(phi)/nbins) ;
+           value_re1[i] = rho * (cos(phi)/nbins) ;
+           value_im1[i] = rho * (sin(phi)/nbins) ;
          }
 
        }

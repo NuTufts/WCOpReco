@@ -6,6 +6,8 @@
 #include "WCOpReco/Deconvolver.h"
 #include "WCOpReco/saturation_merger.h"
 #include "WCOpReco/HitFinder_cosmic.h"
+#include "WCOpReco/Flashes_cosmic.h"
+#include "WCOpReco/HitFinder_beam.h"
 
 //root includes
 #include "TH1S.h"
@@ -21,12 +23,6 @@
 int main(){
 
   std::cout << "Hello world" << std::endl;
-
-
-
-
-
-
 
   //Set the filepath
   std::string file = "src/data/celltree.root";
@@ -66,13 +62,18 @@ int main(){
     // tester.add_kernel_container_entry(&rc,i);
     // std::cout << tester.get_kernel_container_v().at(i).size() << " After \n\n\n\n";
   // }
-  tester.Deconvolve_Collection(& merged_beam);
+
+  //do beam hitfinding
+  wcopreco::OpWaveformCollection deconvolved_wfm = tester.Deconvolve_Collection(& merged_beam);
+  wcopreco::HitFinder_beam hits_found_beam(wcopreco::OpWaveformCollection deconvolved_beam);
 
 
   // //Create the Hitfinder for COSMICS (Currently this also does the flashes for cosmics)
-  // wcopreco::HitFinder_cosmic hits_found(&merged_cosmic, &op_gain, &op_gainerror);
-  // wcopreco::OpflashSelection flashes = hits_found.get_cosmic_flashes();
-  // std::cout << flashes.size() << " flashes were found in the cosmic selection\n";
+  wcopreco::HitFinder_cosmic hits_found(&merged_cosmic, &op_gain, &op_gainerror);
+  std::vector<wcopreco::COphitSelection> hits = hits_found.get_ophits_group();
+  wcopreco::Flashes_cosmic flashes_found(hits);
+  wcopreco::OpflashSelection flashes = flashes_found.get_cosmic_flashes();
+  std::cout << flashes.size() << " flashes were found in the cosmic selection\n";
 
 
 

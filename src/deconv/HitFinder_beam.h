@@ -6,6 +6,8 @@
 #include "WCOpReco/LassoModel.h"
 #include "WCOpReco/ElasticNetModel.h"
 #include "WCOpReco/LinearModel.h"
+#include "WCOpReco/Deconvolver.h"
+#include "WCOpReco/OpWaveformCollection.h"
 
 //c++ includes
 #include <vector>
@@ -23,7 +25,7 @@ namespace wcopreco{
 
   class HitFinder_beam {
   public:
-    HitFinder_beam(std::vector<double> inverse_res1[32] , std::vector<double> decon_v[32]);
+    HitFinder_beam(OpWaveformCollection deconvolved_beam);
     ~HitFinder_beam() {};
 
     void Perform_L1(std::vector<double> inverse_res1,

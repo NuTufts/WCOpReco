@@ -2,19 +2,24 @@
 
 namespace wcopreco {
 
-  wcopreco::HitFinder_beam::HitFinder_beam(std::vector<double> inverse_res1[32], std::vector<double> decon_v[32]){
+  wcopreco::HitFinder_beam::HitFinder_beam(OpWaveformCollection deconvolved_beam){
     //Module for hit finding for beam
-    // loop through all 32 channels of collection and perform L1 fit
+    // loop through all 32 channels of collection, fft with filters, ifft, and perform L1 fit
+
+    //need to call deconvolver with no kernels (should aready have been taken into account in deconvolution step)
+    //include HighFreqFilter and LateLight filter for UB, but can add in different or additional functions if desired.
+    wcopreco::Deconvolver filtered_wfm(&deconvolved_beam, false, true);
+    OpWaveformCollection filtered_collection = filtered_wfm.Deconvolve_Collection(&deconvolved_beam);
 
     totPE_v.resize(250);
     mult_v.resize(250);
     l1_totPE_v.resize(250);
     l1_mult_v.resize(250);
+    std::vector<double> decon_v[32];
 
     for (int ch=0; ch<32; ch++){
-
       //totPE mult, and their l1 versions are additive (each element is always +=). Each iteration of ch will add to these values.
-      Perform_L1( inverse_res1[ch],
+      Perform_L1( filtered_collection.at(ch),
                   decon_v,
                   &totPE_v,
                   &mult_v,
@@ -42,7 +47,6 @@ namespace wcopreco {
     // prepare L1 fit ...
     std::vector<float> rebin_v;
     rebin_v.resize(250);
-    // TH1F *rrebin = new TH1F("hrebin","hrebin",250,0,250);
 
     for (int i=0;i!=250;i++){
       rebin_v[i] = inverse_res1.at(6*i) +
@@ -52,7 +56,7 @@ namespace wcopreco {
                   inverse_res1.at(6*i+4) +
                   inverse_res1.at(6*i+5) ;
     }
-    // std::vector<double> decon_v;
+
     decon_v[ch].resize(250);
     for (int i=0;i!=250;i++){
       decon_v[ch].at(i) = rebin_v[i];
@@ -70,7 +74,6 @@ namespace wcopreco {
        vals_y.push_back(content);
        vals_x.push_back(i+0.5);
        vals_bin.push_back(i);
-;
       }
     }
 
@@ -94,39 +97,33 @@ namespace wcopreco {
         }
     }
 
-    double lambda = 5;//1/2.;
+    double lambda = 5;
     wcopreco::LassoModel m2(lambda, 100000, 0.05);
     m2.SetData(G, W);
     m2.Fit();
     Eigen::VectorXd beta = m2.Getbeta();
+
     //Make vector to hold L1 fit values
     std::vector<double> l1_v;
     l1_v.resize(250);
     for (int i=0;i!=nbin_fit;i++){
-        // hl1[j]->SetBinContent(vals_bin.at(i)+1,beta(i));
         l1_v[vals_bin.at(i)] = beta(i);
     }
 
-    // testPlot("L1test", l1_v);
 
     for (int j=0;j!=250;j++){
       double content = decon_v[ch].at(j);
-      if (content >0.2) {
-          // h_totPE->SetBinContent(j+1,h_totPE->GetBinContent(j+1) + content);
+      if (content >0.2) {;
           totPE_v->at(j)= totPE_v->at(j) + content;
         }
       if (content > 1.5) {// ~2 PE threshold ...
           mult_v->at(j)= mult_v->at(j) + 1 ;
-          // h_mult->SetBinContent(j+1,h_mult->GetBinContent(j+1)+1);
         }
 
-      // content = hl1[i]->GetBinContent(j+1);
       content = l1_v.at(j);
-      // h_l1_totPE->SetBinContent(j+1,h_l1_totPE->GetBinContent(j+1)+content);
       l1_totPE_v->at(j) = l1_totPE_v->at(j) + content;
       if (content > 1) {// 1 PE threshold
-          // h_l1_mult->SetBinContent(j+1,h_l1_mult->GetBinContent(j+1)+1);
-            l1_mult_v->at(j) = l1_mult_v->at(j) +1;
+          l1_mult_v->at(j) = l1_mult_v->at(j) + 1;
         }
       }
   }

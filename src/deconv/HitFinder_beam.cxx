@@ -8,7 +8,7 @@ namespace wcopreco {
 
     //need to call deconvolver with no kernels (should aready have been taken into account in deconvolution step)
     //include HighFreqFilter and LateLight filter for UB, but can add in different or additional functions if desired.
-    wcopreco::Deconvolver filtered_wfm(&deconvolved_beam, false, true);
+    wcopreco::Deconvolver filtered_wfm(&deconvolved_beam, true, true);
     OpWaveformCollection filtered_collection = filtered_wfm.Deconvolve_Collection(&deconvolved_beam);
 
     totPE_v.resize(250);

@@ -27,7 +27,7 @@ int main(){
   const char* file = "../celltree.root";
   //testing ToyLightReco
   WireCell2dToy::ToyLightReco flash(file,false);
-  flash.load_event_raw(4);
+  flash.load_event_raw(50);
   TH1F* hist_raw = flash.get_raw_hist(0);
 
   TCanvas *c1 = new TCanvas("raw_wc", "raw_wc", 600, 400);
@@ -40,7 +40,7 @@ int main(){
 
   TCanvas *c2 = new TCanvas("deconv_wc", "deconv_wc", 600, 400);
   hist_decon->Draw();
-  c1->SaveAs("deconv_wc.png");
+  c2->SaveAs("deconv_wc.png");
 
   delete c2;
   // delete hist_decon;

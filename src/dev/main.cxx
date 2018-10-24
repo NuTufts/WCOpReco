@@ -60,16 +60,16 @@ int main(){
   //
   //
   // //do beam hitfinding
-  // wcopreco::OpWaveformCollection deconvolved_wfm = tester.Deconvolve_Collection(& merged_beam);
-  // wcopreco::HitFinder_beam hits_found_beam(wcopreco::OpWaveformCollection deconvolved_beam);
-  //
-  //
-  // // //Create the Hitfinder for COSMICS (Currently this also does the flashes for cosmics)
-  // wcopreco::HitFinder_cosmic hits_found(&merged_cosmic, &op_gain, &op_gainerror);
-  // std::vector<wcopreco::COphitSelection> hits = hits_found.get_ophits_group();
-  // wcopreco::Flashes_cosmic flashes_found(hits);
-  // wcopreco::OpflashSelection flashes = flashes_found.get_cosmic_flashes();
-  // std::cout << flashes.size() << " flashes were found in the cosmic selection\n";
+  //wcopreco::OpWaveformCollection deconvolved_wfm = tester.Deconvolve_Collection(& merged_beam);
+  wcopreco::HitFinder_beam hits_found_beam(wcopreco::OpWaveformCollection merged_beam);
+
+
+  // //Create the Hitfinder for COSMICS (Currently this also does the flashes for cosmics)
+  wcopreco::HitFinder_cosmic hits_found(&merged_cosmic, &op_gain, &op_gainerror);
+  std::vector<wcopreco::COphitSelection> hits = hits_found.get_ophits_group();
+  wcopreco::Flashes_cosmic flashes_found(hits);
+  wcopreco::OpflashSelection flashes = flashes_found.get_cosmic_flashes();
+  std::cout << flashes.size() << " flashes were found in the cosmic selection\n";
 
   std::cout << "\n";
   // Create the Deconvolver (This should just deconvolves the BEAM)
@@ -118,19 +118,19 @@ int main(){
 
 
   // wcopreco::OpWaveform s2 = S2.at(0);
-  std::cout << "=================================================\n";
-  for (int i=0; i<1500;i++){
-    if (i%100 ==0) {
-      std::cout << orig.at(i) - dn.at(i) << "\n";
-      std::cout << orig.at(i) << " Original Waveform\n";
-      std::cout << dn.at(i) << " 'Does Nothing' Waveform\n";
-      std::cout << aao.at(i) << " All at once method\n\n";
+  // std::cout << "=================================================\n";
+  // for (int i=0; i<1500;i++){
+  //   if (i%100 ==0) {
+  //     std::cout << orig.at(i) - dn.at(i) << "\n";
+  //     std::cout << orig.at(i) << " Original Waveform\n";
+  //     std::cout << dn.at(i) << " 'Does Nothing' Waveform\n";
+  //     std::cout << aao.at(i) << " All at once method\n\n";
 
 
       // std::cout << s2.at(i) << " Two Step\n";
 
-    }
-  }
+  //   }
+  // }
 
 
 

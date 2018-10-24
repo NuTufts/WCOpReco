@@ -40,6 +40,7 @@ namespace wcopreco{
     std::vector<kernel_fourier_container> get_kernel_container_v() {return kernel_container_v;}
     kernel_fourier_container get_kernel_container_entry(int channel) {return kernel_container_v.at(channel);}
     void add_kernel_container_entry(kernel_fourier *kernel, int channel =-1);
+    void clear_kernels();
     // void add_kernel_container
 
 

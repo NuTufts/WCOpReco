@@ -418,4 +418,10 @@ namespace wcopreco {
        return inverse_res1;
      }
 
+     void Deconvolver::clear_kernels() {
+       for (int i=0; i< kernel_container_v.size() ; i++) {
+         kernel_container_v.at(i).clear_kernels_v();
+       }
+     }
+
 }

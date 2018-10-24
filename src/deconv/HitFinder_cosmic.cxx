@@ -69,45 +69,6 @@ namespace wcopreco {
         }
       }
 
-      //MOVE TO FLASHES_COSMIC CLASS
-      int count =0;
-      int count_d=0;
-      for (size_t j=0; j!=ophits_group.size();j++){
-        Opflash *flash = new Opflash(ophits_group.at(j));
-        if (flash->get_total_PE()!=0){
-          count++;
-          std::cout << count << " Is now the count of the flashes\n";
-          cosmic_flashes.push_back(flash);
-        }
-        else{
-          delete flash;
-          count_d++;
-          std::cout << count_d << " Have been deleted\n";
-
-        }
-        //    std::cout << ophits_group.at(j).size() << " " << flash->get_time() << std::endl;
-      }
-
-      // std::cout << cosmic_flashes.size() << std::endl;
-
-      // for (auto flash : cosmic_flashes){
-      //   std::cout << flash->get_time() << std::endl;
-      // }
-
-
-      //I don't think the following is specific to hitfinding
-      // Do we need this?
-      /*
-      for (int i=0;i!=32;i++){
-        TH1S *hsignal = (TH1S*)fop_wf->At(i);
-        for (int j=0;j!=1500;j++){
-          hraw[i]->SetBinContent(j+1,hsignal->GetBinContent(j+1)-2050);
-        }
-        gain[i] = op_gain->at(i);
-        beam_dt[i] = fop_timestamp->at(i) - triggerTime;
-      }
-      */
-
   }
 
 }

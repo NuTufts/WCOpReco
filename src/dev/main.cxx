@@ -79,7 +79,7 @@ int main(){
   std::cout << "\n";
   // Create the Deconvolver (This should just deconvolves the BEAM)
   wcopreco::Deconvolver All_At_Once(&merged_beam, true, true);
-  // wcopreco::OpWaveformCollection AAO = All_At_Once.Deconvolve_Collection(& merged_beam);
+  wcopreco::OpWaveformCollection AAO = All_At_Once.Deconvolve_Collection(& merged_beam);
   std::cout << "\n";
 
   // // create the deconvolver in 2 steps
@@ -96,25 +96,25 @@ int main(){
   All_At_Once.Remove_Baseline_Leading_Edge(&orig);
   All_At_Once.Remove_Baseline_Secondary(&orig);
 
-  std::vector<wcopreco::kernel_fourier_container> kernel_container_v_dn = Does_Nothing.get_kernel_container_v();
-  wcopreco::OpWaveform dn = Does_Nothing.Deconvolve_One_Wfm(orig, kernel_container_v_dn.at(orig.get_ChannelNum()));
-  wcopreco::OpWaveform dn2 = Does_Nothing.Deconvolve_One_Wfm(dn, kernel_container_v_dn.at(orig.get_ChannelNum()));
+  // Do Nothing Deconvolver
+  // std::vector<wcopreco::kernel_fourier_container> kernel_container_v_dn = Does_Nothing.get_kernel_container_v();
+  // wcopreco::OpWaveform dn = Does_Nothing.Deconvolve_One_Wfm(orig, kernel_container_v_dn.at(orig.get_ChannelNum()));
+  // wcopreco::OpWaveform dn2 = Does_Nothing.Deconvolve_One_Wfm(dn, kernel_container_v_dn.at(orig.get_ChannelNum()));
 
   // All_At_Once.Remove_Baseline_Leading_Edge(&dn);
   // All_At_Once.Remove_Baseline_Secondary(&dn);
 
 
-  std::vector<wcopreco::kernel_fourier_container> kernel_container_v = All_At_Once.get_kernel_container_v();
-  wcopreco::OpWaveform aao = All_At_Once.Deconvolve_One_Wfm(orig, kernel_container_v.at(orig.get_ChannelNum()));
+  wcopreco::OpWaveform aao = AAO.at(0);
   // All_At_Once.Remove_Baseline_Leading_Edge(&aao);
   // All_At_Once.Remove_Baseline_Secondary(&aao);
 
   All_At_Once.testPlot("Original", orig);
-  All_At_Once.testPlot("Do Nothing Dec", dn);
-  All_At_Once.testPlot("Do Nothing Dec 2", dn2);
+  // All_At_Once.testPlot("Do Nothing Dec", dn);
+  // All_At_Once.testPlot("Do Nothing Dec 2", dn2);
 
 
-  All_At_Once.testPlot("All at Once", aao);
+  All_At_Once.testPlot("All at Once from Collection", aao);
 
 
   // wcopreco::OpWaveform s2 = S2.at(0);

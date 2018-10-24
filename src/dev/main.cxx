@@ -53,21 +53,20 @@ int main(){
 
 
   // Create the Deconvolver (This should just deconvolves the BEAM)
-  wcopreco::Deconvolver tester(&merged_beam, false);
+  wcopreco::Deconvolver tester(&merged_beam, true, true);
   // std::cout << "Deconvolver declared!" << std::endl;
   std::vector<wcopreco::kernel_fourier_container> kernel_container_v = tester.get_kernel_container_v();
 
   wcopreco::OpWaveform wfm = merged_beam.at(0);
-  std::cout << kernel_container_v.size() << "Size of kernel container_v \n\n\n\n";
+  std::cout << kernel_container_v.size() << " Size of kernel container_v \n\n\n\n";
   //Construct the vector of kernel containers (one container per channel)
-  wcopreco::UB_rc rc(true);
-  for (int i =0 ; i<32; i++){
-    std::cout << tester.get_kernel_container_v().at(i).size() << " Before\n";
-    tester.add_kernel_container_entry(&rc,i);
-    std::cout << tester.get_kernel_container_v().at(i).size() << " After \n\n\n\n";
-
-  }
-  tester.Deconvolve_One_Wfm(wfm, kernel_container_v.at(wfm.get_ChannelNum()));
+  // wcopreco::UB_rc rc(true);
+  // for (int i =0 ; i<32; i++){
+    // std::cout << tester.get_kernel_container_v().at(i).size() << " Before\n";
+    // tester.add_kernel_container_entry(&rc,i);
+    // std::cout << tester.get_kernel_container_v().at(i).size() << " After \n\n\n\n";
+  // }
+  tester.Deconvolve_Collection(& merged_beam);
 
 
   // //Create the Hitfinder for COSMICS (Currently this also does the flashes for cosmics)

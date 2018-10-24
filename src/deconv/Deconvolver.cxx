@@ -3,21 +3,26 @@
 namespace wcopreco {
 
 
-  wcopreco::Deconvolver::Deconvolver(OpWaveformCollection *merged_beam, bool standard_run){
+  wcopreco::Deconvolver::Deconvolver(OpWaveformCollection *merged_beam, bool standard_run, bool with_filters){
+    std::cout << "Starting the deconvolution of a waveform collection!\n";
+
 
     int type = merged_beam->at(0).get_type();
     op_gain = merged_beam->get_op_gain();
     kernel_container_v.resize(32);
+    filter_status = with_filters;
+    if (filter_status) {std::cout << "You filtered out latelight and High Frequencies\n";}
+    else {std::cout << "You performed the deconvolution without filters\n";}
 
 
     //Default way to construct the deconvolver is with spe and rc
     if (standard_run){
       //Construct the vector of kernel containers (one container per channel)
-      UB_rc rc(true);
+      UB_rc *rc = new UB_rc(true);
       for (int i =0 ; i<32; i++){
         UB_spe *spe = new UB_spe(true, op_gain.at(i)); //Place UB_spe on heap, so object not deleted
         kernel_container_v.at(i).add_kernel(spe);
-        kernel_container_v.at(i).add_kernel(&rc);
+        kernel_container_v.at(i).add_kernel(rc);
       }
     }
 
@@ -42,7 +47,7 @@ namespace wcopreco {
         Remove_Baseline_Secondary(&wfm);
 
         //Do deconvolution (need to add a way to incorporate kernels)
-        inverse_res1[ch] = Deconvolve_One_Wfm(wfm, kernel_container_v.at(wfm.get_ChannelNum()));
+        deconvolved_collection.add_waveform(Deconvolve_One_Wfm(wfm, kernel_container_v.at(wfm.get_ChannelNum())));
 
         }
 
@@ -76,7 +81,7 @@ namespace wcopreco {
     }
 
     //toy light reco f3
-    double Deconvolver::BandPassFilter(double frequency2)
+    double Deconvolver::LateLightFilter(double frequency2)
     {
       //   TF1 f3("f3","(1-exp(-pow(x/[0],2)))*exp(-pow(x/[1],[2]))",0,1);
 
@@ -84,8 +89,8 @@ namespace wcopreco {
       double par_1 = 0.45;
       double par_2 = 3.07;
 
-      double bandpass_filter = (1-exp(-pow(frequency2/par_0,2)))*exp(-pow(frequency2/par_1,par_2));
-      return bandpass_filter;
+      double latelight_filter = (1-exp(-pow(frequency2/par_0,2)))*exp(-pow(frequency2/par_1,par_2));
+      return latelight_filter;
      }
 
      void Deconvolver::Remove_Baseline_Leading_Edge(OpWaveform *wfm)
@@ -181,9 +186,8 @@ namespace wcopreco {
        return maxdiff;
      }
 
-     std::vector<double> Deconvolver::Deconvolve_One_Wfm(OpWaveform wfm, kernel_fourier_container kernel_container) {
+     OpWaveform Deconvolver::Deconvolve_One_Wfm(OpWaveform wfm, kernel_fourier_container kernel_container) {
        //BEGIN DECONVOLUTION MARKER
-       std::cout << "Starting the deconvolution of a waveform!\n";
        std::vector<double> wfm_doubles(wfm.begin(), wfm.end());
        float bin_width = (1.0/(64e6) );
        int nbins = wfm.size();
@@ -251,29 +255,27 @@ namespace wcopreco {
        // testPlot("wfm_phase", phase_raw);
 
 
-       // std::cout << op_gain->at(wfm.get_ChannelNum()) << " Is gain of the channel!";
-       UB_spe spe(true, op_gain.at(wfm.get_ChannelNum()));
-       // spe.gain = 1;
-
-       std::vector<double> mag_spe;
-       std::vector<double> phase_spe;
-
-       spe.Get_pow_spec(nbins,bin_width,&mag_spe,&phase_spe);
-
-       UB_rc rc(true);
-
-       std::vector<double> vec_rc = rc.Get_wfm(nbins,bin_width);
-
-       std::vector<double> mag_rc;
-       std::vector<double> phase_rc;
-
-       rc.Get_pow_spec(nbins,bin_width,&mag_rc,&phase_rc);
-
-
        double value_re[nbins];
        double value_im[nbins];
        double value_re1[nbins];
        double value_im1[nbins];
+
+       //Set up the kernels to be deconvolved out:
+
+
+      int channel = wfm.get_ChannelNum();
+      int num_kernels = kernel_container_v.at(channel).size();
+      std::vector<std::vector<double>> mag_kernel;
+      mag_kernel.resize(num_kernels);
+      std::vector<std::vector<double>> phase_kernel;
+      phase_kernel.resize(num_kernels);
+
+
+      for (int n=0; n < num_kernels; n++ ) {
+        kernel_container_v.at(channel).at(n) ->Get_pow_spec(nbins, bin_width, &mag_kernel.at(n), &phase_kernel.at(n));
+
+      }
+
 
        for (int i=0;i<nbins;i++){
          double freq;
@@ -283,20 +285,42 @@ namespace wcopreco {
          else{
      	     freq = (((double)nbins-(double)i)/(double)nbins*2.)*1.0;
          }
-         double rho = mag_raw.at(i)/ mag_rc.at(i) / mag_spe.at(i);
-         double phi = phase_raw.at(i) - phase_rc.at(i) - phase_spe.at(i);
+
+
+
+
+
+         double rho = mag_raw.at(i);
+         double phi = phase_raw.at(i);
+         for (int n=0;n<num_kernels;n++){
+           rho = rho / mag_kernel.at(n).at(i);
+           phi = phi - phase_kernel.at(n).at(i);
+         }
+
+         // if (i%100 ==0) {
+         //   std::cout << rho << "                rho                 \n" ;//<< rho2 << "            rho2                  \n";
+         //   std::cout << phi << "                phi                 \n" ;//<< phi2 << "            phi2                  \n";
+         //
+         // }
 
          //double rho = mag_raw.at(i);
          //double phi = phase_raw.at(i);
 
          if (i==0) rho = 0;
-
-         value_re[i] = rho * BandPassFilter(freq)* (cos(phi)/nbins)*2;
-         value_im[i] = rho * BandPassFilter(freq)* (sin(phi)/nbins)*2;
-
-         value_re1[i] = rho * (cos(phi)/nbins)*2 * HighFreqFilter(freq);
-         value_im1[i] = rho * (sin(phi)/nbins)*2 * HighFreqFilter(freq);
-
+         //Perform Decon with Filters
+         if (filter_status){
+           value_re[i] = rho * (cos(phi)/nbins)*2 * LateLightFilter(freq);
+           value_im[i] = rho * (sin(phi)/nbins)*2 * LateLightFilter(freq);
+           value_re1[i] = rho * (cos(phi)/nbins)*2 * HighFreqFilter(freq);
+           value_im1[i] = rho * (sin(phi)/nbins)*2 * HighFreqFilter(freq);
+         }
+         //Perform Decon without Filters
+         else{
+           value_re[i] = rho * (cos(phi)/nbins)*2 ;
+           value_im[i] = rho * (sin(phi)/nbins)*2 ;
+           value_re1[i] = rho * (cos(phi)/nbins)*2 ;
+           value_im1[i] = rho * (sin(phi)/nbins)*2 ;
+         }
 
        }
 
@@ -345,8 +369,8 @@ namespace wcopreco {
 
        ifft1->GetPointsComplex(re_inv1, im_inv1);
 
-       std::vector<double> inverse_res1;
-       inverse_res1.resize(nbins);
+       OpWaveform inverse_res1(channel,wfm.get_time_from_trigger(), wfm.get_type(), nbins);
+       // inverse_res1.resize(nbins);
        for (int i = 0; i < nbins ; i++){
          double value = re_inv1[i];
          inverse_res1.at(i) = value;

@@ -33,7 +33,7 @@ namespace wcopreco{
 
   class Deconvolver {
   public:
-    Deconvolver(OpWaveformCollection *merged_beam, bool standard_run); //OpWaveform op_wfm, kernel_fourier_shape kernel_fourier, noise_remover noise, std::vector<short???> LL_shape
+    Deconvolver(OpWaveformCollection *merged_beam, bool standard_run, bool with_filters); //OpWaveform op_wfm, kernel_fourier_shape kernel_fourier, noise_remover noise, std::vector<short???> LL_shape
     ~Deconvolver() {};
 
 
@@ -43,13 +43,13 @@ namespace wcopreco{
     // void add_kernel_container
 
 
-
+    void set_filter_status(bool status) {filter_status = status;}
     void Deconvolve_Collection(OpWaveformCollection * merged_beam);
     double HighFreqFilter(double frequency);
-    double BandPassFilter(double frequency2);
+    double LateLightFilter(double frequency2);
     void Remove_Baseline_Leading_Edge(OpWaveform *wfm);
     void Remove_Baseline_Secondary(OpWaveform *wfm);
-    std::vector<double> Deconvolve_One_Wfm(OpWaveform wfm, kernel_fourier_container kernel_container);
+    OpWaveform Deconvolve_One_Wfm(OpWaveform wfm, kernel_fourier_container kernel_container);
     void Perform_L1(std::vector<double> inverse_res1, std::vector<double> decon_v[32], std::vector<double> *totPE_v, std::vector<double> *mult_v, std::vector<double> *l1_totPE_v, std::vector<double> *l1_mult_v, int ch);
     std::pair<double,double> cal_mean_rms(std::vector<double> wfm, int nbin);
     void testPlot(std::string Title, std::vector<double> input);
@@ -63,8 +63,8 @@ namespace wcopreco{
 
   protected:
     int nbins;
-    std::vector<double> inverse_res1[32];
-    std::vector<double> decon_v[32];
+
+    bool filter_status;
 
     std::vector<float>  op_gain;
     std::vector<kernel_fourier_container> kernel_container_v;

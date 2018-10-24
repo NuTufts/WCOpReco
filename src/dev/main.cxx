@@ -98,27 +98,32 @@ int main(){
 
   std::vector<wcopreco::kernel_fourier_container> kernel_container_v_dn = Does_Nothing.get_kernel_container_v();
   wcopreco::OpWaveform dn = Does_Nothing.Deconvolve_One_Wfm(orig, kernel_container_v_dn.at(orig.get_ChannelNum()));
-  All_At_Once.Remove_Baseline_Leading_Edge(&dn);
-  All_At_Once.Remove_Baseline_Secondary(&dn);
+  // All_At_Once.Remove_Baseline_Leading_Edge(&dn);
+  // All_At_Once.Remove_Baseline_Secondary(&dn);
 
 
   std::vector<wcopreco::kernel_fourier_container> kernel_container_v = All_At_Once.get_kernel_container_v();
   wcopreco::OpWaveform aao = All_At_Once.Deconvolve_One_Wfm(orig, kernel_container_v.at(orig.get_ChannelNum()));
-  All_At_Once.Remove_Baseline_Leading_Edge(&aao);
-  All_At_Once.Remove_Baseline_Secondary(&aao);
+  // All_At_Once.Remove_Baseline_Leading_Edge(&aao);
+  // All_At_Once.Remove_Baseline_Secondary(&aao);
+
+  All_At_Once.testPlot("Original", orig);
+  All_At_Once.testPlot("Do Nothing Dec", dn);
+  All_At_Once.testPlot("All at Once", aao);
+
+
   // wcopreco::OpWaveform s2 = S2.at(0);
   std::cout << "=================================================\n";
-  for (int i=0; i<50;i++){
-    // if (i%100 ==0) {
+  for (int i=0; i<1500;i++){
+    if (i%100 ==0) {
       std::cout << orig.at(i) << " Original Waveform\n";
       std::cout << dn.at(i) << " 'Does Nothing' Waveform\n";
-
       std::cout << aao.at(i) << " All at once method\n\n";
 
 
       // std::cout << s2.at(i) << " Two Step\n";
 
-    // }
+    }
   }
 
 

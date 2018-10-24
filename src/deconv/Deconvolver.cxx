@@ -156,7 +156,22 @@ namespace wcopreco {
        //makes a hsitogram in root to test output and saves as png
        TCanvas *c1 = new TCanvas(Title.c_str(), Title.c_str(), 600, 400);
        int nbins = input.size();
-       TH1D * hist = new TH1D(Title.c_str() ,Title.c_str(), nbins, 0., (double) nbins);
+       TH1D * hist = new TH1D(Title.c_str() ,Title.c_str(), nbins, 0., (double) nbins-1);
+       for (int i=0; i<nbins; i++) {
+         hist->SetBinContent(i,input.at(i));
+         //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
+       }
+       hist->Draw();
+       c1->SaveAs((Title + ".png").c_str());
+       delete hist;
+       delete c1;
+       return;
+     }
+     void Deconvolver::testPlot(std::string Title, OpWaveform input){
+       //makes a hsitogram in root to test output and saves as png
+       TCanvas *c1 = new TCanvas(Title.c_str(), Title.c_str(), 600, 400);
+       int nbins = input.size();
+       TH1D * hist = new TH1D(Title.c_str() ,Title.c_str(), nbins, 0., (double) nbins-1);
        for (int i=0; i<nbins; i++) {
          hist->SetBinContent(i,input.at(i));
          //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;

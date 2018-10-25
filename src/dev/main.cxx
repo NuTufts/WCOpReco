@@ -9,6 +9,7 @@
 #include "WCOpReco/Flashes_cosmic.h"
 #include "WCOpReco/Flashes_beam.h"
 #include "WCOpReco/HitFinder_beam.h"
+#include "WCOpReco/FlashMatching.h"
 
 //root includes
 #include "TH1S.h"
@@ -80,9 +81,15 @@ int main(){
   std::vector<wcopreco::COphitSelection> hits = hits_found.get_ophits_group();
   wcopreco::Flashes_cosmic flashfinder_cosmic(hits);
   wcopreco::OpflashSelection flashes_cosmic = flashfinder_cosmic.get_cosmic_flashes();
-  std::cout << flashes_cosmic.size() << " Cosmic Flashes in Event\n\n";
+  std::cout << flashes_cosmic.size() << " Cosmic Flashes in Event\n";
 
   // std::cout << flashes.size() << " flashes were found in the cosmic selection\n";
+
+  //flash matching
+  wcopreco::FlashMatching flashesmatched(flashes_cosmic, flashes_beam);
+  wcopreco::OpflashSelection flashes = flashesmatched.get_flashes();
+  std::cout << flashes.size() << " Matched Flashes in Event\n\n";
+
 
 
 

@@ -15,12 +15,13 @@ namespace wcopreco {
     mult_v.resize(250);
     l1_totPE_v.resize(250);
     l1_mult_v.resize(250);
-    std::vector<double> decon_v[32];
+    decon_vv.resize(32);
 
     for (int ch=0; ch<32; ch++){
       //totPE mult, and their l1 versions are additive (each element is always +=). Each iteration of ch will add to these values.
+      decon_vv.at(ch).reserve(300);
       Perform_L1( filtered_collection.at(ch),
-                  decon_v,
+                  decon_vv,
                   &totPE_v,
                   &mult_v,
                   &l1_totPE_v,
@@ -35,7 +36,7 @@ namespace wcopreco {
   }
 
   void HitFinder_beam::Perform_L1(std::vector<double> inverse_res1,
-                               std::vector<double> decon_v[32],
+                               std::vector< std::vector<double> > decon_vv,
                                std::vector<double> *totPE_v,
                                std::vector<double> *mult_v,
                                std::vector<double> *l1_totPE_v,
@@ -57,9 +58,9 @@ namespace wcopreco {
                   inverse_res1.at(6*i+5) ;
     }
 
-    decon_v[ch].resize(250);
+    decon_vv[ch].resize(250);
     for (int i=0;i!=250;i++){
-      decon_v[ch].at(i) = rebin_v[i];
+      decon_vv[ch].at(i) = rebin_v[i];
     }
 
 
@@ -112,7 +113,7 @@ namespace wcopreco {
 
 
     for (int j=0;j!=250;j++){
-      double content = decon_v[ch].at(j);
+      double content = decon_vv[ch].at(j);
       if (content >0.2) {;
           totPE_v->at(j)= totPE_v->at(j) + content;
         }

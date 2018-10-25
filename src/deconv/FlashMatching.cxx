@@ -47,6 +47,7 @@ namespace wcopreco {
       }
 
       sort_flashes();
+      update_pmt_map();
 
   }
 
@@ -70,5 +71,14 @@ namespace wcopreco {
     flashes.clear();
     std::copy(all_set.begin(), all_set.end(), std::back_inserter(flashes));
     std::cout << "Flashes size after sort: " <<flashes.size() << std::endl;
+  }
+
+
+  void wcopreco::FlashMatching::update_pmt_map(){
+    // std::cout << "Update map!" << std::endl;
+    for (auto it=flashes.begin(); it!=flashes.end(); it++){
+      Opflash *flash = *it;
+      flash->swap_channels(); // hard coded for now ...
+    }
   }
 }

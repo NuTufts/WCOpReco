@@ -34,7 +34,7 @@ wcopreco::Opflash::Opflash(COphitSelection &ophits)
 
 }
 
-wcopreco::Opflash::Opflash(std::vector<double> *vec, double start_time, int start_bin, int end_bin, float bin_width)
+wcopreco::Opflash::Opflash(const std::vector<std::vector<double>> &vec_v, double start_time, int start_bin, int end_bin, float bin_width)
   : type(2)
   , flash_id (-1)
 {
@@ -53,7 +53,7 @@ wcopreco::Opflash::Opflash(std::vector<double> *vec, double start_time, int star
     double peak = 0;
     double mult = 0;
     for (int j=0;j!=32;j++){
-      double content = vec[j].at(i);
+      double content = vec_v[j].at(i);
       if (content < 0.2) content = 0;
       peak += content;
       PE[j] += content;

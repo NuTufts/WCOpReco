@@ -36,7 +36,7 @@ namespace wcopreco {
   }
 
   void HitFinder_beam::Perform_L1(std::vector<double> inverse_res1,
-                               std::vector< std::vector<double> > decon_vv,
+                               std::vector< std::vector<double> > &decon_vv,
                                std::vector<double> *totPE_v,
                                std::vector<double> *mult_v,
                                std::vector<double> *l1_totPE_v,

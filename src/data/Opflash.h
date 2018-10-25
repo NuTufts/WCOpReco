@@ -9,7 +9,7 @@ namespace wcopreco{
   class Opflash{
   public:
     Opflash(COphitSelection &ophits);
-    Opflash(std::vector<double> *vec, double start_time, int start_bin, int end_bin, float bin_width=6*15.625/1000.);
+    Opflash(const std::vector<std::vector<double>> &vec_v, double start_time, int start_bin, int end_bin, float bin_width=6*15.625/1000.);
     ~Opflash();
 
     void Add_l1info(std::vector<double>* vec1, std::vector<double> *vec2, double start_time , int start_bin, int end_bin, float bin_width=6*15.625/1000.);

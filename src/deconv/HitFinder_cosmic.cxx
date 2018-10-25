@@ -6,7 +6,6 @@ namespace wcopreco {
     //Module for hit finding for cosmics
     //Much of this code can be left the way it is in WC
 
-      std::cout << merged_cosmic->size() << "   Is the number of waveforms in merged_cosmic\n";
       for (int i=0; i!=merged_cosmic->size(); i++){
         OpWaveform wfm_cosmic = merged_cosmic->at(i);
         int channel = wfm_cosmic.get_ChannelNum();

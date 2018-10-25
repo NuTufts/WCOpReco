@@ -9,6 +9,20 @@
 #include "TClonesArray.h"
 #include <vector>
 
+#include "TApplication.h"
+#include "TCanvas.h"
+#include "TStyle.h"
+#include "TH1F.h"
+#include "TFile.h"
+#include "TGraph2D.h"
+#include "TColor.h"
+#include "TVectorD.h"
+#include "TMatrixD.h"
+#include "TH1S.h"
+#include "TF1.h"
+#include "TVirtualFFT.h"
+#include "TTree.h"
+
 namespace WireCell2dToy{
 
   struct pmtDisc{

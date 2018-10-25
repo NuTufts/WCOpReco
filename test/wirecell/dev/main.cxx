@@ -27,7 +27,7 @@ int main(){
   const char* file = "../celltree.root";
   //testing ToyLightReco
   WireCell2dToy::ToyLightReco flash(file,false);
-  flash.load_event_raw(50);
+  flash.load_event_raw(0);
   TH1F* hist_raw = flash.get_raw_hist(0);
 
   TCanvas *c1 = new TCanvas("raw_wc", "raw_wc", 600, 400);

@@ -352,6 +352,11 @@ void WireCell2dToy::ToyLightReco::load_event_raw(int eve_num){
 
   // update map
   update_pmt_map();
+  std::cout << "\n\n" << beam_flashes.size() << " Beam Flashes in Event\n";
+
+  std::cout << cosmic_flashes.size() << " Cosmic Flashes in Event\n";
+
+  std::cout << flashes.size() << " Matched Flashes in Event\n\n";
 
 }
 
@@ -539,7 +544,13 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
 	fb->SetBinContent(i+1,0);
       }
     }
+    if (j==0){
+    TCanvas *c2 = new TCanvas("tlr", "tlr", 600, 400);
+    fb->Draw();
+    c2->SaveAs("Right Before L1.png");
 
+    delete c2;
+    }
     // prepare L1 fit ...
     TH1F *hrebin = new TH1F("hrebin","hrebin",250,0,250);
 

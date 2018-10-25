@@ -61,7 +61,7 @@ wcopreco::DataReader::DataReader(std::string filepath) :
   }
 
 UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
-    IAMTHENIGHT();
+    // IAMTHENIGHT();
     std::cout << "You have chosen to read out event number: " << event_num << " out of " << nevents << std::endl;
     if ( event_num > nevents)
       {

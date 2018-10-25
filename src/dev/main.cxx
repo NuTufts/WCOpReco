@@ -24,6 +24,7 @@
 
 int main(){
 
+
   std::cout << "Hello world" << std::endl;
 
   //Set the filepath
@@ -32,8 +33,9 @@ int main(){
 
   //Open the reader, choose event number, create the UBEventWaveform _UB_Ev_wfm
   wcopreco::DataReader reader(file);
+  reader.IAMTHENIGHT();
   wcopreco::UBEventWaveform _UB_Ev_wfm;
-  int EVENT_NUM =40;
+  int EVENT_NUM =0;
 
   _UB_Ev_wfm = reader.Reader(EVENT_NUM);
   std::vector<float> op_gain = _UB_Ev_wfm.get_op_gain();

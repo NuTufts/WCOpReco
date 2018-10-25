@@ -33,7 +33,7 @@ int main(){
   //Open the reader, choose event number, create the UBEventWaveform _UB_Ev_wfm
   wcopreco::DataReader reader(file);
   wcopreco::UBEventWaveform _UB_Ev_wfm;
-  int EVENT_NUM =50;
+  int EVENT_NUM =40;
 
   _UB_Ev_wfm = reader.Reader(EVENT_NUM);
   std::vector<float> op_gain = _UB_Ev_wfm.get_op_gain();

@@ -2,10 +2,11 @@
 
 namespace wcopreco {
 
-  wcopreco::FlashMatching::FlashMatching(OpflashSelection &cosmic_flashes, OpflashSelection &beam_flashes){
+  wcopreco::FlashMatching::FlashMatching(OpflashSelection &c_flashes, OpflashSelection &b_flashes){
     //code to perform flash matching
     //inputs come from Flashes_cosmic and Flashes_beam
-
+      cosmic_flashes = c_flashes;
+      beam_flashes = b_flashes;
       Opflash *prev_cflash = 0;
 
       for (size_t i=0; i!=cosmic_flashes.size();i++){
@@ -19,14 +20,16 @@ namespace wcopreco {
           	break;
           }
         }
+
         if (save){
           flashes.push_back(cflash);
           if (prev_cflash==0 ){
-    	if (cflash->get_time()<0)
-    	  prev_cflash = cflash;
-          }else{
-    	if (cflash->get_time() < 0 && cflash->get_time() > prev_cflash->get_time())
-    	  prev_cflash = cflash;
+          	if (cflash->get_time()<0)
+          	  prev_cflash = cflash;
+          }
+          else{
+          	if (cflash->get_time() < 0 && cflash->get_time() > prev_cflash->get_time())
+          	  prev_cflash = cflash;
           }
         }
       }
@@ -36,13 +39,36 @@ namespace wcopreco {
 
           //std::cout << prev_cflash->get_time() << std::endl;
           if (bflash->get_time() - prev_cflash->get_time() < 2.4 && // veto for 3 us
-    	  bflash->get_total_PE() < 0.7 * prev_cflash->get_total_PE())
-    	continue;
-          // std::cout << bflash->get_time() << " " << prev_cflash->get_time() << " " << bflash->get_total_PE() << " " << prev_cflash->get_total_PE() << std::endl;
+    	    bflash->get_total_PE() < 0.7 * prev_cflash->get_total_PE())
+    	       continue;
+              //std::cout << bflash->get_time() << " :beam_flashes time, " << prev_cflash->get_time() << " :c" << bflash->get_total_PE() << " " << prev_cflash->get_total_PE() << std::endl;
         }
         flashes.push_back(bflash);
       }
 
+      sort_flashes();
+
   }
 
+  void FlashMatching::sort_flashes(){
+
+    for (auto it= cosmic_flashes.begin(); it!= cosmic_flashes.end(); it++){
+      cosmic_set.insert(*it);
+    }
+    cosmic_flashes.clear();
+    std::copy(cosmic_set.begin(), cosmic_set.end(), std::back_inserter(cosmic_flashes));
+
+    for (auto it=beam_flashes.begin(); it!=beam_flashes.end(); it++){
+      beam_set.insert(*it);
+    }
+    beam_flashes.clear();
+    std::copy(beam_set.begin(), beam_set.end(), std::back_inserter(beam_flashes));
+
+    for (auto it=flashes.begin(); it!=flashes.end(); it++){
+      all_set.insert(*it);
+    }
+    flashes.clear();
+    std::copy(all_set.begin(), all_set.end(), std::back_inserter(flashes));
+    std::cout << "Flashes size after sort: " <<flashes.size() << std::endl;
+  }
 }

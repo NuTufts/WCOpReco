@@ -248,9 +248,9 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
 
       //These IF statements enforces cosmic wf to have 40 bins, and Beam to have 1500
       if (((type == 0)||(type==1) )&& n-1 > 1000 ){
-          wcopreco::OpWaveform wfm(ch[j]%100, timestamp[j]-triggerTime, type, n);
+          wcopreco::OpWaveform wfm(ch[j]%100, timestamp[j]-triggerTime, type, 1500);
           //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41
-          for (int bin=0; bin<n; bin++) {
+          for (int bin=0; bin<1500; bin++) {
             wfm[bin]=((double)waveform->GetBinContent(bin+1));
           }
           // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
@@ -262,10 +262,10 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
         }
 
       if (((type == 2)||(type==3) )&& n-1 < 100 ){
-          wcopreco::OpWaveform wfm(ch[j]%100, timestamp[j]-triggerTime, type, n);
+          wcopreco::OpWaveform wfm(ch[j]%100, timestamp[j]-triggerTime, type, 40);
           //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41
 
-          for (int bin=0; bin<n; bin++) {
+          for (int bin=0; bin<40; bin++) {
             wfm[bin]=((double)waveform->GetBinContent(bin+1));
           }
           // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection

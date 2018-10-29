@@ -29,7 +29,7 @@ int main(){
   //testing ToyLightReco
 
   bool do_loop = true;
-  int i = 23;
+  int i = 21;
   int size = i+1;
   if (do_loop)
   {

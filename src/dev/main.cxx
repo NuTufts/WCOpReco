@@ -36,7 +36,7 @@ int main(){
   reader.IAMTHENIGHT();
   wcopreco::UBEventWaveform _UB_Ev_wfm;
   bool do_loop = true;
-  int EVENT_NUM =23;
+  int EVENT_NUM =21;
   int size = EVENT_NUM+1;
 
   if (do_loop){
@@ -59,7 +59,8 @@ int main(){
     wcopreco::OpWaveformCollection merged_beam = merger.get_merged_beam(); //This is inside UB_Ev_Merged
     wcopreco::OpWaveformCollection merged_cosmic = merger.get_merged_cosmic(); //This is inside UB_Ev_Merged
     wcopreco::UBEventWaveform UB_Ev_Merged = merger.get_merged_UB_Ev();
-
+    //std::cout << UB_Ev_Merged.get__wfm_v().at(5).size() << " Number of Waveform in Cosmic LG\n";
+    //std::cout << UB_Ev_Merged.get__wfm_v().at(5).size() << " Number of Waveform in Cosmic LG\n";
     std::cout << UB_Ev_Merged.get__wfm_v().at(5).size() << " Number of Waveform in Cosmic Merged\n";
     // std::cout << merged_cosmic.size() << " Number of Waveform in Cosmic Merged (CONFIRMED)\n\n";
 

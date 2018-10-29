@@ -30,10 +30,10 @@ namespace wcopreco {
 
     //Make all the individual waveforms the new type (merged beam or merged cosmic (5 and 6))
     for (int n = 0; n< merged_beam.size(); n++){
-      merged_beam.at(n).set_type(5);
+      merged_beam.at(n).set_type(4);
     }
     for (int n = 0; n< merged_cosmic.size(); n++){
-      merged_cosmic.at(n).set_type(6);
+      merged_cosmic.at(n).set_type(5);
     }
 
 
@@ -110,6 +110,7 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
   //want to remove hard coded values eventually
   int tick_window = 20;
   float tick = .015625;
+  //std::cout <<"test check" << tick_window*tick <<std::endl;
   // if (CHG->size()!=CLG->size()){
   //   std::cout << "HG AND LG NOT SAME SIZE!!" << std::endl;
   //   std::cout << "HG size: " << CHG->size() <<std::endl;
@@ -192,7 +193,7 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
         float time_Low = CLG->at(idx_clg).get_time_from_trigger();
         short ch_Low = CLG->at(idx_clg).get_ChannelNum();
 
-        if (ch_Low == ch_High && abs(time_High-time_Low) < tick_window*tick){
+        if (ch_Low == ch_High && fabs(time_High-time_Low) < (float)tick_window*(float)tick){
 
 
           // std::cout << "FOUND A PAIR!!!" << std::endl;
@@ -214,7 +215,7 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
         //Do nothing to change this high gain waveform, is saturated and unfixable
         //Keep it in the collection to be returned
 
-        // std::cout << "No friend found, waveform not paired with a lowgain, and saturated\n";
+        //std::cout << "No friend found, waveform not paired with a lowgain, and saturated\n";
         count_sat_no_friends ++;
       }
     }
@@ -227,8 +228,12 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
       for (int idx_clg=0; idx_clg<CLG->size(); idx_clg++){
         if (is_used[idx_clg] ==true) {continue;}
         float time_High = CHG->at(idx_chg).get_time_from_trigger();
+        float time_Low= CLG->at(idx_clg).get_time_from_trigger();
         short ch_High = CHG->at(idx_chg).get_ChannelNum();
-        if (CLG->at(idx_clg).get_ChannelNum() == ch_High && abs(time_High-CLG->at(idx_clg).get_time_from_trigger()) < tick_window*tick){
+        short ch_Low = CLG->at(idx_clg).get_ChannelNum();
+        if ((ch_Low == ch_High) && (fabs(time_High-time_Low) < tick_window*tick)){
+
+          //std::cout << "Time Difference: " <<  fabs(time_High-time_Low) <<std::endl;
           is_used[idx_clg] =true;
           count_fixed++;
           break;

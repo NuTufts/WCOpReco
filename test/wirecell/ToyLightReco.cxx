@@ -962,6 +962,7 @@ WireCell2dToy::pmtMapSetPair WireCell2dToy::ToyLightReco::makeCosmicPairs(WireCe
       for(auto ls : low[h->first]){
 	if(std::fabs(hs.timestamp-ls.timestamp) > tickWindow*tick) continue;
 	found = true;
+  //std::cout << "Time Difference: " <<  hs.timestamp-ls.timestamp <<std::endl;
 	hs.isolated = false;
 	ls.isolated = false;
 	tempPair.first = hs;
@@ -1044,7 +1045,7 @@ WireCell2dToy::pmtMapSet WireCell2dToy::ToyLightReco::mergeCosmic(WireCell2dToy:
   //
   // std::cout << lg_unpaired << " LG Wfms that were unpaired\n";
   // std::cout << hg_unpaired << " HG Wfms that were unpaired\n";
-  std::cout << no_friends_needed+friends_needed+lg_unpaired+hg_unpaired << " Number of Waveform in Cosmic Merged \n";
+   std::cout << no_friends_needed+friends_needed+lg_unpaired+hg_unpaired << " Number of Waveform in Cosmic Merged \n";
 
 
   return result;

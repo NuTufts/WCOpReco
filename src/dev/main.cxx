@@ -35,63 +35,86 @@ int main(){
   wcopreco::DataReader reader(file);
   reader.IAMTHENIGHT();
   wcopreco::UBEventWaveform _UB_Ev_wfm;
-  int EVENT_NUM =0;
+  bool do_loop = true;
+  int EVENT_NUM =23;
+  int size = EVENT_NUM+1;
 
-  _UB_Ev_wfm = reader.Reader(EVENT_NUM);
-  std::vector<float> op_gain = _UB_Ev_wfm.get_op_gain();
-  std::vector<float> op_gainerror = _UB_Ev_wfm.get_op_gainerror();
+  if (do_loop){
+    EVENT_NUM=0;
+    size = 52;
+  }
 
-
-
-  //create the merger and then get a Merged UBEventWaveform UB_Ev_Merged
-  wcopreco::saturation_merger merger(_UB_Ev_wfm);
-  wcopreco::OpWaveformCollection merged_beam = merger.get_merged_beam(); //This is inside UB_Ev_Merged
-  wcopreco::OpWaveformCollection merged_cosmic = merger.get_merged_cosmic(); //This is inside UB_Ev_Merged
-  wcopreco::UBEventWaveform UB_Ev_Merged = merger.get_merged_UB_Ev();
-
-
-
-
-  // Create the Deconvolver (This should just deconvolves the BEAM)
-  // wcopreco::Deconvolver tester(&merged_beam, true, true);
-  // // std::cout << "Deconvolver declared!" << std::endl;
-  // std::vector<wcopreco::kernel_fourier_container> kernel_container_v = tester.get_kernel_container_v();
-  //
-  // wcopreco::OpWaveform wfm = merged_beam.at(0);
-  // std::cout << kernel_container_v.size() << " Size of kernel container_v \n\n\n\n";
-  //
-  //
-  //
-  //
-  // //do beam hitfinding
-  //wcopreco::OpWaveformCollection deconvolved_wfm = tester.Deconvolve_Collection(& merged_beam);
-  wcopreco::HitFinder_beam hits_found_beam(merged_beam);
-  std::vector<double> totPE_v = hits_found_beam.get_totPE_v();
-  std::vector<double> mult_v =hits_found_beam.get_mult_v();
-  std::vector<double> l1_totPE_v =hits_found_beam.get_l1_totPE_v();
-  std::vector<double> l1_mult_v = hits_found_beam.get_l1_mult_v();
-  std::vector< std::vector<double> > decon_vv = hits_found_beam.get_decon_vv();
-  double beam_start_time =merged_beam.at(0).get_time_from_trigger();
+  for (EVENT_NUM;EVENT_NUM<size;EVENT_NUM++){
+    _UB_Ev_wfm = reader.Reader(EVENT_NUM);
+    std::vector<float> op_gain = _UB_Ev_wfm.get_op_gain();
+    std::vector<float> op_gainerror = _UB_Ev_wfm.get_op_gainerror();
+    std::cout << "\n";
+    // std::cout << _UB_Ev_wfm.get__wfm_v().at(2).size() << " Number of Waveform in Cosmic HG\n";
+    // std::cout << _UB_Ev_wfm.get__wfm_v().at(3).size() << " Number of Waveform in Cosmic LG\n";
 
 
-  wcopreco::Flashes_beam flashfinder_beam( totPE_v, mult_v, l1_totPE_v, l1_mult_v, decon_vv, beam_start_time );
-  wcopreco::OpflashSelection flashes_beam = flashfinder_beam.get_beam_flashes();
-  std::cout << "\n\n" << flashes_beam.size() << " Beam Flashes in Event\n";
 
-  // //Create the Hitfinder for COSMICS (Currently this also does the flashes for cosmics)
-  wcopreco::HitFinder_cosmic hits_found(&merged_cosmic, &op_gain, &op_gainerror);
-  std::vector<wcopreco::COphitSelection> hits = hits_found.get_ophits_group();
-  wcopreco::Flashes_cosmic flashfinder_cosmic(hits);
-  wcopreco::OpflashSelection flashes_cosmic = flashfinder_cosmic.get_cosmic_flashes();
-  std::cout << flashes_cosmic.size() << " Cosmic Flashes in Event\n";
+    //create the merger and then get a Merged UBEventWaveform UB_Ev_Merged
+    wcopreco::saturation_merger merger(_UB_Ev_wfm);
+    wcopreco::OpWaveformCollection merged_beam = merger.get_merged_beam(); //This is inside UB_Ev_Merged
+    wcopreco::OpWaveformCollection merged_cosmic = merger.get_merged_cosmic(); //This is inside UB_Ev_Merged
+    wcopreco::UBEventWaveform UB_Ev_Merged = merger.get_merged_UB_Ev();
 
-  // std::cout << flashes.size() << " flashes were found in the cosmic selection\n";
+    std::cout << UB_Ev_Merged.get__wfm_v().at(5).size() << " Number of Waveform in Cosmic Merged\n";
+    // std::cout << merged_cosmic.size() << " Number of Waveform in Cosmic Merged (CONFIRMED)\n\n";
 
-  //flash matching
-  wcopreco::FlashMatching flashesmatched(flashes_cosmic, flashes_beam);
-  wcopreco::OpflashSelection flashes = flashesmatched.get_flashes();
-  std::cout << flashes.size() << " Matched Flashes in Event\n\n";
 
+
+    //Diagnosis Code -J
+    // for (int i=0; i< 2; i++){
+    //   for (int j=0; j<merged_beam.at(i).size(); j++){
+    //
+    //     if (j%1==0) {std::cout << merged_beam.at(i).at(j) << "   Is value in " << i << " wfm in " << j << " bin\n";}
+    //   }
+    //   std::cout << "\n\n";
+    // }
+
+
+    // Create the Deconvolver (This should just deconvolves the BEAM)
+    // wcopreco::Deconvolver tester(&merged_beam, true, true);
+    // // std::cout << "Deconvolver declared!" << std::endl;
+    // std::vector<wcopreco::kernel_fourier_container> kernel_container_v = tester.get_kernel_container_v();
+    //
+    // wcopreco::OpWaveform wfm = merged_beam.at(0);
+    // std::cout << kernel_container_v.size() << " Size of kernel container_v \n\n\n\n";
+    //
+    //
+    //
+    //
+    // //do beam hitfinding
+    //wcopreco::OpWaveformCollection deconvolved_wfm = tester.Deconvolve_Collection(& merged_beam);
+    wcopreco::HitFinder_beam hits_found_beam(merged_beam);
+    std::vector<double> totPE_v = hits_found_beam.get_totPE_v();
+    std::vector<double> mult_v =hits_found_beam.get_mult_v();
+    std::vector<double> l1_totPE_v =hits_found_beam.get_l1_totPE_v();
+    std::vector<double> l1_mult_v = hits_found_beam.get_l1_mult_v();
+    std::vector< std::vector<double> > decon_vv = hits_found_beam.get_decon_vv();
+    double beam_start_time =merged_beam.at(0).get_time_from_trigger();
+
+
+    wcopreco::Flashes_beam flashfinder_beam( totPE_v, mult_v, l1_totPE_v, l1_mult_v, decon_vv, beam_start_time );
+    wcopreco::OpflashSelection flashes_beam = flashfinder_beam.get_beam_flashes();
+    std::cout << "\n\n" << flashes_beam.size() << " Beam Flashes in Event\n";
+
+    // //Create the Hitfinder for COSMICS (Currently this also does the flashes for cosmics)
+    wcopreco::HitFinder_cosmic hits_found(&merged_cosmic, &op_gain, &op_gainerror);
+    std::vector<wcopreco::COphitSelection> hits = hits_found.get_ophits_group();
+    wcopreco::Flashes_cosmic flashfinder_cosmic(hits);
+    wcopreco::OpflashSelection flashes_cosmic = flashfinder_cosmic.get_cosmic_flashes();
+    std::cout << flashes_cosmic.size() << " Cosmic Flashes in Event\n";
+
+    // std::cout << flashes.size() << " flashes were found in the cosmic selection\n";
+
+    //flash matching
+    wcopreco::FlashMatching flashesmatched(flashes_cosmic, flashes_beam);
+    wcopreco::OpflashSelection flashes = flashesmatched.get_flashes();
+    std::cout << flashes.size() << " Matched Flashes in Event\n\n";
+}
 
 
 

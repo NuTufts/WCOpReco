@@ -227,14 +227,34 @@ void WireCell2dToy::ToyLightReco::load_event_raw(int eve_num){
 
   // std::cout << "1 " << std::endl;
   WireCell2dToy::pmtMapSet cosmicHG = makePmtContainer(true, false, cosmic_hg_wf, cosmic_hg_opch, cosmic_hg_timestamp);
+  int total_size=0;
+
+  for (std::map<short,pmtSet>::iterator it=cosmicHG.begin(); it!=cosmicHG.end(); ++it) {
+    // std::cout << it->second.size() << "\n";
+    total_size+= it->second.size();
+  }
+  // std::cout << total_size<< " Total size of CHG \n";
 
   //  std::cout << "1 " << std::endl;
   WireCell2dToy::pmtMapSet cosmicLG = makePmtContainer(false, false, cosmic_lg_wf, cosmic_lg_opch, cosmic_lg_timestamp);
+  total_size=0;
 
+  for (std::map<short,pmtSet>::iterator it=cosmicLG.begin(); it!=cosmicLG.end(); ++it) {
+    // std::cout << it->second.size() << "\n";
+    total_size+= it->second.size();
+  }
+  // std::cout << total_size<< " Total size of CLG \n";
   // std::cout << "1 " << std::endl;
 
   WireCell2dToy::pmtMapPair beamPair = makeBeamPairs(beamHG, beamLG);
   WireCell2dToy::pmtMapSetPair cosmicPair = makeCosmicPairs(cosmicHG, cosmicLG);
+  total_size=0;
+  // std::cout << cosmicPair.size() << " Size of cosmicPair pmtMapSetPair\n";
+  for (std::map<short,pmtSetPair>::iterator it=cosmicPair.begin(); it!=cosmicPair.end(); ++it) {
+    // std::cout << it->second.size() << "\n";
+    total_size+= it->second.size();
+  }
+  // std::cout << total_size<< " Total size of Cosmic Pairs \n";
 
   // std::cout << "1 " << std::endl;
 
@@ -930,12 +950,12 @@ WireCell2dToy::pmtMapSetPair WireCell2dToy::ToyLightReco::makeCosmicPairs(WireCe
   WireCell2dToy::pmtMapSetPair result;
   int countIsoLg = 0, tickWindow=20;
   float tick = 0.015625;
-
   // can use the 1D kd tree to search???
   for(auto h=high.begin(); h!=high.end(); h++){
     WireCell2dToy::pmtSetPair tempSetPair;
 
     for(auto hs : h->second){
+
       WireCell2dToy::pmtPair tempPair;
       bool found = false;
 
@@ -984,6 +1004,11 @@ WireCell2dToy::pmtMap WireCell2dToy::ToyLightReco::mergeBeam(WireCell2dToy::pmtM
 
 WireCell2dToy::pmtMapSet WireCell2dToy::ToyLightReco::mergeCosmic(WireCell2dToy::pmtMapSetPair &cosmic){
   WireCell2dToy::pmtMapSet result;
+  int no_friends_needed=0;
+  int friends_needed=0;
+  int lg_unpaired=0;
+  int hg_unpaired=0;
+
   for(auto c=cosmic.begin(); c!=cosmic.end(); c++){
     for(auto p : c->second){
 
@@ -991,9 +1016,11 @@ WireCell2dToy::pmtMapSet WireCell2dToy::ToyLightReco::mergeCosmic(WireCell2dToy:
 
       if(p.first.isolated == true){ // isolated cos. disc.
 	if(p.first.highGain == true){ // isolated HG
+    hg_unpaired++;
 	  result[c->first].insert(p.first);
 	}
 	else{ // isolated LG
+    lg_unpaired++;
 	  result[c->first].insert(p.first);
 	}
       }
@@ -1001,15 +1028,25 @@ WireCell2dToy::pmtMapSet WireCell2dToy::ToyLightReco::mergeCosmic(WireCell2dToy:
 	if(p.first.saturated == true){ // saturated HG
 	  //WireCell2dToy::saturationTick tickVec = findSaturationTick(p.first.wfm);
 	  //p.first.wfm = replaceSaturatedBin(p.first.wfm,p.second.wfm,tickVec);
+    friends_needed++;
 	  p.first.wfm = p.second.wfm;
 	  result[c->first].insert(p.first);
 	}
 	else{ // non-saturated HG
+    no_friends_needed++;
 	  result[c->first].insert(p.first);
 	}
       }
     }
   }
+  // std::cout << no_friends_needed << " HG Wfms didn't need friends\n";
+  // std::cout << friends_needed << " HG Wfms NEEDED friends!\n";
+  //
+  // std::cout << lg_unpaired << " LG Wfms that were unpaired\n";
+  // std::cout << hg_unpaired << " HG Wfms that were unpaired\n";
+  std::cout << no_friends_needed+friends_needed+lg_unpaired+hg_unpaired << " Number of Waveform in Cosmic Merged \n";
+
+
   return result;
 }
 

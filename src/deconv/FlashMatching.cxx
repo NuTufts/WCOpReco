@@ -70,7 +70,6 @@ namespace wcopreco {
     }
     flashes.clear();
     std::copy(all_set.begin(), all_set.end(), std::back_inserter(flashes));
-    std::cout << "Flashes size after sort: " <<flashes.size() << std::endl;
   }
 
 

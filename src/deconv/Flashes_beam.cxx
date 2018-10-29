@@ -20,6 +20,7 @@ namespace wcopreco {
     for (int i=0;i!=250;i++){
       double pe = totPE_v.at(i);
       double mult = mult_v.at(i);
+      // if (i==0 || i ==249) {std::cout << pe << "    Tot PE Value in bin 1     " << mult << "     multiplicity value in bin 1\n"; }
       // careteria: multiplicity needs to be higher than 3, PE needs to be higher than 6
       //std::cout << pe << " " << mult << std::endl;
 
@@ -27,6 +28,7 @@ namespace wcopreco {
         bool flag_save = false;
         if (flash_time.size()==0){
   	       flag_save = true;
+
   	       for (int j=0;j!=32;j++){
 
 
@@ -42,6 +44,8 @@ namespace wcopreco {
   	       }
 
   	       if (i - flash_time.back() >= 78){
+             std::cout << i << "   Flashtime added!\n";
+
   	          flag_save = true;
   	  // start one, and open a window of 8 us, if anything above it, not the next 2 bin
   	  // if find one is bigger than this, save a flash ... start a new flash?
@@ -49,10 +53,14 @@ namespace wcopreco {
 
            else if (i-flash_time.back() > 4 && pe > flash_pe.back()){
   	          if (i-flash_time.back()>15){
+                std::cout << i << "   Flashtime added!\n";
+
   	             flag_save = true;
   	          }
               else{
                  if (KS_maxdiff(32,prev_pe_a,curr_pe_a) > 0.1){
+                   std::cout << i << "   Flashtime added!\n";
+
   	               flag_save = true;
   	             }
 
@@ -103,7 +111,7 @@ namespace wcopreco {
       // std::cout << flash->get_time() << " " <<flash->get_total_PE() << " " << flash->get_num_fired() << std::endl;
       beam_flashes.push_back(flash);
       }
-    std::cout << beam_flashes.size() << " Size of beam flashes\n";
+    // std::cout << beam_flashes.size() << " Size of beam flashes\n";
     }
 
 

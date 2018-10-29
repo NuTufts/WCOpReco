@@ -5,7 +5,7 @@ namespace wcopreco {
   wcopreco::HitFinder_cosmic::HitFinder_cosmic(OpWaveformCollection* merged_cosmic, std::vector<float> *op_gain, std::vector<float> *op_gainerror){
     //Module for hit finding for cosmics
     //Much of this code can be left the way it is in WC
-
+      int count =0;
       for (int i=0; i!=merged_cosmic->size(); i++){
         OpWaveform wfm_cosmic = merged_cosmic->at(i);
         int channel = wfm_cosmic.get_ChannelNum();
@@ -22,6 +22,8 @@ namespace wcopreco {
           if (ophits_group.size()==0){
           	COphitSelection ophits;
           	ophits.push_back(op_hit);
+            count++;
+            // std::cout << i <<  " pushed back an ophit, now totalling: " << count << "\n";
           	ophits_group.push_back(ophits);
           	flag_used = true;
           }
@@ -43,6 +45,8 @@ namespace wcopreco {
           if (!flag_used){
           	COphitSelection ophits;
           	ophits.push_back(op_hit);
+            count++;
+            // std::cout << i <<  " pushed back an ophit, now totalling: " << count << "\n";
           	ophits_group.push_back(ophits);
           }
         }

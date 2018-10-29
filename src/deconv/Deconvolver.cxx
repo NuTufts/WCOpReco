@@ -118,7 +118,7 @@ namespace wcopreco {
         if (fabs(baseline)>=8) {baseline = 0;}
         // else {std::cout << "Baseline adjusted by: " <<baseline << std::endl;}
         //std::cout << h1.GetMaximum() << " " << baseline << std::endl;
-        for (int j=0;j!=1500;j++){
+        for (int j=0;j!=wfm->size();j++){
             wfm->at(j) = wfm->at(j) - baseline;
         }
 
@@ -220,7 +220,11 @@ namespace wcopreco {
        std::vector<double> power_spec_d(nbins,0);
        power_spec_d = wfm_doubles;
        double *in = power_spec_d.data();
-
+       // if (wfm.get_ChannelNum() == 1){
+       //    for (int blar=0;blar < power_spec_d.size();blar++) {
+       //      std::cout << power_spec_d.at(blar) << "  Value at " << blar << "\n";
+       //    }
+       // }
        //Start the fourier transform (real to complex)
        TVirtualFFT *fftr2c = TVirtualFFT::FFT(1, &nbins, "R2C");
        fftr2c->SetPoints(in);
@@ -290,7 +294,6 @@ namespace wcopreco {
         kernel_container_v.at(channel).at(n) ->Get_pow_spec(nbins, bin_width, &mag_kernel.at(n), &phase_kernel.at(n));
 
       }
-
 
        for (int i=0;i<nbins;i++){
          double freq;

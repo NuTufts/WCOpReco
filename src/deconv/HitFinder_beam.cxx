@@ -20,6 +20,7 @@ namespace wcopreco {
     for (int ch=0; ch<32; ch++){
       //totPE mult, and their l1 versions are additive (each element is always +=). Each iteration of ch will add to these values.
       decon_vv.at(ch).reserve(300);
+
       Perform_L1( filtered_collection.at(ch),
                   decon_vv,
                   &totPE_v,
@@ -49,6 +50,7 @@ namespace wcopreco {
     std::vector<float> rebin_v;
     rebin_v.resize(250);
 
+
     for (int i=0;i!=250;i++){
       rebin_v[i] = inverse_res1.at(6*i) +
                   inverse_res1.at(6*i+1) +
@@ -56,6 +58,19 @@ namespace wcopreco {
                   inverse_res1.at(6*i+3) +
                   inverse_res1.at(6*i+4) +
                   inverse_res1.at(6*i+5) ;
+                  // if (i == 0||i==1 ||i==3) {
+                  //   std::cout << ch << "\n";
+                  //
+                  //   // std::cout << inverse_res1.at(6*i) << " PrePooled 0" <<  "\n";
+                  //   for (int num=0;num<6;num++){
+                  //     std::cout << inverse_res1.at(6*i+num) << " PrePooled "<<num+i*6 <<  "\n";
+                  //   }
+                  //
+                  //
+                  //   std::cout <<"\n"<< rebin_v[i] << " Is total in bin "<<i<<"\n";
+                  // }
+                  // if (rebin_v[i] > 0.1) {std::cout << rebin_v[i] << " Value in bin "<<i<< " for channel " << ch << "\n";}
+
     }
 
     decon_vv[ch].resize(250);
@@ -114,6 +129,7 @@ namespace wcopreco {
 
     for (int j=0;j!=250;j++){
       double content = decon_vv[ch].at(j);
+
       if (content >0.2) {;
           totPE_v->at(j)= totPE_v->at(j) + content;
         }

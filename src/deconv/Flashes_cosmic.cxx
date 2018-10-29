@@ -9,6 +9,7 @@ namespace wcopreco {
     //MOVE TO FLASHES_COSMIC CLASS
     int count =0;
     int count_d=0;
+    // std::cout << ophits_group.size() << " Size of Ophits group \n";
     for (size_t j=0; j!=ophits_group.size();j++){
       Opflash *flash = new Opflash(ophits_group.at(j));
       if (flash->get_total_PE()!=0){

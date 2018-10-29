@@ -37,8 +37,8 @@ namespace wcopreco {
     }
 
 
-    UB_Ev_Merged.add_entry(merged_beam,   5 );
-    UB_Ev_Merged.add_entry(merged_cosmic, 6 );
+    UB_Ev_Merged.add_entry(merged_beam,   4 );
+    UB_Ev_Merged.add_entry(merged_cosmic, 5 );
     UB_Ev_Merged.set_op_gain(   UB_Ev.get_op_gain()   );
     UB_Ev_Merged.set_op_gainerror( UB_Ev.get_op_gainerror()   );
 
@@ -110,7 +110,6 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
   //want to remove hard coded values eventually
   int tick_window = 20;
   float tick = .015625;
-
   // if (CHG->size()!=CLG->size()){
   //   std::cout << "HG AND LG NOT SAME SIZE!!" << std::endl;
   //   std::cout << "HG size: " << CHG->size() <<std::endl;
@@ -141,6 +140,9 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
   int count_good_hg =0;
   int count_continues=0;
   int continues_this_hg;
+  int count_lg_unused =0;
+  int count_lg_skipped=0;
+  int count_fixed=0;
   for (int idx_chg = 0; idx_chg<CHG->size(); idx_chg++){
     continues_this_hg=0;
     //if abs(hightime-lowtime) < tickwindow*tick , then pair the wfms to merge
@@ -220,9 +222,21 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
     else if (is_saturated ==false){
       //Do nothing to this waveform, it was unsaturated.
       //Keep it in the collection to be returned.
+      count_good_hg ++;
+
+      for (int idx_clg=0; idx_clg<CLG->size(); idx_clg++){
+        if (is_used[idx_clg] ==true) {continue;}
+        float time_High = CHG->at(idx_chg).get_time_from_trigger();
+        short ch_High = CHG->at(idx_chg).get_ChannelNum();
+        if (CLG->at(idx_clg).get_ChannelNum() == ch_High && abs(time_High-CLG->at(idx_clg).get_time_from_trigger()) < tick_window*tick){
+          is_used[idx_clg] =true;
+          count_fixed++;
+          break;
+        }
+      }
 
       // std::cout << "Waveform wasn't saturated, happy just the way it is\n";
-      count_good_hg ++;
+
     }
     else {
       std::cout << "XXXXXXXXXXXXXXXXXXXXXXXxxxxxxxx PROBLEM HG meets no criteria! xxxxxxxxxxxxxXxXXXXXXXXXXXX";
@@ -233,6 +247,7 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
   for (int idx_clg=0; idx_clg<CLG->size(); idx_clg++){
     if (is_used[idx_clg] ==false ){
       //Option A
+      count_lg_unused++;
       CHG->add_waveform( CLG->at(idx_clg) );
 
       //Option B (Hardcoded the function add_waveform)
@@ -243,15 +258,22 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
       //
       // CHG->insert_index2channel(CHG->size()-1, CLG->at(idx_clg).get_ChannelNum());
     }
+      else if (is_used[idx_clg] ==true ){
+        count_lg_skipped++;
+      }
   }
 
   // std::cout << count_saturated << "     This many saturated HG \n\n";
-  //
   // std::cout << count_paired << "     There are this many HG waveforms paired with friends! :)\n";
   // std::cout << count_sat_no_friends << "     There are this many HG waveforms saturated, but without friends! :(\n";
   // std::cout << count_good_hg << "     There are this many HG waveforms not looking for friends!! :D\n";
+  // std::cout << count_lg_unused << "     There are this many LG waveforms that were added because they weren't matched.\n";
+  // std::cout << count_lg_skipped << "     There are this many LG waveforms that were skipped because they were used\n";
+  // std::cout << count_fixed  << "     This many waveforms adjusted \n\n";
+
+
+
   // std::cout << CHG->size() << "    Is the total number of waveforms returned\n";
-  // std::cout << count_continues << "    The number of times continued\n\n";
 
 
 

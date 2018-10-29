@@ -23,28 +23,44 @@ using namespace std;
 
 
 int main(){
+
   std::cout << "Hello world" << std::endl;
   const char* file = "../celltree.root";
   //testing ToyLightReco
-  WireCell2dToy::ToyLightReco flash(file,false);
-  flash.load_event_raw(0);
-  TH1F* hist_raw = flash.get_raw_hist(0);
 
-  TCanvas *c1 = new TCanvas("raw_wc", "raw_wc", 600, 400);
-  hist_raw->Draw();
-  c1->SaveAs("raw_wc.png");
-  delete c1;
-  // delete hist_raw;
+  bool do_loop = true;
+  int i = 23;
+  int size = i+1;
+  if (do_loop)
+  {
+    i =0;
+    size =52;
+  }
 
-  TH1F* hist_decon = flash.get_decon_hist(0);
+  for (i;i<size;i++)
+    {
+      std::cout << "You have chosen to read out event number: " << i << " out of " << size << std::endl << std::endl;
 
-  TCanvas *c2 = new TCanvas("deconv_wc", "deconv_wc", 600, 400);
-  hist_decon->Draw();
-  c2->SaveAs("deconv_wc.png");
+      WireCell2dToy::ToyLightReco flash(file,false);
+      flash.load_event_raw(i);
 
-  delete c2;
-  // delete hist_decon;
+      TH1F* hist_raw = flash.get_raw_hist(0);
 
+      TCanvas *c1 = new TCanvas("raw_wc", "raw_wc", 600, 400);
+      hist_raw->Draw();
+      c1->SaveAs("raw_wc.png");
+      delete c1;
+      // delete hist_raw;
 
+      TH1F* hist_decon = flash.get_decon_hist(0);
+
+      TCanvas *c2 = new TCanvas("deconv_wc", "deconv_wc", 600, 400);
+      hist_decon->Draw();
+      c2->SaveAs("deconv_wc.png");
+
+      delete c2;
+      // delete hist_decon;
+
+  }
   return 0;
 };

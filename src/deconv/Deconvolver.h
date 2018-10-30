@@ -61,7 +61,7 @@ namespace wcopreco{
     them into CDFs then it finds the maximum difference between the CDFs and
     returns it.
     */
-
+    //UB_rc Make_UB_rc(int ch);
   protected:
     int nbins;
 

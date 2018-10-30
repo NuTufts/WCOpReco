@@ -3,7 +3,7 @@
 namespace wcopreco {
 
   wcopreco::FlashFiltering::FlashFiltering(OpflashSelection &c_flashes, OpflashSelection &b_flashes){
-    //code to perform flash matching
+    //code to perform flash filtering
     //inputs come from Flashes_cosmic and Flashes_beam
       cosmic_flashes = c_flashes;
       beam_flashes = b_flashes;
@@ -33,6 +33,8 @@ namespace wcopreco {
           }
         }
       }
+
+
       for (size_t j=0; j!=beam_flashes.size();j++){
         Opflash *bflash = beam_flashes.at(j);
         if (prev_cflash!=0){

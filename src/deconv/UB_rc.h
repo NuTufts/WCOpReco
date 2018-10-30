@@ -13,7 +13,7 @@ namespace wcopreco {
 
   class UB_rc : public kernel_fourier {
   public:
-     UB_rc(bool flag);
+     UB_rc(bool mult_flag, bool bad_ch);
      virtual ~UB_rc() {};
 
     std::vector<double> Get_wfm(int nbins, float tick_width_ns);
@@ -21,7 +21,8 @@ namespace wcopreco {
 
     std::string name;
     // 0 = divide 1 = multiply
-    bool mult_div;
+    bool bad_ch;
+    
 
   protected:
 

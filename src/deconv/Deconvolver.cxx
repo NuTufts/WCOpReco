@@ -18,8 +18,15 @@ namespace wcopreco {
     //Default way to construct the deconvolver is with spe and rc
     if (standard_run){
       //Construct the vector of kernel containers (one container per channel)
-      UB_rc *rc = new UB_rc(true);
       for (int i =0 ; i<32; i++){
+        //UB_rc *rc = Make_UB_rc(i);
+        UB_rc *rc = new UB_rc(true, false);
+        if (i == 28){
+          rc->bad_ch = true;
+        }
+        else{
+          rc->bad_ch = false;
+        }
         UB_spe *spe = new UB_spe(true, op_gain.at(i)); //Place UB_spe on heap, so object not deleted
         kernel_container_v.at(i).add_kernel(spe);
         kernel_container_v.at(i).add_kernel(rc);
@@ -441,5 +448,15 @@ namespace wcopreco {
          kernel_container_v.at(i).clear_kernels_v();
        }
      }
+
+     // UB_rc Deconvolver::Make_UB_rc(int ch){
+     //   if (ch = 28){
+     //     UB_rc *rc = new UB_rc(true,true);
+     //   }
+     //   else {
+     //     UB_rc *rc = new UB_rc(true,false);
+     //   }
+     //   return rc;
+     // }
 
 }

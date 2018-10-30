@@ -1,5 +1,5 @@
-#ifndef FLASHMATCHING_H
-#define FLASHMATCHING_H
+#ifndef FLASHFILTERING_H
+#define FLASHFILTERING_H
 
 #include "Flashes_beam.h"
 #include "Flashes_cosmic.h"
@@ -8,10 +8,10 @@
 namespace wcopreco{
 
 
-  class FlashMatching {
+  class FlashFiltering {
   public:
-    FlashMatching(OpflashSelection &c_flashes, OpflashSelection &b_flashes);
-    ~FlashMatching() {};
+    FlashFiltering(OpflashSelection &c_flashes, OpflashSelection &b_flashes);
+    ~FlashFiltering() {};
 
     OpflashSelection& get_flashes(){return flashes;};
     OpflashSelection& get_beam_flashes(){return beam_flashes;};

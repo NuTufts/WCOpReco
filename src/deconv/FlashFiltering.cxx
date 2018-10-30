@@ -1,8 +1,8 @@
-#include "FlashMatching.h"
+#include "FlashFiltering.h"
 
 namespace wcopreco {
 
-  wcopreco::FlashMatching::FlashMatching(OpflashSelection &c_flashes, OpflashSelection &b_flashes){
+  wcopreco::FlashFiltering::FlashFiltering(OpflashSelection &c_flashes, OpflashSelection &b_flashes){
     //code to perform flash matching
     //inputs come from Flashes_cosmic and Flashes_beam
       cosmic_flashes = c_flashes;
@@ -51,7 +51,7 @@ namespace wcopreco {
 
   }
 
-  void FlashMatching::sort_flashes(){
+  void FlashFiltering::sort_flashes(){
 
     for (auto it= cosmic_flashes.begin(); it!= cosmic_flashes.end(); it++){
       cosmic_set.insert(*it);
@@ -73,7 +73,7 @@ namespace wcopreco {
   }
 
 
-  void wcopreco::FlashMatching::update_pmt_map(){
+  void wcopreco::FlashFiltering::update_pmt_map(){
     // std::cout << "Update map!" << std::endl;
     for (auto it=flashes.begin(); it!=flashes.end(); it++){
       Opflash *flash = *it;

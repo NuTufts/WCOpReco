@@ -383,7 +383,7 @@ void WireCell2dToy::ToyLightReco::load_event_raw(int eve_num){
 
   // std::cout << flashes.size() << " Matched Flashes in Event\n\n";
   for (int i =0 ; i<flashes.size(); i++) {
-    std::cout << flashes.at(i)->get_total_PE() << "\n";
+    // std::cout << flashes.at(i)->get_total_PE() << "\n";
   }
 
 }
@@ -835,7 +835,7 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
     flash->Add_l1info(h_l1_totPE, h_l1_mult, beam_dt[0], start_bin, end_bin);
     // std::cout << flash->get_time() << " " <<flash->get_total_PE() << " " << flash->get_num_fired() << std::endl;
     beam_flashes.push_back(flash);
-    // std::cout << "\n\n" << flash->get_total_PE() << " Total PE\n\n";
+    std::cout << "\n\n" << flash->get_total_PE() << " Total PE\n\n";
   }
 
   Opflash *prev_cflash = 0;

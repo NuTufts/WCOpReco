@@ -21,9 +21,18 @@
 
 #include <iostream>
 #include <sstream>
+#include <time.h>       /* clock_t, clock, CLOCKS_PER_SEC */
 
 int main(){
-
+  clock_t t;
+  clock_t dataread;
+  clock_t satmerger;
+  clock_t hitsbeam;
+  clock_t flashbeam;
+  clock_t hitscosmic;
+  clock_t flashcosmic;
+  clock_t flashfilter;
+  t=clock();
 
   std::cout << "Hello world" << std::endl;
 
@@ -44,21 +53,21 @@ int main(){
     size = 52;
   }
 
-  //make root file of outputs to test
-  TFile output("OurOutput.root", "RECREATE");
-  //create TTree
-  TTree *OpReco = new TTree("OpReco", "A tree to hold outputs from OpReco");
-  TClonesArray *Tmerged_beam = new TClonesArray;
-
-  OpReco->Branch("merged_beam", "TClonesArray", &Tmerged_beam);
-  TH1D * TtotPE = new TH1D("totPE" ,"totPE", 249, 0., (double) 250);
-  OpReco->Branch("totPE", "TH1D", &TtotPE);
-  TH1D * Tl1_totPE = new TH1D("l1_totPE" ,"l1_totPE", 249, 0., (double) 250);
-  OpReco->Branch("l1_totPE", "TH1D", &Tl1_totPE);
-  TH1D * Tmult = new TH1D("mult" ,"mult", 249, 0., (double) 250);
-  OpReco->Branch("mult", "TH1D", &Tmult);
-  TH1D * Tl1_mult = new TH1D("l1_mult" ,"l1_mult", 249, 0., (double) 250);
-  OpReco->Branch("l1_mult", "TH1D", &Tl1_mult);
+  // //make root file of outputs to test
+  // TFile output("OurOutput.root", "RECREATE");
+  // //create TTree
+  // TTree *OpReco = new TTree("OpReco", "A tree to hold outputs from OpReco");
+  // TClonesArray *Tmerged_beam = new TClonesArray;
+  //
+  // OpReco->Branch("merged_beam", "TClonesArray", &Tmerged_beam);
+  // TH1D * TtotPE = new TH1D("totPE" ,"totPE", 249, 0., (double) 250);
+  // OpReco->Branch("totPE", "TH1D", &TtotPE);
+  // TH1D * Tl1_totPE = new TH1D("l1_totPE" ,"l1_totPE", 249, 0., (double) 250);
+  // OpReco->Branch("l1_totPE", "TH1D", &Tl1_totPE);
+  // TH1D * Tmult = new TH1D("mult" ,"mult", 249, 0., (double) 250);
+  // OpReco->Branch("mult", "TH1D", &Tmult);
+  // TH1D * Tl1_mult = new TH1D("l1_mult" ,"l1_mult", 249, 0., (double) 250);
+  // OpReco->Branch("l1_mult", "TH1D", &Tl1_mult);
 
   //need branches
   //OpReco->Branch("Branch Name", "Class name", &data)
@@ -73,6 +82,7 @@ int main(){
     _UB_Ev_wfm = reader.Reader(EVENT_NUM);
     std::vector<float> op_gain = _UB_Ev_wfm.get_op_gain();
     std::vector<float> op_gainerror = _UB_Ev_wfm.get_op_gainerror();
+    dataread = clock();
     // std::cout << "\n";
     // std::cout << _UB_Ev_wfm.get__wfm_v().at(2).size() << " Number of Waveform in Cosmic HG\n";
     // std::cout << _UB_Ev_wfm.get__wfm_v().at(3).size() << " Number of Waveform in Cosmic LG\n";
@@ -84,6 +94,7 @@ int main(){
     wcopreco::OpWaveformCollection merged_beam = merger.get_merged_beam(); //This is inside UB_Ev_Merged
     wcopreco::OpWaveformCollection merged_cosmic = merger.get_merged_cosmic(); //This is inside UB_Ev_Merged
     wcopreco::UBEventWaveform UB_Ev_Merged = merger.get_merged_UB_Ev();
+    satmerger = clock();
     //std::cout << UB_Ev_Merged.get__wfm_v().at(5).size() << " Number of Waveform in Cosmic LG\n";
     //std::cout << UB_Ev_Merged.get__wfm_v().at(5).size() << " Number of Waveform in Cosmic LG\n";
     // std::cout << UB_Ev_Merged.get__wfm_v().at(5).size() << " Number of Waveform in Cosmic Merged\n";
@@ -133,14 +144,15 @@ int main(){
     std::vector<double> l1_totPE_v =hits_found_beam.get_l1_totPE_v();
     std::vector<double> l1_mult_v = hits_found_beam.get_l1_mult_v();
     std::vector< std::vector<double> > decon_vv = hits_found_beam.get_decon_vv();
+    hitsbeam = clock();
 
-    //root saves
-    for (int i=0; i<250; i++) {
-      TtotPE->SetBinContent(i,totPE_v.at(i));
-      Tl1_totPE->SetBinContent(i,l1_totPE_v.at(i));
-      Tmult->SetBinContent(i,mult_v.at(i));
-      Tl1_mult->SetBinContent(i,l1_mult_v.at(i));
-    }
+    // //root saves
+    // for (int i=0; i<250; i++) {
+    //   TtotPE->SetBinContent(i,totPE_v.at(i));
+    //   Tl1_totPE->SetBinContent(i,l1_totPE_v.at(i));
+    //   Tmult->SetBinContent(i,mult_v.at(i));
+    //   Tl1_mult->SetBinContent(i,l1_mult_v.at(i));
+    // }
 
     double beam_start_time =merged_beam.at(0).get_time_from_trigger();
 
@@ -148,32 +160,37 @@ int main(){
     wcopreco::Flashes_beam flashfinder_beam( totPE_v, mult_v, l1_totPE_v, l1_mult_v, decon_vv, beam_start_time );
     wcopreco::OpflashSelection flashes_beam = flashfinder_beam.get_beam_flashes();
     // std::cout << "\n\n" << flashes_beam.size() << " Beam Flashes in Event\n";
+    flashbeam = clock();
 
     // //Create the Hitfinder for COSMICS (Currently this also does the flashes for cosmics)
     wcopreco::HitFinder_cosmic hits_found(&merged_cosmic, &op_gain, &op_gainerror);
     std::vector<wcopreco::COphitSelection> hits = hits_found.get_ophits_group();
+    hitscosmic = clock();
+
     wcopreco::Flashes_cosmic flashfinder_cosmic(hits);
     wcopreco::OpflashSelection flashes_cosmic = flashfinder_cosmic.get_cosmic_flashes();
     // std::cout << flashes_cosmic.size() << " Cosmic Flashes in Event\n";
+    flashcosmic=clock();
 
     // std::cout << flashes.size() << " flashes were found in the cosmic selection\n";
 
     //flash matching
     wcopreco::FlashFiltering flashesfiltered(flashes_cosmic, flashes_beam);
     wcopreco::OpflashSelection flashes = flashesfiltered.get_flashes();
+    flashfilter =clock();
     // std::cout << flashes.size() << " Matched Flashes in Event\n\n";
-    for (int i =0 ; i<flashes.size(); i++) {
-      // std::cout << flashes.at(i)->get_total_PE() << "\n";
-    }
+    // for (int i =0 ; i<flashes.size(); i++) {
+    //   // std::cout << flashes.at(i)->get_total_PE() << "\n";
+    // }
 
 
     // Code to test plotting lines on a waveform
-    wcopreco::Opflash *bflash = flashes_beam.at(0);
-
-    wcopreco::Deconvolver testplotter(&merged_cosmic, true,true);
-    wcopreco::OpWaveform plottedwfm = merged_beam.at(0);
-    std::string  str = "Ev16_Beamflash";
-    testplotter.testPlot(str , merged_beam, bflash);
+    // wcopreco::Opflash *bflash = flashes_beam.at(0);
+    //
+    // wcopreco::Deconvolver testplotter(&merged_cosmic, true,true);
+    // wcopreco::OpWaveform plottedwfm = merged_beam.at(0);
+    // std::string  str = "Ev16_Beamflash";
+    // testplotter.testPlot(str , merged_beam, bflash);
 
       // std::cout << merged_beam.at(i).get_time_from_trigger() << "\n";
 
@@ -183,9 +200,9 @@ int main(){
     // testplotter.testPlot("Plot With Flash" +(std::string)i,merged_beam.at(i));
     // if (plottedwfm.get_ChannelNum() ==0) std::cout << "Channel num is 0!\n";
 }
-OpReco->Fill();
-output.Write();
-output.Close();
+// OpReco->Fill();
+// output.Write();
+// output.Close();
 
 
 
@@ -254,8 +271,32 @@ output.Close();
   //     }
   //   // }
   // }
+  flashfilter = flashfilter - flashcosmic;
+  flashcosmic = flashcosmic - hitscosmic;
+  hitscosmic  = hitscosmic  - flashbeam;
+  flashbeam   = flashbeam   - hitsbeam;
+  hitsbeam    = hitsbeam    - satmerger;
+  satmerger   = satmerger   - dataread;
+  dataread    = dataread    - t;
+  t = clock() - t;
+
+	std::cout << "Total time:           " << t*1.0/CLOCKS_PER_SEC << " seconds" << std::endl << std::endl;
+  std::cout << "DataRead Time:        " << dataread*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
+  std::cout << "DataRead Fraction:           " << (double)dataread/t  <<  std::endl << std::endl;
+  std::cout << "SatMerger Time:       " << satmerger*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
+  std::cout << "SatMerger Fraction:          " << (double)satmerger/t  <<  std::endl << std::endl;
+  std::cout << "HitsBeam Time:        " << hitsbeam*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
+  std::cout << "HitsBeam Fraction:           " << (double)hitsbeam/t  <<  std::endl << std::endl;
+  std::cout << "Flashbeam Time:       " << flashbeam*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
+  std::cout << "FlashBeam Fraction:          " << (double)flashbeam/t  <<  std::endl << std::endl;
+  std::cout << "HitsCosmic Time:      " << hitscosmic*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
+  std::cout << "HitsCosmic Fraction:         " << (double)hitscosmic/t  <<  std::endl << std::endl;
+  std::cout << "Flashcosmic Time:     " << flashcosmic*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
+  std::cout << "Flashcosmic Fraction:        " << (double)flashcosmic/t  <<  std::endl << std::endl;
+  std::cout << "FlashFilter Time:     " << flashfilter*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
+  std::cout << "FlashFilter Fraction:        " << (double)flashfilter/t  <<  std::endl << std::endl;
+  std::cout << "Percentage Check :    " << (double)flashfilter/t+(double)flashcosmic/t+(double)hitscosmic/t+(double)flashbeam/t+(double)hitsbeam/t+(double)satmerger/t+(double)dataread/t << std::endl;
 
 
-
-
+return 0;
 };

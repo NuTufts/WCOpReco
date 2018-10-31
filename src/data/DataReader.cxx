@@ -211,19 +211,19 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
 
 
     int iter = 0;
-    TCanvas *c1 = new TCanvas("Title", "canvas", 600, 400);
-    TH1S * beam_hg_wfm_plot = (TH1S*)beam_hg_wf->At(iter);
+    // TCanvas *c1 = new TCanvas("Title", "canvas", 600, 400);
+    // TH1S * beam_hg_wfm_plot = (TH1S*)beam_hg_wf->At(iter);
+    //
+    // beam_hg_wfm_plot->Draw();
+    // c1->SaveAs("beam_hg_wfm.png");
+    // delete c1;
 
-    beam_hg_wfm_plot->Draw();
-    c1->SaveAs("beam_hg_wfm.png");
-    delete c1;
-
-    TCanvas *c2 = new TCanvas("Title", "canvas", 600, 400);
-    TH1S * cosmic_lg_wfm_plot = (TH1S*)cosmic_lg_wf->At(iter);
-
-    cosmic_lg_wfm_plot->Draw();
-    c2->SaveAs("cosmic_lg_wfm.png");
-    delete c2;
+    // TCanvas *c2 = new TCanvas("Title", "canvas", 600, 400);
+    // TH1S * cosmic_lg_wfm_plot = (TH1S*)cosmic_lg_wf->At(iter);
+    //
+    // cosmic_lg_wfm_plot->Draw();
+    // c2->SaveAs("cosmic_lg_wfm.png");
+    // delete c2;
 
 
 

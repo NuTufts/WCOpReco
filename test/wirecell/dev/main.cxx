@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <time.h>       /* clock_t, clock, CLOCKS_PER_SEC */
 
 #include "TApplication.h"
 #include "TCanvas.h"
@@ -23,12 +24,13 @@ using namespace std;
 
 
 int main(){
-
+  clock_t t;
+  t = clock();
   std::cout << "Hello world" << std::endl;
   const char* file = "../celltree.root";
   //testing ToyLightReco
 
-  bool do_loop = false;
+  bool do_loop = true;
   int i = 16;
   int size = i+1;
   if (do_loop)
@@ -62,5 +64,7 @@ int main(){
       // delete hist_decon;
 
   }
+  t = clock() - t;
+	std::cout << "time: " << t*1.0/CLOCKS_PER_SEC << " seconds" << std::endl;
   return 0;
 };

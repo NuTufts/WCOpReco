@@ -44,6 +44,31 @@ int main(){
     size = 52;
   }
 
+  //make root file of outputs to test
+  TFile output("OurOutput.root", "RECREATE");
+  //create TTree
+  TTree *OpReco = new TTree("OpReco", "A tree to hold outputs from OpReco");
+  TClonesArray *Tmerged_beam = new TClonesArray;
+
+  OpReco->Branch("merged_beam", "TClonesArray", &Tmerged_beam);
+  TH1D * TtotPE = new TH1D("totPE" ,"totPE", 249, 0., (double) 250);
+  OpReco->Branch("totPE", "TH1D", &TtotPE);
+  TH1D * Tl1_totPE = new TH1D("l1_totPE" ,"l1_totPE", 249, 0., (double) 250);
+  OpReco->Branch("l1_totPE", "TH1D", &Tl1_totPE);
+  TH1D * Tmult = new TH1D("mult" ,"mult", 249, 0., (double) 250);
+  OpReco->Branch("mult", "TH1D", &Tmult);
+  TH1D * Tl1_mult = new TH1D("l1_mult" ,"l1_mult", 249, 0., (double) 250);
+  OpReco->Branch("l1_mult", "TH1D", &Tl1_mult);
+
+  //need branches
+  //OpReco->Branch("Branch Name", "Class name", &data)
+  //merged_cosmic
+  //merged_beam after decon
+  //std::vector< std::vector<double> > decon_vv;
+  //flashes_beam
+  //flashes_cosmic
+  //flashes
+
   for (EVENT_NUM;EVENT_NUM<size;EVENT_NUM++){
     _UB_Ev_wfm = reader.Reader(EVENT_NUM);
     std::vector<float> op_gain = _UB_Ev_wfm.get_op_gain();
@@ -65,6 +90,18 @@ int main(){
     // std::cout << merged_cosmic.size() << " Number of Waveform in Cosmic Merged (CONFIRMED)\n\n";
 
 
+    //add to root output file
+    // for (int j; j<merged_beam.size(); j++){
+    //   int n = merged_beam.at(j).size();
+    //   TH1D * hist = new TH1D("hist" ,"hist", n-1, 0., (double) n);
+    //   for (int k=0; k<n; k++) {
+    //     hist->SetBinContent(k,merged_beam.at(j).at(k));
+    //   }
+    //   //TH1S *h = (TH1S*)wf->At(i)
+    //   //new(Tmerged_beam[j]) TH1D * hist;
+    //   Tmerged_beam->AddAt(hist,j);
+    //   delete hist;
+    // }
 
 
     //Diagnosis Code -J
@@ -96,6 +133,15 @@ int main(){
     std::vector<double> l1_totPE_v =hits_found_beam.get_l1_totPE_v();
     std::vector<double> l1_mult_v = hits_found_beam.get_l1_mult_v();
     std::vector< std::vector<double> > decon_vv = hits_found_beam.get_decon_vv();
+
+    //root saves
+    for (int i=0; i<250; i++) {
+      TtotPE->SetBinContent(i,totPE_v.at(i));
+      Tl1_totPE->SetBinContent(i,l1_totPE_v.at(i));
+      Tmult->SetBinContent(i,mult_v.at(i));
+      Tl1_mult->SetBinContent(i,l1_mult_v.at(i));
+    }
+
     double beam_start_time =merged_beam.at(0).get_time_from_trigger();
 
 
@@ -137,6 +183,9 @@ int main(){
     // testplotter.testPlot("Plot With Flash" +(std::string)i,merged_beam.at(i));
     // if (plottedwfm.get_ChannelNum() ==0) std::cout << "Channel num is 0!\n";
 }
+OpReco->Fill();
+output.Write();
+output.Close();
 
 
 

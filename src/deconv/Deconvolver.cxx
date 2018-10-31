@@ -197,8 +197,7 @@ namespace wcopreco {
        TH1D * hist = new TH1D(Title.c_str() ,Title.c_str(), nbins-1, 0., (double) nbins);
        double max=0;
        double min=100000;
-       Float_t ymax = hist->GetMaximum();
-       Float_t ymin = hist->GetMinimum();
+
 
 
 
@@ -207,19 +206,13 @@ namespace wcopreco {
          if (input.at(i) > max) {max = (double)input.at(i);}
 
          hist->SetBinContent(i,input.at(i));
-         //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
        }
        std::cout << max << " " <<min << std::endl;
 
        hist->Draw();
        for (int j=0;j<hits.size();j++){
          if (hits.at(j)>threshold){
-           // std::cout << "IN HERE\n";
-            // TLine line((double)j*6, 2000, (double)j*6,8000);
-            // line.SetLineWidth(10);
-            // line.SetLineColor(kRed);
-            // line.Draw();
-            // TLine *line = new TLine(j*6,ymin,j*6,ymax);
+
             TLine *line = new TLine(j*6+2,min,j*6+2,max);
             line->SetLineColor(kRed);
             line->SetLineWidth(6);
@@ -227,15 +220,73 @@ namespace wcopreco {
 
          }
        }
-       // TLine *line = new TLine(100,2055,100,2075);
-       // std::cout << ymin<< "  "<<ymax<<"\n";
-       // line->SetLineColor(kRed);
-       // line->Draw();
+
        c1->SaveAs((Title + ".png").c_str());
        delete hist;
        delete c1;
        return;
      }
+
+     void Deconvolver::testPlot(std::string Title, OpWaveformCollection inputcollection, Opflash *flash){
+       char a1;
+       char a2;
+       char a0;
+       std::string str;
+       std::vector<double> vec(250,0);
+       vec.at(43)  = 10;
+       vec.at(121) = 10;
+       OpWaveform input(0,0,0,0);
+       for (int i = 0; i < inputcollection.size();i++){
+         a0 = (char)((i-i%100)/100+48);
+         a1 = (char)((i-i%10)/10+48);
+         a2 = (char)(i%10+48);
+         // a3
+         str = Title;
+         str+="_";
+         str +=a0;
+         str +=a1;
+         str +=a2;
+         std::cout << str<< "\n";
+         input = inputcollection.at(i);
+
+         TCanvas *c1 = new TCanvas(str.c_str(), str.c_str(), 600, 400);
+         int nbins = input.size();
+         TH1D * hist = new TH1D(str.c_str() ,str.c_str(), nbins-1, 0., (double) nbins);
+         double max=0;
+         double min=100000;
+         int begin_flash = flash->get_low_time() / (1.0/64.0);;
+         int end_flash = flash->get_high_time() / (1.0/64.0);
+
+         for (int i=0; i<nbins; i++) {
+           if (input.at(i) < min) {min = (double)input.at(i);}
+           if (input.at(i) > max) {max = (double)input.at(i);}
+           hist->SetBinContent(i,input.at(i));
+         }
+
+         hist->Draw();
+
+         TLine *line_begin = new TLine(begin_flash,min,begin_flash,max);
+         line_begin->SetLineColor(kRed);
+         line_begin->SetLineWidth(4);
+         line_begin->Draw();
+         TLine *line_end = new TLine(end_flash,min,end_flash,max);
+         line_end->SetLineColor(kRed);
+         line_end->SetLineWidth(4);
+         line_end->Draw();
+
+
+
+         // TLine *line = new TLine(100,2055,100,2075);
+         // std::cout << ymin<< "  "<<ymax<<"\n";
+         // line->SetLineColor(kRed);
+         // line->Draw();
+         c1->SaveAs((str + ".png").c_str());
+         delete hist;
+         delete c1;
+       }
+       return;
+     }
+
 
      double Deconvolver::KS_maxdiff(int n, double *array1, double *array2){
 

@@ -119,36 +119,18 @@ int main(){
     for (int i =0 ; i<flashes.size(); i++) {
       // std::cout << flashes.at(i)->get_total_PE() << "\n";
     }
+
+
     // Code to test plotting lines on a waveform
-    int bin_low;
-    int bin_high;
+    wcopreco::Opflash *bflash = flashes_beam.at(0);
+
     wcopreco::Deconvolver testplotter(&merged_cosmic, true,true);
     wcopreco::OpWaveform plottedwfm = merged_beam.at(0);
-    char a1;
-    char a2;
-    char a3;
-    std::string str;
-    std::vector<double> vec(250,0);
-    vec.at(43)  = 10;
-    vec.at(121) = 10;
-    for (int i = 0; i < merged_beam.size();i++){
-      a1 = (char)((i-i%10)/10+48);
-      a2 = (char)(i%10+48);
-      str = "Plot_with_flash_";
-      str +=a1;
-      str +=a2;
-      std::cout << str<< "\n";
-      testplotter.testPlot(str , merged_beam.at(i),vec, 5);
+    std::string  str = "Ev16_Beamflash";
+    testplotter.testPlot(str , merged_beam, bflash);
 
       // std::cout << merged_beam.at(i).get_time_from_trigger() << "\n";
-    }
-    for (int j=0;j< flashes_beam.size() ; j++) {
-      std::cout << flashes_beam.at(j)->get_low_time() <<"    "<< flashes_beam.at(j)->get_high_time()<< "\n";
-      bin_low = flashes_beam.at(j)->get_low_time() / (1.0/64.0);
-      bin_high = flashes_beam.at(j)->get_high_time() / (1.0/64.0);
-      std::cout << bin_low <<"    "<< bin_high << "\n";
 
-    }
 
 
 

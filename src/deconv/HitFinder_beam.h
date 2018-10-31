@@ -46,7 +46,7 @@ namespace wcopreco{
 
 
   protected:
-
+    int channel;
     std::vector<double> totPE_v;
     std::vector<double> mult_v;
     std::vector<double> l1_totPE_v;

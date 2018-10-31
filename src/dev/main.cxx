@@ -9,7 +9,7 @@
 #include "WCOpReco/Flashes_cosmic.h"
 #include "WCOpReco/Flashes_beam.h"
 #include "WCOpReco/HitFinder_beam.h"
-#include "WCOpReco/FlashMatching.h"
+#include "WCOpReco/FlashFiltering.h"
 
 //root includes
 #include "TH1S.h"
@@ -35,8 +35,8 @@ int main(){
   wcopreco::DataReader reader(file);
   reader.IAMTHENIGHT();
   wcopreco::UBEventWaveform _UB_Ev_wfm;
-  bool do_loop = true;
-  int EVENT_NUM =21;
+  bool do_loop = false;
+  int EVENT_NUM =16;
   int size = EVENT_NUM+1;
 
   if (do_loop){
@@ -48,7 +48,7 @@ int main(){
     _UB_Ev_wfm = reader.Reader(EVENT_NUM);
     std::vector<float> op_gain = _UB_Ev_wfm.get_op_gain();
     std::vector<float> op_gainerror = _UB_Ev_wfm.get_op_gainerror();
-    std::cout << "\n";
+    // std::cout << "\n";
     // std::cout << _UB_Ev_wfm.get__wfm_v().at(2).size() << " Number of Waveform in Cosmic HG\n";
     // std::cout << _UB_Ev_wfm.get__wfm_v().at(3).size() << " Number of Waveform in Cosmic LG\n";
 
@@ -61,8 +61,9 @@ int main(){
     wcopreco::UBEventWaveform UB_Ev_Merged = merger.get_merged_UB_Ev();
     //std::cout << UB_Ev_Merged.get__wfm_v().at(5).size() << " Number of Waveform in Cosmic LG\n";
     //std::cout << UB_Ev_Merged.get__wfm_v().at(5).size() << " Number of Waveform in Cosmic LG\n";
-    std::cout << UB_Ev_Merged.get__wfm_v().at(5).size() << " Number of Waveform in Cosmic Merged\n";
+    // std::cout << UB_Ev_Merged.get__wfm_v().at(5).size() << " Number of Waveform in Cosmic Merged\n";
     // std::cout << merged_cosmic.size() << " Number of Waveform in Cosmic Merged (CONFIRMED)\n\n";
+
 
 
 
@@ -100,22 +101,63 @@ int main(){
 
     wcopreco::Flashes_beam flashfinder_beam( totPE_v, mult_v, l1_totPE_v, l1_mult_v, decon_vv, beam_start_time );
     wcopreco::OpflashSelection flashes_beam = flashfinder_beam.get_beam_flashes();
-    std::cout << "\n\n" << flashes_beam.size() << " Beam Flashes in Event\n";
+    // std::cout << "\n\n" << flashes_beam.size() << " Beam Flashes in Event\n";
 
     // //Create the Hitfinder for COSMICS (Currently this also does the flashes for cosmics)
     wcopreco::HitFinder_cosmic hits_found(&merged_cosmic, &op_gain, &op_gainerror);
     std::vector<wcopreco::COphitSelection> hits = hits_found.get_ophits_group();
     wcopreco::Flashes_cosmic flashfinder_cosmic(hits);
     wcopreco::OpflashSelection flashes_cosmic = flashfinder_cosmic.get_cosmic_flashes();
-    std::cout << flashes_cosmic.size() << " Cosmic Flashes in Event\n";
+    // std::cout << flashes_cosmic.size() << " Cosmic Flashes in Event\n";
 
     // std::cout << flashes.size() << " flashes were found in the cosmic selection\n";
 
     //flash matching
-    wcopreco::FlashMatching flashesmatched(flashes_cosmic, flashes_beam);
-    wcopreco::OpflashSelection flashes = flashesmatched.get_flashes();
-    std::cout << flashes.size() << " Matched Flashes in Event\n\n";
+    wcopreco::FlashFiltering flashesfiltered(flashes_cosmic, flashes_beam);
+    wcopreco::OpflashSelection flashes = flashesfiltered.get_flashes();
+    // std::cout << flashes.size() << " Matched Flashes in Event\n\n";
+    for (int i =0 ; i<flashes.size(); i++) {
+      // std::cout << flashes.at(i)->get_total_PE() << "\n";
+    }
+    // Code to test plotting lines on a waveform
+    int bin_low;
+    int bin_high;
+    wcopreco::Deconvolver testplotter(&merged_cosmic, true,true);
+    wcopreco::OpWaveform plottedwfm = merged_beam.at(0);
+    char a1;
+    char a2;
+    char a3;
+    std::string str;
+    std::vector<double> vec(250,0);
+    vec.at(43)  = 10;
+    vec.at(121) = 10;
+    for (int i = 0; i < merged_beam.size();i++){
+      a1 = (char)((i-i%10)/10+48);
+      a2 = (char)(i%10+48);
+      str = "Plot_with_flash_";
+      str +=a1;
+      str +=a2;
+      std::cout << str<< "\n";
+      testplotter.testPlot(str , merged_beam.at(i),vec, 5);
+
+      // std::cout << merged_beam.at(i).get_time_from_trigger() << "\n";
+    }
+    for (int j=0;j< flashes_beam.size() ; j++) {
+      std::cout << flashes_beam.at(j)->get_low_time() <<"    "<< flashes_beam.at(j)->get_high_time()<< "\n";
+      bin_low = flashes_beam.at(j)->get_low_time() / (1.0/64.0);
+      bin_high = flashes_beam.at(j)->get_high_time() / (1.0/64.0);
+      std::cout << bin_low <<"    "<< bin_high << "\n";
+
+    }
+
+
+
+    // testplotter.testPlot("Plot With Flash" +(std::string)i,merged_beam.at(i));
+    // if (plottedwfm.get_ChannelNum() ==0) std::cout << "Channel num is 0!\n";
 }
+
+
+
 
 
 

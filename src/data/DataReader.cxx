@@ -62,7 +62,7 @@ wcopreco::DataReader::DataReader(std::string filepath) :
 
 UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     // IAMTHENIGHT();
-    std::cout << "You have chosen to read out event number: " << event_num << " out of " << nevents << std::endl;
+    // std::cout << "You have chosen to read out event number: " << event_num << " out of " << nevents << std::endl;
     if ( event_num > nevents)
       {
         std::cout << "There aren't that many events, didn't work!" << std::endl;
@@ -79,6 +79,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
       _UB_Ev_wfm.set__wfm_v( empty_vec );
       _UB_Ev_wfm.set_op_gain(*op_gain);
       _UB_Ev_wfm.set_op_gainerror(*op_gainerror);
+
 
 
       //Get Vectors of pmt channel and timestamp for each type of waveform, cosmic/beam and high/low gain
@@ -252,7 +253,11 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
           //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41
           for (int bin=0; bin<1500; bin++) {
             wfm[bin]=((double)waveform->GetBinContent(bin+1));
+            if( ch[j] == 28 ) {
+              // std::cout << wfm[bin] << " \n";
+            }
           }
+
           // This line takes each opwaveform and pushes them to the end of the slowly growing wfm_collection
           wfm_collection.add_waveform(wfm);
           // wfm_collection.emplace_back(std::move(wfm));

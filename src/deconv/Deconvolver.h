@@ -25,6 +25,7 @@
 
 //root
 #include "TCanvas.h"
+#include "TLine.h"
 
 namespace wcopreco{
 
@@ -53,6 +54,8 @@ namespace wcopreco{
     std::pair<double,double> cal_mean_rms(std::vector<double> wfm, int nbin);
     void testPlot(std::string Title, std::vector<double> input);
     void testPlot(std::string Title, OpWaveform input);
+    void testPlot(std::string Title, OpWaveform input, std::vector<double> hits, double threshold);
+
 
     double KS_maxdiff(int n, double *array1, double *array2);
 

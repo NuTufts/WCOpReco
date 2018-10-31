@@ -44,7 +44,7 @@ namespace wcopreco {
   	       }
 
   	       if (i - flash_time.back() >= 78){
-             std::cout << i << "   Flashtime added!\n";
+             // std::cout << i << "   Flashtime added!\n";
 
   	          flag_save = true;
   	  // start one, and open a window of 8 us, if anything above it, not the next 2 bin
@@ -53,13 +53,13 @@ namespace wcopreco {
 
            else if (i-flash_time.back() > 4 && pe > flash_pe.back()){
   	          if (i-flash_time.back()>15){
-                std::cout << i << "   Flashtime added!\n";
+                // std::cout << i << "   Flashtime added!\n";
 
   	             flag_save = true;
   	          }
               else{
                  if (KS_maxdiff(32,prev_pe_a,curr_pe_a) > 0.1){
-                   std::cout << i << "   Flashtime added!\n";
+                   // std::cout << i << "   Flashtime added!\n";
 
   	               flag_save = true;
   	             }
@@ -107,9 +107,14 @@ namespace wcopreco {
       //check with the next bin content ...
 
       Opflash *flash = new Opflash(decon_vv, beam_start_time, start_bin, end_bin);
+      // for (int i=0; i< l1_totPE_v.size(); i++){
+      //   if (l1_totPE_v.at(i) !=0) std::cout << i << "  " << l1_totPE_v.at(i) << "\n";
+      // }
       flash->Add_l1info(&l1_totPE_v, &l1_mult_v, beam_start_time, start_bin, end_bin);
       // std::cout << flash->get_time() << " " <<flash->get_total_PE() << " " << flash->get_num_fired() << std::endl;
       beam_flashes.push_back(flash);
+      // std::cout << "\n\n" << flash->get_total_PE() << " Total PE\n\n";
+
       }
     // std::cout << beam_flashes.size() << " Size of beam flashes\n";
     }

@@ -1,5 +1,5 @@
-#ifndef UBEventWaveform_h
-#define UBEventWaveform_h
+#ifndef UBEVENTWAVEFORM_H
+#define UBEVENTWAVEFORM_H
 
 #include "EventOpWaveforms.h"
 #include <string>
@@ -36,10 +36,13 @@ Each OpWaveform also has datamembers ChannelNum, time_from_trigger, type
 
 namespace wcopreco {
 
+  typedef enum {kbeam_hg = 0, kbeam_lg, kcosmic_hg, kcosmic_lg, kbeam_saturated, kcosmic_saturated, kNumTypes } UBOpWaveformForm_t;
+
   class UBEventWaveform : public EventOpWaveforms {
   public:
 
-    typedef enum {kbeam_hg = 0, kbeam_lg, kcosmic_hg, kcosmic_lg, kbeam_saturated, kcosmic_saturated, kNumTypes } UBOpWaveformForm_t;
+    // typedef enum {kbeam_hg = 0, kbeam_lg, kcosmic_hg, kcosmic_lg, kbeam_saturated, kcosmic_saturated, kNumTypes } UBOpWaveformForm_t;
+
 
     UBEventWaveform();
     virtual ~UBEventWaveform() {};
@@ -47,7 +50,7 @@ namespace wcopreco {
     void addWaveform( UBOpWaveformForm_t type, const OpWaveform& wfm );
     std::vector<float> get_op_gain() {return op_gain;}
     void set_op_gain(std::vector<float> gains_v) {op_gain = gains_v;}
-    
+
     std::vector<float> get_op_gainerror() {return op_gainerror;}
     void set_op_gainerror(std::vector<float> gainserror_v) {op_gainerror = gainserror_v;}
 

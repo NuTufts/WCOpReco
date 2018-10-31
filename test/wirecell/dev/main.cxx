@@ -28,8 +28,8 @@ int main(){
   const char* file = "../celltree.root";
   //testing ToyLightReco
 
-  bool do_loop = true;
-  int i = 21;
+  bool do_loop = false;
+  int i = 16;
   int size = i+1;
   if (do_loop)
   {
@@ -39,7 +39,7 @@ int main(){
 
   for (i;i<size;i++)
     {
-      std::cout << "You have chosen to read out event number: " << i << " out of " << size << std::endl << std::endl;
+      // std::cout << "You have chosen to read out event number: " << i << " out of " << size << std::endl << std::endl;
 
       WireCell2dToy::ToyLightReco flash(file,false);
       flash.load_event_raw(i);

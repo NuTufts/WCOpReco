@@ -347,6 +347,11 @@ void WireCell2dToy::ToyLightReco::load_event_raw(int eve_num){
     TH1S *hsignal = (TH1S*)fop_wf->At(i);
     for (int j=0;j!=1500;j++){
       hraw[i]->SetBinContent(j+1,hsignal->GetBinContent(j+1)-2050);
+      // if( i == 28 ) {
+      //   std::cout << hraw[i]->GetBinContent(j+1)+2050 << " \n";
+      //
+      // }
+
     }
     gain[i] = op_gain->at(i);
     beam_dt[i] = fop_timestamp->at(i) - triggerTime;
@@ -372,11 +377,14 @@ void WireCell2dToy::ToyLightReco::load_event_raw(int eve_num){
 
   // update map
   update_pmt_map();
-  std::cout << "\n\n" << beam_flashes.size() << " Beam Flashes in Event\n";
+  // std::cout << "\n\n" << beam_flashes.size() << " Beam Flashes in Event\n";
 
-  std::cout << cosmic_flashes.size() << " Cosmic Flashes in Event\n";
+  // std::cout << cosmic_flashes.size() << " Cosmic Flashes in Event\n";
 
-  std::cout << flashes.size() << " Matched Flashes in Event\n\n";
+  // std::cout << flashes.size() << " Matched Flashes in Event\n\n";
+  for (int i =0 ; i<flashes.size(); i++) {
+    std::cout << flashes.at(i)->get_total_PE() << "\n";
+  }
 
 }
 
@@ -475,6 +483,7 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
     hspe->Reset();
     for (int i=0;i!=1500;i++){
       double x = hrc->GetBinCenter(i+1);
+
       hspe->SetBinContent(i+1,f1.Eval(x)*gain[j]);
       double content = -1./rc_tau[j] * exp(-x/rc_tau[j]);
       if (i==0) content += 1;
@@ -595,7 +604,11 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
 
     for (int i=0;i!=250;i++){
       double content = hrebin->GetBinContent(i+1);
+      // if (j==28) {std::cout << i << " " << content << " \n";}
+
       if (content>0.3){
+        // if (j ==28) {std::cout << i << "\n";}
+
 	vals_y.push_back(content);
 	vals_x.push_back(hrebin->GetBinCenter(i+1));
 	vals_bin.push_back(i);
@@ -633,6 +646,8 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
     for (int i=0;i!=nbin_fit;i++){
       //global_sols.push_back(beta(i));
       hl1[j]->SetBinContent(vals_bin.at(i)+1,beta(i));
+      // if (beta(i) != 0) std::cout << " " << beta(i) << " \n";
+
     }
 
 
@@ -733,6 +748,8 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
 	h_mult->SetBinContent(j+1,h_mult->GetBinContent(j+1)+1);
 
       content = hl1[i]->GetBinContent(j+1);
+      // if (j ==46) std::cout <<i << "  " << content << " content\n";
+
       h_l1_totPE->SetBinContent(j+1,h_l1_totPE->GetBinContent(j+1)+content);
       if (content > 1) // 1 PE threshold
 	h_l1_mult->SetBinContent(j+1,h_l1_mult->GetBinContent(j+1)+1);
@@ -812,9 +829,13 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
     //  std::cout << start_bin << " " << end_bin << std::endl;
     //check with the next bin content ...
     Opflash *flash = new Opflash(hdecon, beam_dt[0], start_bin, end_bin);
+    // for (int i=0; i< h_l1_totPE->GetNbinsX(); i++){
+    //   if (h_l1_totPE->GetBinContent(i+1) !=0) std::cout << i << "  " << h_l1_totPE->GetBinContent(i+1) << "\n";
+    // }
     flash->Add_l1info(h_l1_totPE, h_l1_mult, beam_dt[0], start_bin, end_bin);
     // std::cout << flash->get_time() << " " <<flash->get_total_PE() << " " << flash->get_num_fired() << std::endl;
     beam_flashes.push_back(flash);
+    // std::cout << "\n\n" << flash->get_total_PE() << " Total PE\n\n";
   }
 
   Opflash *prev_cflash = 0;
@@ -832,6 +853,7 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
       }
     }
     if (save){
+
       flashes.push_back(cflash);
       if (prev_cflash==0 ){
 	if (cflash->get_time()<0)
@@ -1045,7 +1067,7 @@ WireCell2dToy::pmtMapSet WireCell2dToy::ToyLightReco::mergeCosmic(WireCell2dToy:
   //
   // std::cout << lg_unpaired << " LG Wfms that were unpaired\n";
   // std::cout << hg_unpaired << " HG Wfms that were unpaired\n";
-   std::cout << no_friends_needed+friends_needed+lg_unpaired+hg_unpaired << " Number of Waveform in Cosmic Merged \n";
+   // std::cout << no_friends_needed+friends_needed+lg_unpaired+hg_unpaired << " Number of Waveform in Cosmic Merged \n";
 
 
   return result;

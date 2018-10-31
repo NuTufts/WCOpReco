@@ -4,32 +4,33 @@ namespace wcopreco {
 
 
   wcopreco::Deconvolver::Deconvolver(OpWaveformCollection *merged_beam, bool standard_run, bool with_filters){
-    std::cout << "Starting the deconvolution of a waveform collection!\n";
+    // std::cout << "Starting the deconvolution of a waveform collection!\n";
 
 
     int type = merged_beam->at(0).get_type();
     op_gain = merged_beam->get_op_gain();
     kernel_container_v.resize(32);
     filter_status = with_filters;
-    if (filter_status) {std::cout << "You filtered out latelight and High Frequencies\n";}
-    else {std::cout << "You performed the deconvolution without filters\n";}
+    // if (filter_status) {std::cout << "You filtered out latelight and High Frequencies\n";}
+    // else {std::cout << "You performed the deconvolution without filters\n";}
 
 
     //Default way to construct the deconvolver is with spe and rc
     if (standard_run){
       //Construct the vector of kernel containers (one container per channel)
+      UB_rc *rc_good_ch = new UB_rc(true, false);
+      UB_rc *rc_bad_ch = new UB_rc(true, true);
       for (int i =0 ; i<32; i++){
         //UB_rc *rc = Make_UB_rc(i);
-        UB_rc *rc = new UB_rc(true, false);
-        if (i == 28){
-          rc->bad_ch = true;
-        }
-        else{
-          rc->bad_ch = false;
-        }
+
         UB_spe *spe = new UB_spe(true, op_gain.at(i)); //Place UB_spe on heap, so object not deleted
         kernel_container_v.at(i).add_kernel(spe);
-        kernel_container_v.at(i).add_kernel(rc);
+        if (i == 28){
+          kernel_container_v.at(i).add_kernel(rc_bad_ch);
+        }
+        else{
+          kernel_container_v.at(i).add_kernel(rc_good_ch);
+        }
       }
     }
 
@@ -184,6 +185,52 @@ namespace wcopreco {
          //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
        }
        hist->Draw();
+       c1->SaveAs((Title + ".png").c_str());
+       delete hist;
+       delete c1;
+       return;
+     }
+     void Deconvolver::testPlot(std::string Title, OpWaveform input, std::vector<double> hits, double threshold){
+       //makes a hsitogram in root to test output and saves as png
+       TCanvas *c1 = new TCanvas(Title.c_str(), Title.c_str(), 600, 400);
+       int nbins = input.size();
+       TH1D * hist = new TH1D(Title.c_str() ,Title.c_str(), nbins-1, 0., (double) nbins);
+       double max=0;
+       double min=100000;
+       Float_t ymax = hist->GetMaximum();
+       Float_t ymin = hist->GetMinimum();
+
+
+
+       for (int i=0; i<nbins; i++) {
+         if (input.at(i) < min) {min = (double)input.at(i);}
+         if (input.at(i) > max) {max = (double)input.at(i);}
+
+         hist->SetBinContent(i,input.at(i));
+         //std::cout << mag_raw.at(i) << " :Value of wfm_pow" << std::endl;
+       }
+       std::cout << max << " " <<min << std::endl;
+
+       hist->Draw();
+       for (int j=0;j<hits.size();j++){
+         if (hits.at(j)>threshold){
+           // std::cout << "IN HERE\n";
+            // TLine line((double)j*6, 2000, (double)j*6,8000);
+            // line.SetLineWidth(10);
+            // line.SetLineColor(kRed);
+            // line.Draw();
+            // TLine *line = new TLine(j*6,ymin,j*6,ymax);
+            TLine *line = new TLine(j*6+2,min,j*6+2,max);
+            line->SetLineColor(kRed);
+            line->SetLineWidth(6);
+            line->Draw();
+
+         }
+       }
+       // TLine *line = new TLine(100,2055,100,2075);
+       // std::cout << ymin<< "  "<<ymax<<"\n";
+       // line->SetLineColor(kRed);
+       // line->Draw();
        c1->SaveAs((Title + ".png").c_str());
        delete hist;
        delete c1;

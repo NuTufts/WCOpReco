@@ -20,7 +20,8 @@ namespace wcopreco {
     for (int ch=0; ch<32; ch++){
       //totPE mult, and their l1 versions are additive (each element is always +=). Each iteration of ch will add to these values.
       decon_vv.at(ch).reserve(300);
-
+      channel =ch;
+      // std::cout << ch << "  ";
       Perform_L1( filtered_collection.at(ch),
                   decon_vv,
                   &totPE_v,
@@ -86,7 +87,9 @@ namespace wcopreco {
 
     for (int i=0;i!=250;i++){
       double content = rebin_v[i];
+      // if (channel==28) {std::cout << i << " " << content << " \n";} 
       if (content>0.3){
+        // if (channel ==28) std::cout << i << " " << content << "\n";;
        vals_y.push_back(content);
        vals_x.push_back(i+0.5);
        vals_bin.push_back(i);
@@ -94,6 +97,7 @@ namespace wcopreco {
     }
 
     int nbin_fit = vals_x.size();
+
     Eigen::VectorXd W = Eigen::VectorXd::Zero(nbin_fit);
     Eigen::MatrixXd G = Eigen::MatrixXd::Zero(nbin_fit,nbin_fit);
     for (int i=0;i!=nbin_fit;i++){
@@ -124,6 +128,7 @@ namespace wcopreco {
     l1_v.resize(250);
     for (int i=0;i!=nbin_fit;i++){
         l1_v[vals_bin.at(i)] = beta(i);
+        // if (beta(i) != 0) std::cout << " " << beta(i) << " \n";
     }
 
 
@@ -138,6 +143,7 @@ namespace wcopreco {
         }
 
       content = l1_v.at(j);
+      // if (j ==46) std::cout << content << " content\n";
       l1_totPE_v->at(j) = l1_totPE_v->at(j) + content;
       if (content > 1) {// 1 PE threshold
           l1_mult_v->at(j) = l1_mult_v->at(j) + 1;

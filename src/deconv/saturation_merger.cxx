@@ -10,10 +10,10 @@ namespace wcopreco {
     OpWaveformCollection CHG_WFs;
     OpWaveformCollection CLG_WFs;
 
-    BHG_WFs = (UB_Ev.get__wfm_v() [0]);
-    BLG_WFs = (UB_Ev.get__wfm_v() [1]);
-    CHG_WFs = (UB_Ev.get__wfm_v() [2]);
-    CLG_WFs = (UB_Ev.get__wfm_v() [3]);
+    BHG_WFs = (UB_Ev.get_wfm_v() [0]);
+    BLG_WFs = (UB_Ev.get_wfm_v() [1]);
+    CHG_WFs = (UB_Ev.get_wfm_v() [2]);
+    CLG_WFs = (UB_Ev.get_wfm_v() [3]);
 
     // std::cout << "BeamLowGainWf 1 BEFORE Scaling: " << UB_Ev.get__wfm_v().at(1).at(18).at(750) << "\n";
     // std::cout << "CosmicLowGainWf 1 BEFORE  Scaling: " << UB_Ev.get__wfm_v().at(3).at(18).at(20) << "\n";

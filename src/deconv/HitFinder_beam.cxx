@@ -87,7 +87,7 @@ namespace wcopreco {
 
     for (int i=0;i!=250;i++){
       double content = rebin_v[i];
-      // if (channel==28) {std::cout << i << " " << content << " \n";} 
+      // if (channel==28) {std::cout << i << " " << content << " \n";}
       if (content>0.3){
         // if (channel ==28) std::cout << i << " " << content << "\n";;
        vals_y.push_back(content);
@@ -143,7 +143,7 @@ namespace wcopreco {
         }
 
       content = l1_v.at(j);
-      // if (j ==46) std::cout << content << " content\n";
+      // if (j ==112) std::coust << content << " content\n";
       l1_totPE_v->at(j) = l1_totPE_v->at(j) + content;
       if (content > 1) {// 1 PE threshold
           l1_mult_v->at(j) = l1_mult_v->at(j) + 1;

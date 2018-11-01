@@ -29,7 +29,7 @@ std::vector<double> wcopreco::UB_rc::Get_wfm(int nbins, float tick_width_ns)
 
   double X;
   for (int i=0; i<size; i++) {
-    X = i;
+    X = i+.5;
     //X = (tick_width_ns)*(double(i)+0.5);
     //std::cout << X << std::endl;
     double content = -1./rc_tau * exp(-X/rc_tau);

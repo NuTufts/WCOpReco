@@ -361,6 +361,8 @@ namespace wcopreco {
 
          }
          phase_raw.at(i) = ph;
+
+
          //End of phase_raw calc
 
          //Calculate the mag_v
@@ -414,12 +416,12 @@ namespace wcopreco {
 
 
          double rho = mag_raw.at(i);
+
          double phi = phase_raw.at(i);
          for (int n=0;n<num_kernels;n++){
            rho = rho / mag_kernel.at(n).at(i);
            phi = phi - phase_kernel.at(n).at(i);
          }
-
          // if (i%100 ==0) {
          //   std::cout << rho << "                rho                 \n" ;//<< rho2 << "            rho2                  \n";
          //   std::cout << phi << "                phi                 \n" ;//<< phi2 << "            phi2                  \n";
@@ -491,6 +493,7 @@ namespace wcopreco {
        double *im_inv1 = new double[nbins]; //Imaginary -> Phase
 
        ifft1->GetPointsComplex(re_inv1, im_inv1);
+
 
        OpWaveform inverse_res1(channel,wfm.get_time_from_trigger(), wfm.get_type(), nbins);
        // inverse_res1.resize(nbins);

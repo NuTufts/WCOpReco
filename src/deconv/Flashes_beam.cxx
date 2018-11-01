@@ -107,9 +107,10 @@ namespace wcopreco {
       //check with the next bin content ...
 
       Opflash *flash = new Opflash(decon_vv, beam_start_time, start_bin, end_bin);
-      // for (int i=0; i< l1_totPE_v.size(); i++){
-      //   if (l1_totPE_v.at(i) !=0) std::cout << i << "  " << l1_totPE_v.at(i) << "\n";
-      // }
+      for (int i=0; i< l1_totPE_v.size(); i++){
+        // if (l1_totPE_v.at(i) !=0) std::cout << i << "  " << l1_totPE_v.at(i) << "\n";
+        // std::cout << l1_totPE_v.at(i) << "\n";
+      }
       flash->Add_l1info(&l1_totPE_v, &l1_mult_v, beam_start_time, start_bin, end_bin);
       // std::cout << flash->get_time() << " " <<flash->get_total_PE() << " " << flash->get_num_fired() << std::endl;
       beam_flashes.push_back(flash);

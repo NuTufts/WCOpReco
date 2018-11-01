@@ -2,7 +2,7 @@
 
 using namespace wcopreco;
 
-wcopreco::COphit::COphit(int ch_no, OpWaveform *wfm, double time, double gain, double gain_err) //TH1S
+wcopreco::COphit::COphit(int ch_no, OpWaveform *wfm, double time, double gain, double gain_err)
   : channel_no(ch_no)
   , time(time)
   , gain(gain)
@@ -41,19 +41,6 @@ wcopreco::COphit::COphit(int ch_no, OpWaveform *wfm, double time, double gain, d
 		  + pow(40/sqrt(3.)/gain * 2,2)  // basline (1/sqrt(3.) ADC with 40 time tics ...)
 		  + pow(PE*0.03,2) // 3% relative uncertainties (Baseline guess) ...
 		  );
-
-    // if (PE < 1000){
-    //   PE_err = sqrt(pow(PE * gain_err/gain ,2) + pow(PE*0.02,2)); // standard error below threshold would be 4.6 PE ... 8/sqrt(3)
-    // }else if (PE < 2000){
-    //   PE_err = sqrt(pow(PE * gain_err/gain ,2) + pow(PE*0.06,2)); // standard error below threshold would be 4.6 PE ... 8/sqrt(3)
-    // }else{
-    //   PE_err = sqrt(pow(PE * gain_err/gain ,2) + pow(PE*0.18,2)); // standard error below threshold would be 4.6 PE ... 8/sqrt(3)
-    // }
-    // if (PE < 12){ // too small ...
-    //   // some issues ...
-    //   PE_err = sqrt(pow(PE_err,2) + pow(4.6,2));
-    //   good_baseline = false;
-    // }
 
   }else{
     PE = integral/gain * 2;

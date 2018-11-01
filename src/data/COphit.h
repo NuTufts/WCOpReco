@@ -2,16 +2,15 @@
 #define COphit_h
 
 #include "OpWaveform.h"
-//#include "TH1S.h"
 #include <vector>
-#include <math.h> //need this if cutting out root
+#include <math.h>
 
 
 namespace wcopreco{
 
   class COphit{
   public:
-    COphit(int ch_no, OpWaveform *wfm, double time, double gain, double gain_err); //TH1S
+    COphit(int ch_no, OpWaveform *wfm, double time, double gain, double gain_err);
     ~COphit();
 
     double get_time(){return time;};
@@ -21,7 +20,7 @@ namespace wcopreco{
     double get_gain(){return gain;}
     int get_ch_no(){return channel_no;};
 
-    // derivated ...
+    // derived
     double get_PE(){return PE;};
     double get_PE_err(){return PE_err;};
     bool get_type(){return good_baseline;};
@@ -35,7 +34,7 @@ namespace wcopreco{
     double gain; // to be set
     double gain_err;
 
-    double time; // start time in us ...
+    double time; // start time in us
     double baseline; // baseline
     double peak; // maximum PE
     double integral; // integral

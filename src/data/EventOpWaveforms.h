@@ -13,10 +13,10 @@ namespace wcopreco {
     EventOpWaveforms(){};
     virtual ~EventOpWaveforms() {};
 
-    void set__wfm_v(std::vector<OpWaveformCollection>);
-    void set__wfm_v(OpWaveformCollection);
-    void emplace_back__wfm_v(OpWaveformCollection);
-    void emplace_back__wfm_v(std::vector<OpWaveformCollection>);
+    void set_wfm_v(std::vector<OpWaveformCollection>);
+    void set_wfm_v(OpWaveformCollection);
+    void emplace_back_wfm_v(OpWaveformCollection);
+    void emplace_back_wfm_v(std::vector<OpWaveformCollection>);
 
     void set_type2index(std::map <int,int>);
     void set_index2type(std::map <int,int>);
@@ -25,9 +25,8 @@ namespace wcopreco {
 
     void add_entry(OpWaveformCollection, int type);
     void push_back_wfm( int type, const OpWaveform& wfm );
-    // void emplace_back( int type, const OpWaveform& wfm );
 
-    std::vector<OpWaveformCollection> get__wfm_v() {return _wfm_v;};
+    std::vector<OpWaveformCollection> get_wfm_v() {return _wfm_v;};
     std::map <int,int> get_index2type() {return index2type;};
     std::map <int,int> get_type2index() {return type2index;};
 

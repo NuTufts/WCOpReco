@@ -4,13 +4,13 @@
 
 using namespace wcopreco;
 
-wcopreco::Opflash::Opflash(COphitSelection &ophits)
+wcopreco::Opflash::Opflash(COphitSelection &ophits) //cosmic
   : type(1)
   , flash_id (-1)
 {
   for (int i=0;i!=32;i++){
     PE[i] = 0;
-    PE_err[i] = 6.4; // 11/sqrt(3.) fudge now ...
+    PE_err[i] = 6.4; // 11/sqrt(3.)
   }
   time = 0;
   total_PE = 0;
@@ -22,19 +22,18 @@ wcopreco::Opflash::Opflash(COphitSelection &ophits)
     total_PE += ophits.at(i)->get_PE() ;
   }
 
-  // std::cout << total_PE << std::endl;
   if (total_PE !=0){
     time /= total_PE;
   }else{
     time = ophits.at(0)->get_time();
   }
-
-  low_time = time - 3 * 15.625/1000.;
-  high_time = time + 37 * 15.625/1000.;
+  float bin_width = 15.625/1000.; //this  should be derived from det constants in larlite/larsoft
+  low_time = time - 3 * bin_width;
+  high_time = time + 37 * bin_width;
 
 }
 
-wcopreco::Opflash::Opflash(const std::vector<std::vector<double>> &vec_v, double start_time, int start_bin, int end_bin, float bin_width)
+wcopreco::Opflash::Opflash(const std::vector<std::vector<double>> &vec_v, double start_time, int start_bin, int end_bin, float bin_width) //beam
   : type(2)
   , flash_id (-1)
 {
@@ -58,13 +57,11 @@ wcopreco::Opflash::Opflash(const std::vector<std::vector<double>> &vec_v, double
       peak += content;
       PE[j] += content;
       if (content>1.5) {
-	//	std::cout << i << " " << j << " " << content << std::endl;
 	mult++;
       }
     }
 
     if (peak > max && mult >=3){
-      //std::cout << max << " " << peak << " " << max_bin << " " << i << " " << mult << std::endl;
       max = peak;
       max_bin = i;
     }
@@ -87,15 +84,6 @@ wcopreco::Opflash::Opflash(const std::vector<std::vector<double>> &vec_v, double
 		     + (PE[i] + 1.875*2) //statistical term
 		     + pow(PE[i]*0.02,2) // 2% base systematic uncertainties
 		     );
-
-    // if (PE[i] < 1000){
-    //   PE_err[i] = sqrt(pow(PE_err[i],2) + pow(PE[i]*0.02,2)); // standard error below threshold would be 4.6 PE ... 8/sqrt(3)
-    // }else if (PE[i] < 2000){
-    //   PE_err[i] = sqrt(pow(PE_err[i],2) + pow(PE[i]*0.06,2)); // standard error below threshold would be 4.6 PE ... 8/sqrt(3)
-    // }else{
-    //   PE_err[i] = sqrt(pow(PE_err[i],2) + pow(PE[i]*0.18,2)); // standard error below threshold would be 4.6 PE ... 8/sqrt(3)
-    // }
-
 
   }
 

@@ -13,21 +13,20 @@ namespace wcopreco {
   void EventOpWaveforms::set_index2type(std::map <int,int> input_map)
   {index2type = input_map;}
 
-  void EventOpWaveforms::set__wfm_v(std::vector<OpWaveformCollection> input_vector)
+  void EventOpWaveforms::set_wfm_v(std::vector<OpWaveformCollection> input_vector)
   {_wfm_v = input_vector;}
 
-  void EventOpWaveforms::set__wfm_v(OpWaveformCollection input_collection)
+  void EventOpWaveforms::set_wfm_v(OpWaveformCollection input_collection)
   {
     _wfm_v.resize(0);
     _wfm_v.emplace_back(std::move(input_collection));
   }
 
-  void EventOpWaveforms::emplace_back__wfm_v(OpWaveformCollection input_collection)
+  void EventOpWaveforms::emplace_back_wfm_v(OpWaveformCollection input_collection)
   {_wfm_v.emplace_back(std::move(input_collection));}
 
-  void EventOpWaveforms::emplace_back__wfm_v(std::vector<OpWaveformCollection> input_vector_collection)
+  void EventOpWaveforms::emplace_back_wfm_v(std::vector<OpWaveformCollection> input_vector_collection)
   {
-    //This may not be the most efficient way to perform this whole function:
 
     _wfm_v.resize( _wfm_v.size() + input_vector_collection.size() );
 

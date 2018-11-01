@@ -69,7 +69,7 @@ namespace wcopreco {
         scalefactor = findScaling(channel);
 
         for (int bin = 0; bin < nbins; bin++){
-          BLG_WFs->at(n).at(bin) = ( (BLG_WFs->at(n).at(bin)-baseline)*scalefactor ) + baseline ;
+          BLG_WFs->at(n).at(bin) = floor(( (BLG_WFs->at(n).at(bin)-baseline)*scalefactor ) + baseline) ;
         }
       }
 
@@ -82,7 +82,7 @@ namespace wcopreco {
         channel =  CLG_WFs->at(n).get_ChannelNum();
         scalefactor = findScaling(channel);
         for (int bin = 0; bin < nbins; bin++){
-          CLG_WFs->at(n).at(bin) = ( (CLG_WFs->at(n).at(bin)-baseline)*scalefactor ) + baseline ;
+          CLG_WFs->at(n).at(bin) = floor(( (CLG_WFs->at(n).at(bin)-baseline)*scalefactor ) + baseline) ;
         }
       }
 

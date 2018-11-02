@@ -390,7 +390,7 @@ namespace wcopreco {
 
 
       int channel = wfm.get_ChannelNum();
-      int num_kernels = kernel_container_v.at(channel).size();
+        int num_kernels = kernel_container_v.at(channel).size();
       std::vector<std::vector<double>> mag_kernel;
       mag_kernel.resize(num_kernels);
       std::vector<std::vector<double>> phase_kernel;
@@ -401,6 +401,7 @@ namespace wcopreco {
         kernel_container_v.at(channel).at(n) ->Get_pow_spec(nbins, bin_width, &mag_kernel.at(n), &phase_kernel.at(n));
 
       }
+
 
        for (int i=0;i<nbins;i++){
          double freq;
@@ -422,6 +423,9 @@ namespace wcopreco {
            rho = rho / mag_kernel.at(n).at(i);
            phi = phi - phase_kernel.at(n).at(i);
          }
+
+
+
          // if (i%100 ==0) {
          //   std::cout << rho << "                rho                 \n" ;//<< rho2 << "            rho2                  \n";
          //   std::cout << phi << "                phi                 \n" ;//<< phi2 << "            phi2                  \n";

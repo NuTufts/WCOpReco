@@ -30,8 +30,8 @@ int main(){
   const char* file = "../celltree.root";
   //testing ToyLightReco
 
-  bool do_loop = true;
-  int i = 16;
+  bool do_loop = false;
+  int i = 22;
   int size = i+1;
   if (do_loop)
   {
@@ -62,9 +62,10 @@ int main(){
 
       delete c2;
       // delete hist_decon;
+      // if (do_loop) std::cout << (clock() - t)*1.0/CLOCKS_PER_SEC<< "\n"; //<< " Time through loop " <<  i<< "\n";
 
   }
   t = clock() - t;
-	std::cout << "time: " << t*1.0/CLOCKS_PER_SEC << " seconds" << std::endl;
+	// std::cout << "time: " << t*1.0/CLOCKS_PER_SEC << " seconds" << std::endl;
   return 0;
 };

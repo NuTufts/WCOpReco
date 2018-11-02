@@ -42,10 +42,9 @@ int main(){
 
   //Open the reader, choose event number, create the UBEventWaveform _UB_Ev_wfm
   wcopreco::DataReader reader(file);
-  reader.IAMTHENIGHT();
   wcopreco::UBEventWaveform _UB_Ev_wfm;
   bool do_loop = false;
-  int EVENT_NUM =16;
+  int EVENT_NUM =22;
   int size = EVENT_NUM+1;
 
   if (do_loop){
@@ -179,16 +178,23 @@ int main(){
     wcopreco::OpflashSelection flashes = flashesfiltered.get_flashes();
     flashfilter =clock();
     // std::cout << flashes.size() << " Matched Flashes in Event\n\n";
-    // for (int i =0 ; i<flashes.size(); i++) {
-    //   // std::cout << flashes.at(i)->get_total_PE() << "\n";
+    // wcopreco::UB_rc here(true,false);
+    // std::vector<double> magy;
+    // std::vector<double> phasey;
+    // here.Get_pow_spec(1500, (1.0/(64e6) ), &magy, &phasey);
+    // for (int p=0;p<1500;p++){
+    //   std::cout << magy.at(p) << "\n";
     // }
+    std::cout << "\n\n-------------------------------------------\n";
+    for (int i =0 ; i<flashes.size(); i++) {
+      if (flashes.at(i)->get_type() == 2) std::cout << flashes.at(i)->get_total_PE() << "\n";
+    }
 
 
     // Code to test plotting lines on a waveform
     // wcopreco::Opflash *bflash = flashes_beam.at(0);
-    //
+
     // wcopreco::Deconvolver testplotter(&merged_cosmic, true,true);
-    // wcopreco::OpWaveform plottedwfm = merged_beam.at(0);
     // std::string  str = "Ev16_Beamflash";
     // testplotter.testPlot(str , merged_beam, bflash);
 
@@ -199,7 +205,8 @@ int main(){
 
     // testplotter.testPlot("Plot With Flash" +(std::string)i,merged_beam.at(i));
     // if (plottedwfm.get_ChannelNum() ==0) std::cout << "Channel num is 0!\n";
-}
+    // if (do_loop) std::cout << (clock() - t)*1.0/CLOCKS_PER_SEC<<"\n";// << " Time through loop " <<  EVENT_NUM<< "\n";
+  }
 // OpReco->Fill();
 // output.Write();
 // output.Close();
@@ -280,22 +287,22 @@ int main(){
   dataread    = dataread    - t;
   t = clock() - t;
 
-	std::cout << "Total time:           " << t*1.0/CLOCKS_PER_SEC << " seconds" << std::endl << std::endl;
-  std::cout << "DataRead Time:        " << dataread*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
-  std::cout << "DataRead Fraction:           " << (double)dataread/t  <<  std::endl << std::endl;
-  std::cout << "SatMerger Time:       " << satmerger*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
-  std::cout << "SatMerger Fraction:          " << (double)satmerger/t  <<  std::endl << std::endl;
-  std::cout << "HitsBeam Time:        " << hitsbeam*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
-  std::cout << "HitsBeam Fraction:           " << (double)hitsbeam/t  <<  std::endl << std::endl;
-  std::cout << "Flashbeam Time:       " << flashbeam*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
-  std::cout << "FlashBeam Fraction:          " << (double)flashbeam/t  <<  std::endl << std::endl;
-  std::cout << "HitsCosmic Time:      " << hitscosmic*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
-  std::cout << "HitsCosmic Fraction:         " << (double)hitscosmic/t  <<  std::endl << std::endl;
-  std::cout << "Flashcosmic Time:     " << flashcosmic*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
-  std::cout << "Flashcosmic Fraction:        " << (double)flashcosmic/t  <<  std::endl << std::endl;
-  std::cout << "FlashFilter Time:     " << flashfilter*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
-  std::cout << "FlashFilter Fraction:        " << (double)flashfilter/t  <<  std::endl << std::endl;
-  std::cout << "Percentage Check :    " << (double)flashfilter/t+(double)flashcosmic/t+(double)hitscosmic/t+(double)flashbeam/t+(double)hitsbeam/t+(double)satmerger/t+(double)dataread/t << std::endl;
+	// std::cout << "Total time:           " << t*1.0/CLOCKS_PER_SEC << " seconds" << std::endl << std::endl;
+  // std::cout << "DataRead Time:        " << dataread*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
+  // std::cout << "DataRead Fraction:           " << (double)dataread/t  <<  std::endl << std::endl;
+  // std::cout << "SatMerger Time:       " << satmerger*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
+  // std::cout << "SatMerger Fraction:          " << (double)satmerger/t  <<  std::endl << std::endl;
+  // std::cout << "HitsBeam Time:        " << hitsbeam*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
+  // std::cout << "HitsBeam Fraction:           " << (double)hitsbeam/t  <<  std::endl << std::endl;
+  // std::cout << "Flashbeam Time:       " << flashbeam*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
+  // std::cout << "FlashBeam Fraction:          " << (double)flashbeam/t  <<  std::endl << std::endl;
+  // std::cout << "HitsCosmic Time:      " << hitscosmic*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
+  // std::cout << "HitsCosmic Fraction:         " << (double)hitscosmic/t  <<  std::endl << std::endl;
+  // std::cout << "Flashcosmic Time:     " << flashcosmic*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
+  // std::cout << "Flashcosmic Fraction:        " << (double)flashcosmic/t  <<  std::endl << std::endl;
+  // std::cout << "FlashFilter Time:     " << flashfilter*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
+  // std::cout << "FlashFilter Fraction:        " << (double)flashfilter/t  <<  std::endl << std::endl;
+  // std::cout << "Percentage Check :    " << (double)flashfilter/t+(double)flashcosmic/t+(double)hitscosmic/t+(double)flashbeam/t+(double)hitsbeam/t+(double)satmerger/t+(double)dataread/t << std::endl;
 
 
 return 0;

@@ -382,9 +382,11 @@ void WireCell2dToy::ToyLightReco::load_event_raw(int eve_num){
   // std::cout << cosmic_flashes.size() << " Cosmic Flashes in Event\n";
 
   // std::cout << flashes.size() << " Matched Flashes in Event\n\n";
+  std::cout << "\n\n-------------------------------------------\n";
   for (int i =0 ; i<flashes.size(); i++) {
-    // std::cout << flashes.at(i)->get_total_PE() << "\n";
+    if (flashes.at(i)->get_type() == 2) std::cout << flashes.at(i)->get_total_PE() << "\n";
   }
+
 
 }
 
@@ -431,6 +433,7 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
     for (int j=0;j!=20;j++){
       h1.Fill(hraw[i]->GetBinContent(j+1));
     }
+
     // double xq = 0.5;
     // double baseline;
     // h1.GetQuantiles(1,&baseline,&xq);
@@ -488,6 +491,7 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
       double content = -1./rc_tau[j] * exp(-x/rc_tau[j]);
       if (i==0) content += 1;
       hrc->SetBinContent(i+1,content);
+
       // hraw[j]->SetBinContent(i+1,content);
     }
     // deconvolution ...
@@ -505,12 +509,14 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
     for (int i=0;i!=1500;i++){
       double freq;
       if (i<=750){
-	freq = i/1500.*2;
-      }else{
-	freq = (1500-i)/1500.*2;
+	       freq = i/1500.*2;
+      }
+      else{
+	       freq = (1500-i)/1500.*2;
       }
       double rho = hm->GetBinContent(i+1)/ hm_rc->GetBinContent(i+1) / hm_spe->GetBinContent(i+1)  ;
       double phi = hp->GetBinContent(i+1) - hp_rc->GetBinContent(i+1) - hp_spe->GetBinContent(i+1);
+
       if (i==0) rho = 0;
       value_re[i] = rho * f3.Eval(freq)* cos(phi)/1500.;
       value_im[i] = rho * f3.Eval(freq)* sin(phi)/1500.;
@@ -518,6 +524,7 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
       value_re1[i] = rho * cos(phi)/1500.* f2.Eval(freq);
       value_im1[i] = rho * sin(phi)/1500.* f2.Eval(freq);
     }
+
 
     // ROI finding
     int n = 1500;
@@ -543,6 +550,8 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
     ifft->SetPointsComplex(value_re1,value_im1);
     ifft->Transform();
     fb = TH1::TransformHisto(ifft,0,"Re");
+
+
     double A11 = 0, A12 = 0, A21=0, A22=0;
     double B1 = 0, B2 = 0;
     double a=0, b=0;
@@ -604,10 +613,11 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
 
     for (int i=0;i!=250;i++){
       double content = hrebin->GetBinContent(i+1);
-      // if (j==28) {std::cout << i << " " << content << " \n";}
+      // if (j==1 && (i==166 || i==168 || i==173 || i==193 || i==196 || i==224 ||i==231 ||i==239 ))
+      //   {std::cout << i << " " << content << " \n";}
 
       if (content>0.3){
-        // if (j ==28) {std::cout << i << "\n";}
+        // if (j < 6) std::cout << j << " " << i << "\n";
 
 	vals_y.push_back(content);
 	vals_x.push_back(hrebin->GetBinCenter(i+1));
@@ -646,8 +656,6 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
     for (int i=0;i!=nbin_fit;i++){
       //global_sols.push_back(beta(i));
       hl1[j]->SetBinContent(vals_bin.at(i)+1,beta(i));
-      // if (beta(i) != 0) std::cout << " " << beta(i) << " \n";
-
     }
 
 
@@ -748,7 +756,9 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
 	h_mult->SetBinContent(j+1,h_mult->GetBinContent(j+1)+1);
 
       content = hl1[i]->GetBinContent(j+1);
-      // if (j ==46) std::cout <<i << "  " << content << " content\n";
+      // if (j ==41) std::cout <<i << "  " << content << " content\n";
+      // if (j ==41) std::cout << content<< "\n" ;
+
 
       h_l1_totPE->SetBinContent(j+1,h_l1_totPE->GetBinContent(j+1)+content);
       if (content > 1) // 1 PE threshold
@@ -829,13 +839,14 @@ void WireCell2dToy::ToyLightReco::Process_beam_wfs(){
     //  std::cout << start_bin << " " << end_bin << std::endl;
     //check with the next bin content ...
     Opflash *flash = new Opflash(hdecon, beam_dt[0], start_bin, end_bin);
-    // for (int i=0; i< h_l1_totPE->GetNbinsX(); i++){
-    //   if (h_l1_totPE->GetBinContent(i+1) !=0) std::cout << i << "  " << h_l1_totPE->GetBinContent(i+1) << "\n";
-    // }
+    for (int p=0; p< h_l1_totPE->GetNbinsX(); p++){
+      // if (h_l1_totPE->GetBinContent(p+1) !=0) std::cout << p << "  " << h_l1_totPE->GetBinContent(p+1) << "\n";
+      // if (i==0)std::cout << h_l1_totPE->GetBinContent(p+1) << "\n";
+    }
     flash->Add_l1info(h_l1_totPE, h_l1_mult, beam_dt[0], start_bin, end_bin);
     // std::cout << flash->get_time() << " " <<flash->get_total_PE() << " " << flash->get_num_fired() << std::endl;
     beam_flashes.push_back(flash);
-    std::cout << "\n\n" << flash->get_total_PE() << " Total PE\n\n";
+    // std::cout << "\n\n" << flash->get_total_PE() << " Total PE\n\n";
   }
 
   Opflash *prev_cflash = 0;
@@ -928,6 +939,7 @@ WireCell2dToy::pmtMapSet WireCell2dToy::ToyLightReco::makePmtContainer(bool high
 	//	h->Delete();
 	continue;
       }
+
       disc.channel = chan->at(i)-100;
       disc.saturated = false;
       disc.timestamp = timestamp->at(i);
@@ -937,17 +949,40 @@ WireCell2dToy::pmtMapSet WireCell2dToy::ToyLightReco::makePmtContainer(bool high
       if(beam == true){
 	baseline = 2050;
 	double temp_baseline = findBaselineLg(h);
+  if (disc.channel==1 && disc.wfm.size() >=1000 ) {
+    std::cout << baseline << " Old Baseline\n";
+  }
+  if (disc.channel==1 && disc.wfm.size() >=1000 ) {
+    std::cout << temp_baseline << " Temp Baseline Found\n";
+  }
+
 	//std::cout << temp_baseline << " " << baseline << std::endl;
 	if (fabs(temp_baseline-baseline)<=8)
 	  baseline = temp_baseline;
-      }
+  }
       if(beam == false){ baseline = h->GetBinContent(1); }
+
       for(int j=0; j<discSize; j++){
 	// is 2050 a good approximation???
 	//disc.wfm.at(j) = (h->GetBinContent(j+1)-baseline)*scalePMT[disc.channel]+baseline;
 	//if (j==0) std::cout << baseline << std::endl;
+
 	disc.wfm.at(j) = (h->GetBinContent(j+1)-baseline)*findScaling(disc.channel)+baseline;
+  // //Diagnosis Loop
+  if (disc.channel==1 && disc.wfm.size() >=1000 && j ==5) {
+  //   std::cout << h->GetBinContent(j+1)<< "\n";
+  //   std::cout << h->GetBinContent(5+1)<< "\n";
+  //
+  //
+    std::cout << baseline<< "\n";
+  //   std::cout << findScaling(disc.channel)<< "\n";
+  //   std::cout << h->GetBinContent(j+1)-baseline<< "\n";
+  //   std::cout << (h->GetBinContent(j+1)-baseline)*findScaling(disc.channel)<< "\n";
+  //   std::cout <<(h->GetBinContent(j+1)-baseline)*findScaling(disc.channel)+baseline<< "\n";
+  }
+  // //End Diagnosis Loop
       }
+
       //      std::cout <<  disc.channel << " A " << disc.wfm.at(0) << std::endl;
       result[disc.channel].insert(disc);
       // h->Delete();
@@ -1018,6 +1053,7 @@ WireCell2dToy::pmtMap WireCell2dToy::ToyLightReco::mergeBeam(WireCell2dToy::pmtM
       //  std::cout << "Xin: " << b->second.first.channel <<  " " << b->second.first.wfm.at(0) << " " << b->second.second.wfm.at(0) << std::endl;
       WireCell2dToy::saturationTick tickVec = findSaturationTick(b->second.first.wfm);
       b->second.first.wfm = replaceSaturatedBin(b->second.first.wfm,b->second.second.wfm,tickVec);
+
       //b->second.first.wfm = b->second.second.wfm;
     }
     result[b->first] = b->second.first;

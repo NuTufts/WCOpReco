@@ -50,7 +50,11 @@ namespace wcopreco {
     // prepare L1 fit ...
     std::vector<float> rebin_v;
     rebin_v.resize(250);
-
+    // if (ch==1){
+    //   for (int p=0;p<1500;p++){
+    //     std::cout << inverse_res1.at(p) << "\n";
+    //   }
+    // }
 
     for (int i=0;i!=250;i++){
       rebin_v[i] = inverse_res1.at(6*i) +
@@ -87,9 +91,11 @@ namespace wcopreco {
 
     for (int i=0;i!=250;i++){
       double content = rebin_v[i];
-      // if (channel==28) {std::cout << i << " " << content << " \n";}
+      // if (ch==1 && (i==166 || i==168 || i==173 || i==193 || i==196 || i==224 ||i==231 ||i==239 ))
+      //   {std::cout << i << " " << content << " \n";}
       if (content>0.3){
-        // if (channel ==28) std::cout << i << " " << content << "\n";;
+        // if (ch < 6) std::cout << ch << " " << i << " \n";
+
        vals_y.push_back(content);
        vals_x.push_back(i+0.5);
        vals_bin.push_back(i);
@@ -97,7 +103,6 @@ namespace wcopreco {
     }
 
     int nbin_fit = vals_x.size();
-
     Eigen::VectorXd W = Eigen::VectorXd::Zero(nbin_fit);
     Eigen::MatrixXd G = Eigen::MatrixXd::Zero(nbin_fit,nbin_fit);
     for (int i=0;i!=nbin_fit;i++){
@@ -128,7 +133,6 @@ namespace wcopreco {
     l1_v.resize(250);
     for (int i=0;i!=nbin_fit;i++){
         l1_v[vals_bin.at(i)] = beta(i);
-        // if (beta(i) != 0) std::cout << " " << beta(i) << " \n";
     }
 
 
@@ -143,7 +147,9 @@ namespace wcopreco {
         }
 
       content = l1_v.at(j);
-      // if (j ==112) std::coust << content << " content\n";
+      // if (j ==41) std::cout << content << " content\n";
+      // if (j ==41) std::cout << content<< "\n" ;
+
       l1_totPE_v->at(j) = l1_totPE_v->at(j) + content;
       if (content > 1) {// 1 PE threshold
           l1_mult_v->at(j) = l1_mult_v->at(j) + 1;

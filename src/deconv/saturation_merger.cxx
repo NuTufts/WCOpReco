@@ -62,12 +62,7 @@ namespace wcopreco {
         baseline =2050;
         nbins = BLG_WFs->at(n).size();
         temp_baseline = findBaselineLg(&BLG_WFs->at(n), nbins);
-        if (BLG_WFs->at(n).get_ChannelNum() == 1 ) {
-          std::cout << baseline << " Old Baseline \n";
-        }
-        if (BLG_WFs->at(n).get_ChannelNum() == 1 ) {
-          std::cout << temp_baseline << " Temp Baseline Found \n";
-        }
+
 
         if (fabs(temp_baseline-baseline) <= 8 ) {
 
@@ -81,18 +76,7 @@ namespace wcopreco {
 
 
         for (int bin = 0; bin < nbins; bin++){
-          // //Diagnosis Loop
-          if (BLG_WFs->at(n).get_ChannelNum() == 1 && bin ==0) {
-          //   std::cout << BLG_WFs->at(n).at(0)<< "\n";
-          //   std::cout << BLG_WFs->at(n).at(5)<< "\n";
-          //
-            std::cout << baseline<< "\n";
-          //   std::cout << scalefactor<< "\n";
-          //   std::cout << (BLG_WFs->at(n).at(bin)-baseline)<< "\n";
-          //   std::cout << ( (BLG_WFs->at(n).at(bin)-baseline)*scalefactor )<< "\n";
-          //   std::cout << ( (BLG_WFs->at(n).at(bin)-baseline)*scalefactor ) + baseline<< "\n";
-          }
-          // //End Diagnosis Loop
+          
           BLG_WFs->at(n).at(bin) = floor(( (BLG_WFs->at(n).at(bin)-baseline)*scalefactor ) + baseline) ;
 
         }

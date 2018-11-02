@@ -8,7 +8,7 @@ for arg in args:
   if "--" in arg:
     arg = arg[2:]
   if arg=="libs":
-     out = "-L%s -lWCOpReco_deconv -lWCOpReco_data"%(os.environ["WCOPRECO_LIBDIR"])
+     out = "-L%s -lWCOpReco_deconv -lWCOpReco_data -lWCOpReco_algo"%(os.environ["WCOPRECO_LIBDIR"])
      print out
 
 

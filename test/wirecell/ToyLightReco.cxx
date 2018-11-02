@@ -382,7 +382,7 @@ void WireCell2dToy::ToyLightReco::load_event_raw(int eve_num){
   // std::cout << cosmic_flashes.size() << " Cosmic Flashes in Event\n";
 
   // std::cout << flashes.size() << " Matched Flashes in Event\n\n";
-  std::cout << "\n\n-------------------------------------------\n";
+  // std::cout << "\n\n-------------------------------------------\n";
   for (int i =0 ; i<flashes.size(); i++) {
     if (flashes.at(i)->get_type() == 2) std::cout << flashes.at(i)->get_total_PE() << "\n";
   }
@@ -949,12 +949,7 @@ WireCell2dToy::pmtMapSet WireCell2dToy::ToyLightReco::makePmtContainer(bool high
       if(beam == true){
 	baseline = 2050;
 	double temp_baseline = findBaselineLg(h);
-  if (disc.channel==1 && disc.wfm.size() >=1000 ) {
-    std::cout << baseline << " Old Baseline\n";
-  }
-  if (disc.channel==1 && disc.wfm.size() >=1000 ) {
-    std::cout << temp_baseline << " Temp Baseline Found\n";
-  }
+
 
 	//std::cout << temp_baseline << " " << baseline << std::endl;
 	if (fabs(temp_baseline-baseline)<=8)
@@ -968,19 +963,7 @@ WireCell2dToy::pmtMapSet WireCell2dToy::ToyLightReco::makePmtContainer(bool high
 	//if (j==0) std::cout << baseline << std::endl;
 
 	disc.wfm.at(j) = (h->GetBinContent(j+1)-baseline)*findScaling(disc.channel)+baseline;
-  // //Diagnosis Loop
-  if (disc.channel==1 && disc.wfm.size() >=1000 && j ==5) {
-  //   std::cout << h->GetBinContent(j+1)<< "\n";
-  //   std::cout << h->GetBinContent(5+1)<< "\n";
-  //
-  //
-    std::cout << baseline<< "\n";
-  //   std::cout << findScaling(disc.channel)<< "\n";
-  //   std::cout << h->GetBinContent(j+1)-baseline<< "\n";
-  //   std::cout << (h->GetBinContent(j+1)-baseline)*findScaling(disc.channel)<< "\n";
-  //   std::cout <<(h->GetBinContent(j+1)-baseline)*findScaling(disc.channel)+baseline<< "\n";
-  }
-  // //End Diagnosis Loop
+
       }
 
       //      std::cout <<  disc.channel << " A " << disc.wfm.at(0) << std::endl;

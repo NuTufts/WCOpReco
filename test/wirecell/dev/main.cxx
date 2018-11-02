@@ -30,7 +30,7 @@ int main(){
   const char* file = "../celltree.root";
   //testing ToyLightReco
 
-  bool do_loop = false;
+  bool do_loop = true;
 
   int i = 22;
 

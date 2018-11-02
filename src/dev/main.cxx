@@ -43,7 +43,7 @@ int main(){
   //Open the reader, choose event number, create the UBEventWaveform _UB_Ev_wfm
   wcopreco::DataReader reader(file);
   wcopreco::UBEventWaveform _UB_Ev_wfm;
-  bool do_loop = false;
+  bool do_loop = true;
   int EVENT_NUM =22;
   int size = EVENT_NUM+1;
 
@@ -185,7 +185,7 @@ int main(){
     // for (int p=0;p<1500;p++){
     //   std::cout << magy.at(p) << "\n";
     // }
-    std::cout << "\n\n-------------------------------------------\n";
+    // std::cout << "\n\n-------------------------------------------\n";
     for (int i =0 ; i<flashes.size(); i++) {
       if (flashes.at(i)->get_type() == 2) std::cout << flashes.at(i)->get_total_PE() << "\n";
     }

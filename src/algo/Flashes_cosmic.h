@@ -1,7 +1,10 @@
 #ifndef FLASHES_COSMIC_H
 #define FLASHES_COSMIC_H
 
-#include "WCOpReco/DataReader.h"
+//data
+#include "WCOpReco/OpWaveform.h"
+#include "WCOpReco/OpWaveformCollection.h"
+#include "WCOpReco/EventOpWaveforms.h"
 #include "WCOpReco/Opflash.h"
 #include "HitFinder_cosmic.h"
 

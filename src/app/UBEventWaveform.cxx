@@ -1,6 +1,5 @@
 #include "UBEventWaveform.h"
-#include "EventOpWaveforms.h"
-#include "OpWaveformCollection.h"
+
 namespace wcopreco {
 
    UBEventWaveform::UBEventWaveform()  {

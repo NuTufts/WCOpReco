@@ -1,12 +1,11 @@
 #ifndef DATAREADER_H
 #define DATAREADER_H
 
-#include "EventOpWaveforms.h"
-#include <string>
-#include "OpWaveform.h"
-#include "OpWaveformCollection.h"
-#include "EventOpWaveforms.h"
-#include "UBEventWaveform.h"
+//WCOpReco includes
+//data
+#include "WCOpReco/OpWaveform.h"
+#include "WCOpReco/OpWaveformCollection.h"
+#include "WCOpReco/EventOpWaveforms.h"
 
 
 //root includes
@@ -22,7 +21,7 @@
 #include "TTimeStamp.h"
 #include "TCanvas.h"
 
-
+//c++ includes
 #include <iostream>
 #include <sstream>
 #include <vector>

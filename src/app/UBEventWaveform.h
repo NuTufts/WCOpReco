@@ -1,12 +1,11 @@
 #ifndef UBEVENTWAVEFORM_H
 #define UBEVENTWAVEFORM_H
 
-#include "EventOpWaveforms.h"
-#include <string>
-#include "OpWaveform.h"
-#include "OpWaveformCollection.h"
-#include "EventOpWaveforms.h"
-#include "UBEventWaveform.h"
+//WCOpReco includes
+#include "WCOpReco/EventOpWaveforms.h"
+#include "WCOpReco/OpWaveform.h"
+#include "WCOpReco/OpWaveformCollection.h"
+#include "WCOpReco/EventOpWaveforms.h"
 
 //root includes
 #include "TObject.h"
@@ -20,6 +19,8 @@
 #include "TH1I.h"
 #include "TTimeStamp.h"
 
+//c++ includes
+#include <string>
 #include <iostream>
 #include <sstream>
 

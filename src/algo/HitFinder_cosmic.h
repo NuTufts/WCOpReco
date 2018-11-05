@@ -1,7 +1,10 @@
 #ifndef HITFINDER_COSMIC_H
 #define HITFINDER_COSMIC_H
 
-#include "WCOpReco/DataReader.h"
+//data
+#include "WCOpReco/OpWaveform.h"
+#include "WCOpReco/OpWaveformCollection.h"
+#include "WCOpReco/EventOpWaveforms.h"
 #include "WCOpReco/COphit.h"
 
 namespace wcopreco{

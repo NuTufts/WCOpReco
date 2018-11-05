@@ -1,5 +1,5 @@
 
-SUBDIRS = data deconv algo dev
+SUBDIRS = data deconv algo app dev
 
 all: obj
 

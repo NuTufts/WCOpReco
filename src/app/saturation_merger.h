@@ -1,7 +1,7 @@
 #ifndef SATURATION_MERGER_H
 #define SATURATION_MERGER_H
 
-#include "WCOpReco/DataReader.h"
+#include "DataReader.h"
 
 namespace wcopreco{
 

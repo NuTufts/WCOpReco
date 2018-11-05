@@ -5,7 +5,11 @@
 
 namespace wcopreco{
 
-
+  // This class is microboone specific. It is designed to merge the high and
+  // low gain channels for beam, and also for cosmic into a merged_beam and
+  // merged_cosmic OpWaveformCollection datamembers, replacing the high gain
+  // waveform regions that get saturated if there is a low gain corresponding
+  // to it.
   class saturation_merger {
   public:
     saturation_merger(UBEventWaveform);
@@ -17,13 +21,9 @@ namespace wcopreco{
 
 
 
-    // makebeampair(){};
-    // makecosmicpai(){};
-    // mergebeam(){};
-    // mergecosmic(){};
+
 
   protected:
-    // typedef std::vector<std::pair<short,short> > saturationTick;
     float findScaling(int channel);
     void scale_lowgains(OpWaveformCollection *BLG, OpWaveformCollection *CLG);
     double findBaselineLg(OpWaveform *wfm, int nbin);
@@ -31,14 +31,18 @@ namespace wcopreco{
     OpWaveform replaceSaturatedBin(OpWaveform &high, OpWaveform &low, std::vector<std::pair<short,short>> saturation_ranges);
 
     OpWaveformCollection* cosmic_merger(OpWaveformCollection *CHG, OpWaveformCollection *CLG, short saturation_threshold =4080);
+    //This function is designed to merge a OpWaveformCollection of cosmic High Gain Waveforms
+    //with cosmic Low Gain Waveforms. High gains are the first argument, and low gains are the
+    //second argument. A third optional argument allows for customized saturation threshold
     OpWaveformCollection* beam_merger(OpWaveformCollection *BHG, OpWaveformCollection *BLG, short saturation_threshold=4080);
+    //This function is designed to merge a OpWaveformCollection of Beam High Gain Waveforms
+    //with Beam Low Gain Waveforms. High gains are the first argument, and low gains are the
+    //second argument. A third optional argument allows for customized saturation threshold
     OpWaveformCollection merged_cosmic;
     OpWaveformCollection merged_beam;
     UBEventWaveform UB_Ev_Merged;
 
-    //This function is designed to merge a OpWaveformCollection of Beam High Gain Waveforms
-    //with Beam Low Gain Waveforms. High gains are the first argument, and low gains are the
-    //second argument. It also assumes the elements in the collection are ordered by channel
+
 
 
 

@@ -6,7 +6,10 @@
 #include "HitFinder_beam.h"
 
 namespace wcopreco{
-
+  // class for finding flashes in beam data
+  // takes in totalPE, totalMult, totalPE_l1, totalMult_l1, decon_vv, and the  start time of the beam
+  // all inputs are from HitFinder_beam
+  // decon_vv is a vector of vectors
 
   class Flashes_beam {
   public:

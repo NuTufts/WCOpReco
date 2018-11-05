@@ -6,7 +6,8 @@
 #include "HitFinder_cosmic.h"
 
 namespace wcopreco{
-
+  //class to find flashes in cosmic data from hits
+  //makes use of the OpFlash class
 
   class Flashes_cosmic {
   public:

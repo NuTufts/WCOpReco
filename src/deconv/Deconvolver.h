@@ -35,7 +35,7 @@ namespace wcopreco{
 
   class Deconvolver {
   public:
-    Deconvolver(OpWaveformCollection *merged_beam, bool with_filters, std::vector<kernel_fourier_container> input_k_container_v); //OpWaveform op_wfm, kernel_fourier_shape kernel_fourier, noise_remover noise, std::vector<short???> LL_shape
+    Deconvolver(OpWaveformCollection *merged_beam, bool with_filters, std::vector<kernel_fourier_container> &input_k_container_v); //OpWaveform op_wfm, kernel_fourier_shape kernel_fourier, noise_remover noise, std::vector<short???> LL_shape
     ~Deconvolver() {};
 
 

@@ -3,7 +3,7 @@
 namespace wcopreco {
 
 
-  wcopreco::Deconvolver::Deconvolver(OpWaveformCollection *merged_beam, bool with_filters, std::vector<kernel_fourier_container> input_k_container_v){
+  wcopreco::Deconvolver::Deconvolver(OpWaveformCollection *merged_beam, bool with_filters, std::vector<kernel_fourier_container> &input_k_container_v){
     // std::cout << "Starting the deconvolution of a waveform collection!\n";
 
 

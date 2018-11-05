@@ -5,55 +5,53 @@ namespace wcopreco {
   wcopreco::FlashFiltering::FlashFiltering(OpflashSelection &c_flashes, OpflashSelection &b_flashes){
     //code to perform flash filtering
     //inputs come from Flashes_cosmic and Flashes_beam
-      cosmic_flashes = c_flashes;
-      beam_flashes = b_flashes;
-      Opflash *prev_cflash = 0;
+    cosmic_flashes = c_flashes;
+    beam_flashes = b_flashes;
+    Opflash *prev_cflash = 0;
 
-      for (size_t i=0; i!=cosmic_flashes.size();i++){
-        Opflash *cflash = cosmic_flashes.at(i);
-        //std::cout << cflash->get_time() << std::endl;
-        bool save = true;
-        for (size_t j=0; j!=beam_flashes.size();j++){
-          Opflash *bflash = beam_flashes.at(j);
-          if (cflash->get_time() >= bflash->get_low_time() && cflash->get_time() <= bflash->get_high_time()){
-          	save = false;
-          	break;
-          }
-        }
-
-        if (save){
-          flashes.push_back(cflash);
-          if (prev_cflash==0 ){
-          	if (cflash->get_time()<0)
-          	  prev_cflash = cflash;
-          }
-          else{
-          	if (cflash->get_time() < 0 && cflash->get_time() > prev_cflash->get_time())
-          	  prev_cflash = cflash;
-          }
-        }
-      }
-
-
+    //loop to decide if each cosmic flash should be saved
+    for (size_t i=0; i!=cosmic_flashes.size();i++){
+      Opflash *cflash = cosmic_flashes.at(i);
+      bool save = true;
       for (size_t j=0; j!=beam_flashes.size();j++){
         Opflash *bflash = beam_flashes.at(j);
-        if (prev_cflash!=0){
-
-          //std::cout << prev_cflash->get_time() << std::endl;
-          if (bflash->get_time() - prev_cflash->get_time() < 2.4 && // veto for 3 us
-    	    bflash->get_total_PE() < 0.7 * prev_cflash->get_total_PE())
-    	       continue;
-              //std::cout << bflash->get_time() << " :beam_flashes time, " << prev_cflash->get_time() << " :c" << bflash->get_total_PE() << " " << prev_cflash->get_total_PE() << std::endl;
+        if (cflash->get_time() >= bflash->get_low_time() && cflash->get_time() <= bflash->get_high_time()){
+        	save = false;
+        	break;
         }
-        flashes.push_back(bflash);
       }
 
-      sort_flashes();
-      update_pmt_map();
+      if (save){
+        flashes.push_back(cflash);
+        if (prev_cflash==0 ){
+        	if (cflash->get_time()<0)
+        	  prev_cflash = cflash;
+        }
+        else{
+        	if (cflash->get_time() < 0 && cflash->get_time() > prev_cflash->get_time())
+        	  prev_cflash = cflash;
+        }
+      }
+    }
+
+    //if the cosmic isn't saved, save beam instead
+    for (size_t j=0; j!=beam_flashes.size();j++){
+      Opflash *bflash = beam_flashes.at(j);
+      if (prev_cflash!=0){;
+        if (bflash->get_time() - prev_cflash->get_time() < 2.4 && // veto for 3 us
+  	    bflash->get_total_PE() < 0.7 * prev_cflash->get_total_PE())
+  	       continue;
+      }
+      flashes.push_back(bflash);
+    }
+
+    sort_flashes();
+    update_pmt_map();
 
   }
 
   void FlashFiltering::sort_flashes(){
+    //sort flashes by time for beam, cosmic, and total
 
     for (auto it= cosmic_flashes.begin(); it!= cosmic_flashes.end(); it++){
       cosmic_set.insert(*it);
@@ -76,10 +74,11 @@ namespace wcopreco {
 
 
   void wcopreco::FlashFiltering::update_pmt_map(){
-    // std::cout << "Update map!" << std::endl;
     for (auto it=flashes.begin(); it!=flashes.end(); it++){
       Opflash *flash = *it;
-      flash->swap_channels(); // hard coded for now ...
+      flash->swap_channels();
     }
   }
+
+
 }

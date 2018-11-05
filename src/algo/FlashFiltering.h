@@ -6,7 +6,8 @@
 #include "WCOpReco/Opflash.h"
 
 namespace wcopreco{
-
+  //class to filter Flashes
+  //don't save cosmic flashes that occur at the same time as a beam flash
 
   class FlashFiltering {
   public:
@@ -29,7 +30,6 @@ namespace wcopreco{
     OpflashSelection flashes;
     OpflashSelection beam_flashes;
     OpflashSelection cosmic_flashes;
-    //all set is of the form std::set<Opflash*, OpFlashCompare> OpFlashSet
     OpFlashSet all_set;
     OpFlashSet beam_set;
     OpFlashSet cosmic_set;

@@ -4,12 +4,16 @@ namespace wcopreco {
 
 
   wcopreco::Deconvolver::Deconvolver(OpWaveformCollection *merged_beam, bool standard_run, bool with_filters){
+    // std::cout << "Starting the deconvolution of a waveform collection!\n";
 
 
     int type = merged_beam->at(0).get_type();
     op_gain = merged_beam->get_op_gain();
     kernel_container_v.resize(32);
     filter_status = with_filters;
+    // if (filter_status) {std::cout << "You filtered out latelight and High Frequencies\n";}
+    // else {std::cout << "You performed the deconvolution without filters\n";}
+
 
     //Default way to construct the deconvolver is with spe and rc
     if (standard_run){
@@ -37,6 +41,8 @@ namespace wcopreco {
   OpWaveformCollection wcopreco::Deconvolver::Deconvolve_Collection(OpWaveformCollection * merged_beam)
 
     {
+
+      //Process the Beam:
       //Note that the following code is supposed to only deal with beam waveforms, 32 channels and 1500 bin wfms.
       OpWaveform wfm(0,0,0,0);
 

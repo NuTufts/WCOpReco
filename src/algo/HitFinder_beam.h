@@ -21,7 +21,8 @@
 #include "TMath.h"
 
 namespace wcopreco{
-
+  //Module for hit finding for beam
+  // loop through all 32 channels of collection, fft with filters, ifft, and perform L1 fit
 
   class HitFinder_beam {
   public:
@@ -30,10 +31,10 @@ namespace wcopreco{
 
     void Perform_L1(std::vector<double> inverse_res1,
                        std::vector< std::vector<double> > &decon_vv,
-                       std::vector<double> *totPE_v,
-                       std::vector<double> *mult_v,
-                       std::vector<double> *l1_totPE_v,
-                       std::vector<double> *l1_mult_v,
+                       std::vector<double> &totPE_v,
+                       std::vector<double> &mult_v,
+                       std::vector<double> &l1_totPE_v,
+                       std::vector<double> &l1_mult_v,
                        int ch
                      );
 

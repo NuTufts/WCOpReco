@@ -1,7 +1,10 @@
 #ifndef HITFINDER_BEAM_H
 #define HITFINDER_BEAM_H
 
-#include "WCOpReco/DataReader.h"
+//data
+#include "WCOpReco/OpWaveform.h"
+#include "WCOpReco/OpWaveformCollection.h"
+#include "WCOpReco/EventOpWaveforms.h"
 #include "WCOpReco/Opflash.h"
 #include "WCOpReco/LassoModel.h"
 #include "WCOpReco/ElasticNetModel.h"
@@ -26,7 +29,7 @@ namespace wcopreco{
 
   class HitFinder_beam {
   public:
-    HitFinder_beam(OpWaveformCollection deconvolved_beam);
+    HitFinder_beam(OpWaveformCollection deconvolved_beam, std::vector<kernel_fourier_container> kernel_container_v);
     ~HitFinder_beam() {};
 
     void Perform_L1(std::vector<double> inverse_res1,

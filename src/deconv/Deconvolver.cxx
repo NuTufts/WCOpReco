@@ -3,36 +3,15 @@
 namespace wcopreco {
 
 
-  wcopreco::Deconvolver::Deconvolver(OpWaveformCollection *merged_beam, bool standard_run, bool with_filters){
+  wcopreco::Deconvolver::Deconvolver(OpWaveformCollection *merged_beam, bool with_filters, std::vector<kernel_fourier_container> input_k_container_v){
     // std::cout << "Starting the deconvolution of a waveform collection!\n";
 
 
     int type = merged_beam->at(0).get_type();
     op_gain = merged_beam->get_op_gain();
-    kernel_container_v.resize(32);
+    kernel_container_v = input_k_container_v;
     filter_status = with_filters;
-    // if (filter_status) {std::cout << "You filtered out latelight and High Frequencies\n";}
-    // else {std::cout << "You performed the deconvolution without filters\n";}
 
-
-    //Default way to construct the deconvolver is with spe and rc
-    if (standard_run){
-      //Construct the vector of kernel containers (one container per channel)
-      UB_rc *rc_good_ch = new UB_rc(true, false);
-      UB_rc *rc_bad_ch = new UB_rc(true, true);
-      for (int i =0 ; i<32; i++){
-        //UB_rc *rc = Make_UB_rc(i);
-
-        UB_spe *spe = new UB_spe(true, op_gain.at(i)); //Place UB_spe on heap, so object not deleted
-        kernel_container_v.at(i).add_kernel(spe);
-        if (i == 28){
-          kernel_container_v.at(i).add_kernel(rc_bad_ch);
-        }
-        else{
-          kernel_container_v.at(i).add_kernel(rc_good_ch);
-        }
-      }
-    }
 
   }
 

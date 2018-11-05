@@ -13,7 +13,10 @@
 #include "WCOpReco/COphit.h"
 
 //data
-#include "WCOpReco/DataReader.h"
+#include "WCOpReco/OpWaveform.h"
+#include "WCOpReco/OpWaveformCollection.h"
+#include "WCOpReco/EventOpWaveforms.h"
+
 
 //c++ includes
 #include <vector>
@@ -32,7 +35,7 @@ namespace wcopreco{
 
   class Deconvolver {
   public:
-    Deconvolver(OpWaveformCollection *merged_beam, bool standard_run, bool with_filters); //OpWaveform op_wfm, kernel_fourier_shape kernel_fourier, noise_remover noise, std::vector<short???> LL_shape
+    Deconvolver(OpWaveformCollection *merged_beam, bool with_filters, std::vector<kernel_fourier_container> input_k_container_v); //OpWaveform op_wfm, kernel_fourier_shape kernel_fourier, noise_remover noise, std::vector<short???> LL_shape
     ~Deconvolver() {};
 
 

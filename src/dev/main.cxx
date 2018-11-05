@@ -10,6 +10,12 @@
 #include "WCOpReco/Flashes_beam.h"
 #include "WCOpReco/HitFinder_beam.h"
 #include "WCOpReco/FlashFiltering.h"
+#include "WCOpReco/UB_rc.h"
+#include "WCOpReco/UB_spe.h"
+// #include "WCOpReco/FlashFiltering.h"
+// #include "WCOpReco/FlashFiltering.h"
+
+// #include
 
 //root includes
 #include "TH1S.h"
@@ -137,7 +143,29 @@ int main(){
     //
     // //do beam hitfinding
     //wcopreco::OpWaveformCollection deconvolved_wfm = tester.Deconvolve_Collection(& merged_beam);
-    wcopreco::HitFinder_beam hits_found_beam(merged_beam);
+    //create kernel fourier vector:
+    //Default way to construct the deconvolver is with spe and rc
+
+    //Construct the vector of kernel containers (one container per channel)
+    std::vector<wcopreco::kernel_fourier_container> kernel_container_v;
+    kernel_container_v.resize(32);
+
+    wcopreco::UB_rc *rc_good_ch = new wcopreco::UB_rc(true, false);
+    wcopreco::UB_rc *rc_bad_ch = new wcopreco::UB_rc(true, true);
+    for (int i =0 ; i<32; i++){
+
+      wcopreco::UB_spe *spe = new wcopreco::UB_spe(true, op_gain.at(i)); //Place UB_spe on heap, so object not deleted
+      kernel_container_v.at(i).add_kernel(spe);
+      if (i == 28){
+        kernel_container_v.at(i).add_kernel(rc_bad_ch);
+      }
+      else{
+        kernel_container_v.at(i).add_kernel(rc_good_ch);
+      }
+    }
+
+
+    wcopreco::HitFinder_beam hits_found_beam(merged_beam, kernel_container_v);
     std::vector<double> totPE_v = hits_found_beam.get_totPE_v();
     std::vector<double> mult_v =hits_found_beam.get_mult_v();
     std::vector<double> l1_totPE_v =hits_found_beam.get_l1_totPE_v();
@@ -186,9 +214,19 @@ int main(){
     //   std::cout << magy.at(p) << "\n";
     // }
     // std::cout << "\n\n-------------------------------------------\n";
+    int count = 0;
     for (int i =0 ; i<flashes.size(); i++) {
       if (flashes.at(i)->get_type() == 2) std::cout << flashes.at(i)->get_total_PE() << "\n";
+
+      // if (flashes.at(i)->get_type() == 1 && count < 3) {
+      //   std::cout << flashes.at(i)->get_total_PE() << "\n";
+      //   count++;
+      // }
     }
+
+    // for (int i =0 ; i<flashes_beam.size(); i++) {
+    //     std::cout << flashes_beam.at(i)->get_total_PE() << "\n";
+    // }
 
 
     // Code to test plotting lines on a waveform
@@ -287,7 +325,7 @@ int main(){
   dataread    = dataread    - t;
   t = clock() - t;
 
-	// std::cout << "Total time:           " << t*1.0/CLOCKS_PER_SEC << " seconds" << std::endl << std::endl;
+	std::cout << "Total time:           " << t*1.0/CLOCKS_PER_SEC << " seconds" << std::endl << std::endl;
   // std::cout << "DataRead Time:        " << dataread*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
   // std::cout << "DataRead Fraction:           " << (double)dataread/t  <<  std::endl << std::endl;
   // std::cout << "SatMerger Time:       " << satmerger*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;

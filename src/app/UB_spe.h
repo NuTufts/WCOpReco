@@ -1,7 +1,7 @@
 #ifndef UB_SPE_H
 #define UB_SPE_H
 
-#include "kernel_fourier.h"
+#include "WCOpReco/kernel_fourier.h"
 
 #include "TH1D.h"
 #include "TVirtualFFT.h"

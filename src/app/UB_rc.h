@@ -1,7 +1,7 @@
 #ifndef UB_RC_H
 #define UB_RC_H
 
-#include "kernel_fourier.h"
+#include "WCOpReco/kernel_fourier.h"
 
 #include <vector>
 #include <iostream>

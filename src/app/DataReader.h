@@ -6,6 +6,7 @@
 #include "WCOpReco/OpWaveform.h"
 #include "WCOpReco/OpWaveformCollection.h"
 #include "WCOpReco/EventOpWaveforms.h"
+#include "UBEventWaveform.h"
 
 
 //root includes

@@ -73,7 +73,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     _UB_Ev_wfm.set_wfm_v( empty_vec );
     _UB_Ev_wfm.set_op_gain(*op_gain);
     _UB_Ev_wfm.set_op_gainerror(*op_gainerror);
-    
+
     //Get Vectors of pmt channel and timestamp for each type of waveform, cosmic/beam and high/low gain
     std::vector<short> CHG_Channel = *cosmic_hg_opch;
     std::vector<double> CHG_Timestamp = *cosmic_hg_timestamp;
@@ -83,7 +83,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     std::vector<double> BHG_Timestamp = *beam_hg_timestamp;
     std::vector<short> BLG_Channel = *beam_lg_opch;
     std::vector<double> BLG_Timestamp = *beam_lg_timestamp;
-    
+
     //Get number of histograms for each type
     TClonesArray CHG_Waveform = *cosmic_hg_wf;
     Int_t CHG_NHist = CHG_Waveform.GetEntries();
@@ -93,39 +93,39 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     Int_t BHG_NHist = BHG_Waveform.GetEntries();
     TClonesArray BLG_Waveform = *beam_lg_wf;
     Int_t BLG_NHist = BLG_Waveform.GetEntries();
-    
+
     //Create OpWaveformCollection to hold OpWaveforms
     //Each collection has waveforms from a single event of a specific type
     OpWaveformCollection CHG_wfm_collection;
     CHG_wfm_collection.set_op_gain(*op_gain);
     CHG_wfm_collection.set_op_gainerror(*op_gainerror);
-    
+
     OpWaveformCollection CLG_wfm_collection;
     CLG_wfm_collection.set_op_gain(*op_gain);
     CLG_wfm_collection.set_op_gainerror(*op_gainerror);
-    
+
     OpWaveformCollection BHG_wfm_collection;
     BHG_wfm_collection.set_op_gain(*op_gain);
     BHG_wfm_collection.set_op_gainerror(*op_gainerror);
-    
+
     OpWaveformCollection BLG_wfm_collection;
     BLG_wfm_collection.set_op_gain(*op_gain);
     BLG_wfm_collection.set_op_gainerror(*op_gainerror);
-    
+
     //Fill up wfm collections
-    LoopThroughWfms(*beam_hg_opch, *beam_hg_timestamp, *beam_hg_wf, 0, BHG_wfm_collection);
-    LoopThroughWfms(*beam_lg_opch, *beam_lg_timestamp, *beam_lg_wf, 1, BLG_wfm_collection);
-    LoopThroughWfms(*cosmic_hg_opch, *cosmic_hg_timestamp, *cosmic_hg_wf, 2, CHG_wfm_collection);
-    LoopThroughWfms(*cosmic_lg_opch, *cosmic_lg_timestamp, *cosmic_lg_wf, 3, CLG_wfm_collection);
-    
-    _UB_Ev_wfm.add_entry(BHG_wfm_collection, 0 );
-    
-    _UB_Ev_wfm.add_entry(BLG_wfm_collection, 1 );
-    
-    _UB_Ev_wfm.add_entry(CHG_wfm_collection, 2 );
-    
-    _UB_Ev_wfm.add_entry(CLG_wfm_collection, 3 );
-    
+    LoopThroughWfms(*beam_hg_opch, *beam_hg_timestamp, *beam_hg_wf, kbeam_hg, BHG_wfm_collection);
+    LoopThroughWfms(*beam_lg_opch, *beam_lg_timestamp, *beam_lg_wf, kbeam_lg, BLG_wfm_collection);
+    LoopThroughWfms(*cosmic_hg_opch, *cosmic_hg_timestamp, *cosmic_hg_wf, kcosmic_hg, CHG_wfm_collection);
+    LoopThroughWfms(*cosmic_lg_opch, *cosmic_lg_timestamp, *cosmic_lg_wf, kcosmic_lg, CLG_wfm_collection);
+
+    _UB_Ev_wfm.add_entry(BHG_wfm_collection, kbeam_hg );
+
+    _UB_Ev_wfm.add_entry(BLG_wfm_collection, kbeam_lg );
+
+    _UB_Ev_wfm.add_entry(CHG_wfm_collection, kcosmic_hg );
+
+    _UB_Ev_wfm.add_entry(CLG_wfm_collection, kcosmic_lg );
+
     std::map <int,int> testmap = _UB_Ev_wfm.get_type2index();
 
     return _UB_Ev_wfm;
@@ -144,7 +144,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
       Int_t n = waveform->GetNbinsX();
 
       //These IF statements enforces cosmic wf to have 40 bins, and Beam to have 1500
-      if (((type == 0)||(type==1) )&& n-1 > 1000 ){
+      if (((type == kbeam_hg)||(type==kbeam_lg) )&& n-1 > 1000 ){
           wcopreco::OpWaveform wfm(ch[j]%100, timestamp[j]-triggerTime, type, 1500);
           //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41
           for (int bin=0; bin<1500; bin++) {
@@ -157,7 +157,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
           wfm_collection.add_waveform(wfm);
         }
 
-      if (((type == 2)||(type==3) )&& n-1 < 100 ){
+      if (((type == kcosmic_hg)||(type==kcosmic_lg) )&& n-1 < 100 ){
           wcopreco::OpWaveform wfm(ch[j]%100, timestamp[j]-triggerTime, type, 40);
           //Ignore first bin in waveform->GetArray (underflow bin), copy only 1500 bins, not 1501 bins (n-1), 40 not 41
 

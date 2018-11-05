@@ -73,27 +73,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     _UB_Ev_wfm.set_wfm_v( empty_vec );
     _UB_Ev_wfm.set_op_gain(*op_gain);
     _UB_Ev_wfm.set_op_gainerror(*op_gainerror);
-
-    //Get Vectors of pmt channel and timestamp for each type of waveform, cosmic/beam and high/low gain
-    std::vector<short> CHG_Channel = *cosmic_hg_opch;
-    std::vector<double> CHG_Timestamp = *cosmic_hg_timestamp;
-    std::vector<short> CLG_Channel = *cosmic_lg_opch;
-    std::vector<double> CLG_Timestamp = *cosmic_lg_timestamp;
-    std::vector<short> BHG_Channel = *beam_hg_opch;
-    std::vector<double> BHG_Timestamp = *beam_hg_timestamp;
-    std::vector<short> BLG_Channel = *beam_lg_opch;
-    std::vector<double> BLG_Timestamp = *beam_lg_timestamp;
-
-    //Get number of histograms for each type
-    TClonesArray CHG_Waveform = *cosmic_hg_wf;
-    Int_t CHG_NHist = CHG_Waveform.GetEntries();
-    TClonesArray CLG_Waveform = *cosmic_lg_wf;
-    Int_t CLG_NHist = CLG_Waveform.GetEntries();
-    TClonesArray BHG_Waveform = *beam_hg_wf;
-    Int_t BHG_NHist = BHG_Waveform.GetEntries();
-    TClonesArray BLG_Waveform = *beam_lg_wf;
-    Int_t BLG_NHist = BLG_Waveform.GetEntries();
-
+    
     //Create OpWaveformCollection to hold OpWaveforms
     //Each collection has waveforms from a single event of a specific type
     OpWaveformCollection CHG_wfm_collection;
@@ -140,6 +120,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     int count = 0;
 
     for (unsigned j=0; j < ch.size(); j++){
+      if (ch[j]%100 > 31) continue;
       TH1S *waveform = (TH1S*)Eventwaveform_root.At(j);
       Int_t n = waveform->GetNbinsX();
 

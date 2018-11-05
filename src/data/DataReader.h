@@ -30,6 +30,8 @@
 
 namespace wcopreco  {
 
+  // This class is designed to perform a read-in of microboone data from a
+  // root file and organize it in datastructures designed by WCOpReco.
   class DataReader {
   public:
     DataReader(std::string filepath);
@@ -50,7 +52,7 @@ namespace wcopreco  {
     TFile *file;
     TTree *tree;
     //These will be branches we'll need to read
-    std::vector<short> * cosmic_hg_opch;  
+    std::vector<short> * cosmic_hg_opch;
     std::vector<short> * cosmic_lg_opch;
     std::vector<short> * beam_hg_opch;
     std::vector<short> * beam_lg_opch;
@@ -72,7 +74,7 @@ namespace wcopreco  {
     int eventNo;
 
 
-
+    //General Datamembers
     UBEventWaveform _UB_Ev_wfm;
     int type;
 

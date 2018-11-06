@@ -19,6 +19,9 @@ namespace wcopreco {
 
       void set_num_types_and_bins_per__type(int n, std::vector<int> bins_per_type);
 
+      void set_sat_threshold(short s){sat_threshold = s;}
+      short get_sat_threshold(){return sat_threshold;}
+
       void set_baseline_default(double b){baseline_default = b;}
       double get_baseline_default(){return baseline_default;}
 
@@ -178,8 +181,8 @@ namespace wcopreco {
       void set_cal_integral_p5(double value) {cal_integral_p5 = value;}
       double get_cal_integral_p5() {return cal_integral_p5;}
 
-      void set_PE_err(double value) {PE_err = value;}
-      double get_PE_err() {return PE_err;}
+      void set_PE_err_cosmic(double value) {PE_err_cosmic = value;}
+      double get_PE_err_cosmic() {return PE_err_cosmic;}
 
       void set_PE_subtract(double value) {PE_subtract = value;}
       double get_PE_subtract() {return PE_subtract;}
@@ -190,11 +193,42 @@ namespace wcopreco {
       void set_flash_high_time_cushion(int value) {flash_high_time_cushion = value;}
       int get_flash_high_time_cushion() {return flash_high_time_cushion;}
 
+      void set_PE_err_beam(double value) {PE_err_beam = value;}
+      double get_PE_err_beam() {return PE_err_beam;}
+
+      void set_PE_content_thresh(double value) {PE_content_thresh = value;}
+      double get_PE_content_thresh() {return PE_content_thresh;}
+
+      void set_mult_content_thresh(double value) {mult_content_thresh = value;}
+      double get_mult_content_thresh() {return mult_content_thresh;}
+
+      void set_mult_required(int value) {mult_required = value;}
+      int get_mult_required() {return mult_required;}
+
+      void set_PE_noise(double value) {PE_noise = value;}
+      double get_PE_noise() {return PE_noise;}
+
+      void set_PE_err_statist_beam(double value) {PE_err_statist_beam = value;}
+      double get_PE_err_statist_beam() {return PE_err_statist_beam;}
+
+      void set_PE_err_unc_perc_beam(double value) {PE_err_unc_perc_beam = value;}
+      double get_PE_err_unc_perc_beam() {return PE_err_unc_perc_beam;}
+
+      void set_do_swap_channels(bool do_swap) {do_swap_channels = do_swap;}
+      bool get_do_swap_channels() {return do_swap_channels;}
+
+      void set_addl1_pe_thresh(double value) {addl1_pe_thresh = value;}
+      double get_addl1_pe_thresh() {return addl1_pe_thresh;}
+
+      void set_addl1_mult_thresh(double value) {addl1_mult_thresh = value;}
+      double get_addl1_mult_thresh() {return addl1_mult_thresh;}
+
 
     protected:
       int num_channels; //lots
       int num_types; //lots
       std::vector<int> nbins_by_type; //lots?
+      short sat_threshold ; //satmerge, cosmic_merger, probably beam_merger
       double baseline_default; //scale_lowgains in satmerge
       double baseline_difference_max; //scale_lowgains in satmerge, also deconv Remove_Baseline_Secondary
       int cosmic_tick_window; //Cosmic merger in satmerge
@@ -251,10 +285,20 @@ namespace wcopreco {
       double cal_integral_p3 ;  //COPHIT
       double cal_integral_p4 ;  //COPHIT
       double cal_integral_p5 ;  //COPHIT
-      double PE_err ; //Opflash
+      double PE_err_cosmic ; //Opflash
       double PE_subtract ; //Opflash
       int flash_low_time_cushion ; //Opflash
       int flash_high_time_cushion ; //Opflash
+      double PE_err_beam ; //Opflash
+      double PE_content_thresh ; //Opflash
+      double mult_content_thresh ; //Opflash
+      int mult_required; //Opflash
+      double PE_noise ; //Opflash
+      double PE_err_statist_beam ;
+      double PE_err_unc_perc_beam ;
+      bool do_swap_channels ;
+      double addl1_pe_thresh ;
+      double addl1_mult_thresh ;
 
 
 

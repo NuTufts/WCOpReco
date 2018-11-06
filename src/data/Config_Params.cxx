@@ -7,6 +7,7 @@ namespace wcopreco {
     num_channels = 32;
     num_types = 6;
     nbins_by_type = {1500, 1500, 40, 40, 1500, 40};
+    sat_threshold = 4080;
     baseline_default =2050;
     baseline_difference_max = 8;
     cosmic_tick_window = 20;
@@ -61,10 +62,20 @@ namespace wcopreco {
     cal_integral_p3 = 4.5715824e4;
     cal_integral_p4 = 8.62296e+00;
     cal_integral_p5 = 6.76898e-04;
-    PE_err = 6.4;
+    PE_err_cosmic = 6.4;
     PE_subtract = 0.15; //250 kHz at 6 us
     flash_low_time_cushion = -3;
     flash_high_time_cushion = +37;
+    PE_err_beam = 0.2;
+    PE_content_thresh = 0.2;
+    mult_content_thresh = 1.5;
+    mult_required = 3;
+    PE_noise = 1.875; // 7.5 us * random noise
+    PE_err_statist_beam = 1.875;
+    PE_err_unc_perc_beam = 0.02;
+    do_swap_channels = true ;
+    addl1_pe_thres = 10.0 ;
+    addl1_mult_thresh = 3.0 ;
 
 
 

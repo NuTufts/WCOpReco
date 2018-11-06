@@ -43,7 +43,6 @@ int main(){
 //   clock_t flashfilter;
 //   t=clock();
 //
-//   std::cout << "Hello world" << std::endl;
 //
 //   //Set the filepath
 //   std::string file = "src/data/celltree.root";
@@ -60,32 +59,7 @@ int main(){
 //     EVENT_NUM=0;
 //     size = 52;
 //   }
-//
-//   // //make root file of outputs to test
-//   // TFile output("OurOutput.root", "RECREATE");
-//   // //create TTree
-//   // TTree *OpReco = new TTree("OpReco", "A tree to hold outputs from OpReco");
-//   // TClonesArray *Tmerged_beam = new TClonesArray;
-//   //
-//   // OpReco->Branch("merged_beam", "TClonesArray", &Tmerged_beam);
-//   // TH1D * TtotPE = new TH1D("totPE" ,"totPE", 249, 0., (double) 250);
-//   // OpReco->Branch("totPE", "TH1D", &TtotPE);
-//   // TH1D * Tl1_totPE = new TH1D("l1_totPE" ,"l1_totPE", 249, 0., (double) 250);
-//   // OpReco->Branch("l1_totPE", "TH1D", &Tl1_totPE);
-//   // TH1D * Tmult = new TH1D("mult" ,"mult", 249, 0., (double) 250);
-//   // OpReco->Branch("mult", "TH1D", &Tmult);
-//   // TH1D * Tl1_mult = new TH1D("l1_mult" ,"l1_mult", 249, 0., (double) 250);
-//   // OpReco->Branch("l1_mult", "TH1D", &Tl1_mult);
-//
-//   //need branches
-//   //OpReco->Branch("Branch Name", "Class name", &data)
-//   //merged_cosmic
-//   //merged_beam after decon
-//   //std::vector< std::vector<double> > decon_vv;
-//   //flashes_beam
-//   //flashes_cosmic
-//   //flashes
-//
+
 //   for (EVENT_NUM;EVENT_NUM<size;EVENT_NUM++){
 //     _UB_Ev_wfm = reader.Reader(EVENT_NUM);
 //     std::vector<float> op_gain = _UB_Ev_wfm.get_op_gain();
@@ -109,58 +83,32 @@ int main(){
 //     // std::cout << merged_cosmic.size() << " Number of Waveform in Cosmic Merged (CONFIRMED)\n\n";
 //
 //
-//     //add to root output file
-//     // for (int j; j<merged_beam.size(); j++){
-//     //   int n = merged_beam.at(j).size();
-//     //   TH1D * hist = new TH1D("hist" ,"hist", n-1, 0., (double) n);
-//     //   for (int k=0; k<n; k++) {
-//     //     hist->SetBinContent(k,merged_beam.at(j).at(k));
-//     //   }
-//     //   //TH1S *h = (TH1S*)wf->At(i)
-//     //   //new(Tmerged_beam[j]) TH1D * hist;
-//     //   Tmerged_beam->AddAt(hist,j);
-//     //   delete hist;
-//     // }
-//
-//
-//     //Diagnosis Code -J
-//     // for (int i=0; i< 2; i++){
-//     //   for (int j=0; j<merged_beam.at(i).size(); j++){
-//     //
-//     //     if (j%1==0) {std::cout << merged_beam.at(i).at(j) << "   Is value in " << i << " wfm in " << j << " bin\n";}
-//     //   }
-//     //   std::cout << "\n\n";
-//     // }
-//
-//
-//     // Create the Deconvolver (This should just deconvolves the BEAM)
-//     // wcopreco::Deconvolver tester(&merged_beam, true, true);
-//     // // std::cout << "Deconvolver declared!" << std::endl;
-//     // std::vector<wcopreco::kernel_fourier_container> kernel_container_v = tester.get_kernel_container_v();
-//     //
-//     // wcopreco::OpWaveform wfm = merged_beam.at(0);
-//     // std::cout << kernel_container_v.size() << " Size of kernel container_v \n\n\n\n";
-//     //
-//     //
-//     //
-//     //
-//     // //do beam hitfinding
+        // //Construct the vector of kernel containers (one container per channel)
+        // std::vector<wcopreco::kernel_fourier_container> kernel_container_v;
+        // kernel_container_v.resize(32);
+        // wcopreco::UB_rc *rc_good_ch = new wcopreco::UB_rc(true, false);
+        // wcopreco::UB_rc *rc_bad_ch = new wcopreco::UB_rc(true, true);
+        // for (int i =0 ; i<32; i++){
+        //    wcopreco::UB_spe *spe = new wcopreco::UB_spe(true, op_gain.at(i)); //Place UB_spe on heap, so object not deleted
+        //   kernel_container_v.at(i).add_kernel(spe);
+        //   if (i == 28){
+        //     kernel_container_v.at(i).add_kernel(rc_bad_ch);
+        //   }
+        //   else{
+        //     kernel_container_v.at(i).add_kernel(rc_good_ch);
+        //   }
+        // }
+        //
+        // //do beam hitfinding
+        // wcopreco::HitFinder_beam hits_found_beam(merged_beam, kernel_container_v);
+
 //     //wcopreco::OpWaveformCollection deconvolved_wfm = tester.Deconvolve_Collection(& merged_beam);
-//     wcopreco::HitFinder_beam hits_found_beam(merged_beam);
 //     std::vector<double> totPE_v = hits_found_beam.get_totPE_v();
 //     std::vector<double> mult_v =hits_found_beam.get_mult_v();
 //     std::vector<double> l1_totPE_v =hits_found_beam.get_l1_totPE_v();
 //     std::vector<double> l1_mult_v = hits_found_beam.get_l1_mult_v();
 //     std::vector< std::vector<double> > decon_vv = hits_found_beam.get_decon_vv();
 //     hitsbeam = clock();
-//
-//     // //root saves
-//     // for (int i=0; i<250; i++) {
-//     //   TtotPE->SetBinContent(i,totPE_v.at(i));
-//     //   Tl1_totPE->SetBinContent(i,l1_totPE_v.at(i));
-//     //   Tmult->SetBinContent(i,mult_v.at(i));
-//     //   Tl1_mult->SetBinContent(i,l1_mult_v.at(i));
-//     // }
 //
 //     double beam_start_time =merged_beam.at(0).get_time_from_trigger();
 //
@@ -186,107 +134,13 @@ int main(){
 //     wcopreco::FlashFiltering flashesfiltered(flashes_cosmic, flashes_beam);
 //     wcopreco::OpflashSelection flashes = flashesfiltered.get_flashes();
 //     flashfilter =clock();
-//     // std::cout << flashes.size() << " Matched Flashes in Event\n\n";
-//     // wcopreco::UB_rc here(true,false);
-//     // std::vector<double> magy;
-//     // std::vector<double> phasey;
-//     // here.Get_pow_spec(1500, (1.0/(64e6) ), &magy, &phasey);
-//     // for (int p=0;p<1500;p++){
-//     //   std::cout << magy.at(p) << "\n";
-//     // }
-//     // std::cout << "\n\n-------------------------------------------\n";
+
 //     for (int i =0 ; i<flashes.size(); i++) {
 //         if (flashes.at(i)->get_type() ==2) std::cout << flashes.at(i)->get_total_PE() << "\n";
 //     }
 //
-//
-//     // Code to test plotting lines on a waveform
-//     // wcopreco::Opflash *bflash = flashes_beam.at(0);
-//
-//     // wcopreco::Deconvolver testplotter(&merged_cosmic, true,true);
-//     // std::string  str = "Ev16_Beamflash";
-//     // testplotter.testPlot(str , merged_beam, bflash);
-//
-//       // std::cout << merged_beam.at(i).get_time_from_trigger() << "\n";
-//
-//
-//
-//
-//     // testplotter.testPlot("Plot With Flash" +(std::string)i,merged_beam.at(i));
-//     // if (plottedwfm.get_ChannelNum() ==0) std::cout << "Channel num is 0!\n";
-//     // if (do_loop) std::cout << (clock() - t)*1.0/CLOCKS_PER_SEC<<"\n";// << " Time through loop " <<  EVENT_NUM<< "\n";
-//   }
-// // OpReco->Fill();
-// // output.Write();
-// // output.Close();
-//
-//
-//
-//
-//
-//
-//
-//
-//   // // // // // // Here is deconvolver test code // // // // // // //
-//   // std::cout << "\n";
-//   // // Create the Deconvolver (This should just deconvolves the BEAM)
-//   // wcopreco::Deconvolver Does_Nothing(&merged_beam, false, false);
-//   // // wcopreco::OpWaveformCollection DN = Does_Nothing.Deconvolve_Collection(& merged_beam);
-//   //
-//   // std::cout << "\n";
-//   // // Create the Deconvolver (This should just deconvolves the BEAM)
-//   // wcopreco::Deconvolver All_At_Once(&merged_beam, true, true);
-//   // wcopreco::OpWaveformCollection AAO = All_At_Once.Deconvolve_Collection(& merged_beam);
-//   // std::cout << "\n";
-//   //
-//   // // create the deconvolver in 2 steps
-//   // wcopreco::Deconvolver Step_One(&merged_beam, true, false);
-//   // wcopreco::OpWaveformCollection S1 = Step_One.Deconvolve_Collection(& merged_beam);
-//   // std::cout << "\n";
-//   //
-//   // wcopreco::Deconvolver Step_Two(&S1, false, true);
-//   // wcopreco::OpWaveformCollection S2 = Step_Two.Deconvolve_Collection(& S1);
-//   // std::cout << "\n";
-//   //
-//   //Remove Baselines from Original
-//   // wcopreco::OpWaveform orig = merged_beam.at(0);
-//   // All_At_Once.Remove_Baseline_Leading_Edge(&orig);
-//   // All_At_Once.Remove_Baseline_Secondary(&orig);
-//
-//   // Do Nothing Deconvolver
-//   // std::vector<wcopreco::kernel_fourier_container> kernel_container_v_dn = Does_Nothing.get_kernel_container_v();
-//   // wcopreco::OpWaveform dn = Does_Nothing.Deconvolve_One_Wfm(orig, kernel_container_v_dn.at(orig.get_ChannelNum()));
-//
-//
-//
-//
-//   // wcopreco::OpWaveform aao = AAO.at(0);
-//   // wcopreco::OpWaveform s2 = S2.at(0);
-//
-//   // All_At_Once.Remove_Baseline_Leading_Edge(&aao);
-//   // All_At_Once.Remove_Baseline_Secondary(&aao);
-//
-//   // All_At_Once.testPlot("Original", orig);
-//   // All_At_Once.testPlot("Do Nothing Dec", dn);
-//   // All_At_Once.testPlot("All at Once from Collection", aao);
-//   // Step_Two.testPlot("Two Step Deconv", s2);
-//   //
-//   // double difference;
-//   // // std::cout << "=================================================\n";
-//   // for (int i=0; i<1500;i++){
-//   //   // if (i%100 ==0) {
-//   //     difference = s2.at(i) - aao.at(i);
-//   //     // std::cout << orig.at(i) - dn.at(i) << "\n";
-//   //     // std::cout << orig.at(i) << " Original Waveform\n";
-//   //     // std::cout << dn.at(i) << " 'Does Nothing' Waveform\n";
-//   //     if (difference > 0.05){
-//   //       std::cout << difference/aao.at(i)*100.0 << "   Percent difference relative to all at once\n";
-//   //       std::cout << aao.at(i) << " All at once method\n";
-//   //       std::cout << s2.at(i) << " Two Step\n";
-//   //       std::cout << difference << "   Difference\n\n";
-//   //     }
-//   //   // }
-//   // }
+// }
+
 //   flashfilter = flashfilter - flashcosmic;
 //   flashcosmic = flashcosmic - hitscosmic;
 //   hitscosmic  = hitscosmic  - flashbeam;

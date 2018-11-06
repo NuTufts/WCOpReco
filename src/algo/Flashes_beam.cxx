@@ -2,7 +2,12 @@
 
 namespace wcopreco {
 
-  wcopreco::Flashes_beam::Flashes_beam(std::vector<double> totPE_v, std::vector<double> mult_v, std::vector<double> l1_totPE_v, std::vector<double> l1_mult_v, std::vector< std::vector<double> > decon_vv, double beam_start_time)
+  wcopreco::Flashes_beam::Flashes_beam(std::vector<double> *totPE_v,
+                                        std::vector<double> *mult_v,
+                                        std::vector<double> *l1_totPE_v,
+                                        std::vector<double> *l1_mult_v,
+                                        std::vector< std::vector<double> > decon_vv,
+                                        double beam_start_time)
   {
     //Module for flash finding for beams
 
@@ -14,8 +19,8 @@ namespace wcopreco {
     double curr_pe_a[32];
 
     for (int i=0;i!=250;i++){
-      double pe = totPE_v.at(i);
-      double mult = mult_v.at(i);
+      double pe = totPE_v->at(i);
+      double mult = mult_v->at(i);
 
       // criteria: multiplicity needs to be higher than 3, PE needs to be higher than 6
       if (pe >= 6 && mult >= 3){
@@ -81,9 +86,9 @@ namespace wcopreco {
       //create Opflash
 
       Opflash *flash = new Opflash(decon_vv, beam_start_time, start_bin, end_bin);
-      for (int p=0; p< l1_totPE_v.size(); p++){
+      for (int p=0; p< l1_totPE_v->size(); p++){
       }
-      flash->Add_l1info(&l1_totPE_v, &l1_mult_v, beam_start_time, start_bin, end_bin);
+      flash->Add_l1info(l1_totPE_v, l1_mult_v, beam_start_time, start_bin, end_bin);
       beam_flashes.push_back(flash);
 
       }

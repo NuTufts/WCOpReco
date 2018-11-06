@@ -34,7 +34,7 @@ namespace wcopreco  {
   // root file and organize it in datastructures designed by WCOpReco.
   class DataReader {
   public:
-    DataReader(std::string filepath);
+    DataReader(std::string *filepath);
     ~DataReader() {};
 
     UBEventWaveform Reader(int event_num);

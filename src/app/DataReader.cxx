@@ -4,7 +4,7 @@
 
 namespace wcopreco {
 
-wcopreco::DataReader::DataReader(std::string filepath) :
+wcopreco::DataReader::DataReader(std::string *filepath) :
   cosmic_hg_opch(nullptr),
   cosmic_lg_opch(nullptr),
   beam_hg_opch(nullptr),
@@ -19,7 +19,7 @@ wcopreco::DataReader::DataReader(std::string filepath) :
   {
 
     //Set datamembers
-    file = TFile::Open(filepath.c_str());
+    file = TFile::Open(filepath->c_str());
     if (file==0)
     {
       printf("Error: cannot open file");

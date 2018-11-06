@@ -74,7 +74,7 @@ namespace wcopreco {
     PE_err_statist_beam = 1.875;
     PE_err_unc_perc_beam = 0.02;
     do_swap_channels = true ;
-    addl1_pe_thres = 10.0 ;
+    addl1_pe_thresh = 10.0 ;
     addl1_mult_thresh = 3.0 ;
 
 

@@ -25,7 +25,9 @@ namespace wcopreco {
     baseline_safety_subtraction = 100;
     xq = 0.5 ;
     xq_diff = 0.34 ;
+    n_bins_end_wfm = 4 ;
     beam_rebin_size = 250 ;
+    l1_content_thresh = 0.3;
     frac_G_t2_first = 0.75 ;
     frac_G_sametime = 0.25 ;
     G_p0 = 6.0 ;
@@ -67,12 +69,10 @@ namespace wcopreco {
     flash_low_time_cushion = -3;
     flash_high_time_cushion = +37;
     PE_err_beam = 0.2;
-    PE_content_thresh = 0.2;
     mult_content_thresh = 1.5;
     mult_required = 3;
-    PE_noise = 1.875; // 7.5 us * random noise
-    PE_err_statist_beam = 1.875;
-    PE_err_unc_perc_beam = 0.02;
+    PE_err_stat_beam = 1.875;// 7.5 us * random noise
+    PE_err_unc_beam = 0.02;
     do_swap_channels = true ;
     addl1_pe_thresh = 10.0 ;
     addl1_mult_thresh = 3.0 ;

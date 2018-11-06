@@ -196,23 +196,17 @@ namespace wcopreco {
       void set_PE_err_beam(double value) {PE_err_beam = value;}
       double get_PE_err_beam() {return PE_err_beam;}
 
-      void set_PE_content_thresh(double value) {PE_content_thresh = value;}
-      double get_PE_content_thresh() {return PE_content_thresh;}
-
       void set_mult_content_thresh(double value) {mult_content_thresh = value;}
       double get_mult_content_thresh() {return mult_content_thresh;}
 
       void set_mult_required(int value) {mult_required = value;}
       int get_mult_required() {return mult_required;}
 
-      void set_PE_noise(double value) {PE_noise = value;}
-      double get_PE_noise() {return PE_noise;}
+      void set_PE_err_stat_beam(double value) {PE_err_stat_beam = value;}
+      double get_PE_err_stat_beam() {return PE_err_stat_beam;}
 
-      void set_PE_err_statist_beam(double value) {PE_err_statist_beam = value;}
-      double get_PE_err_statist_beam() {return PE_err_statist_beam;}
-
-      void set_PE_err_unc_perc_beam(double value) {PE_err_unc_perc_beam = value;}
-      double get_PE_err_unc_perc_beam() {return PE_err_unc_perc_beam;}
+      void set_PE_err_unc_beam(double value) {PE_err_unc_beam = value;}
+      double get_PE_err_unc_beam() {return PE_err_unc_beam;}
 
       void set_do_swap_channels(bool do_swap) {do_swap_channels = do_swap;}
       bool get_do_swap_channels() {return do_swap_channels;}
@@ -257,8 +251,8 @@ namespace wcopreco {
       double Lasso_p0 ; //Hitfinder beam
       int    Lasso_p1 ; //Hitfinder beam
       double Lasso_p2 ; //Hitfinder beam
-      double totPE_v_thresh ; //Hitfinder beam
-      double mult_v_thresh ; //Hitfinder beam
+      double totPE_v_thresh ; //Hitfinder beam Also appears in Opflash
+      double mult_v_thresh ; //Hitfinder beam, threshold in PE to determine if add to mult 
       double l1_mult_v_thresh ; //Hitfinder beam
       double ophit_group_t_diff_max ; // Hitfinder cosmic twice
       double bflash_pe_thresh ; //Flashes beams
@@ -290,16 +284,13 @@ namespace wcopreco {
       int flash_low_time_cushion ; //Opflash
       int flash_high_time_cushion ; //Opflash
       double PE_err_beam ; //Opflash
-      double PE_content_thresh ; //Opflash
       double mult_content_thresh ; //Opflash
       int mult_required; //Opflash
-      double PE_noise ; //Opflash
-      double PE_err_statist_beam ;
-      double PE_err_unc_perc_beam ;
-      bool do_swap_channels ;
-      double addl1_pe_thresh ;
-      double addl1_mult_thresh ;
-
+      double PE_err_stat_beam ;//Opflash
+      double PE_err_unc_beam ;//Opflash
+      bool do_swap_channels ;//Opflash
+      double addl1_pe_thresh ;//Opflash
+      double addl1_mult_thresh ;//Opflash
 
 
 

@@ -61,6 +61,10 @@ namespace wcopreco {
     cal_integral_p3 = 4.5715824e4;
     cal_integral_p4 = 8.62296e+00;
     cal_integral_p5 = 6.76898e-04;
+    PE_err = 6.4;
+    PE_subtract = 0.15; //250 kHz at 6 us
+    flash_low_time_cushion = -3;
+    flash_high_time_cushion = +37;
 
 
 

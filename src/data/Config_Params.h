@@ -177,6 +177,20 @@ namespace wcopreco {
 
       void set_cal_integral_p5(double value) {cal_integral_p5 = value;}
       double get_cal_integral_p5() {return cal_integral_p5;}
+
+      void set_PE_err(double value) {PE_err = value;}
+      double get_PE_err() {return PE_err;}
+
+      void set_PE_subtract(double value) {PE_subtract = value;}
+      double get_PE_subtract() {return PE_subtract;}
+
+      void set_flash_low_time_cushion(int value) {flash_low_time_cushion = value;}
+      int get_flash_low_time_cushion() {return flash_low_time_cushion;}
+
+      void set_flash_high_time_cushion(int value) {flash_high_time_cushion = value;}
+      int get_flash_high_time_cushion() {return flash_high_time_cushion;}
+
+
     protected:
       int num_channels; //lots
       int num_types; //lots
@@ -237,7 +251,11 @@ namespace wcopreco {
       double cal_integral_p3 ;  //COPHIT
       double cal_integral_p4 ;  //COPHIT
       double cal_integral_p5 ;  //COPHIT
-      
+      double PE_err ; //Opflash
+      double PE_subtract ; //Opflash
+      int flash_low_time_cushion ; //Opflash
+      int flash_high_time_cushion ; //Opflash
+
 
 
 

@@ -26,14 +26,8 @@
 #include <time.h>       /* clock_t, clock, CLOCKS_PER_SEC */
 
 int main(){
-  wcopreco::Run opreco;
-  wcopreco::OpflashSelection flashes = opreco.get_flashes();
-  std::cout << flashes.size() << " :Number of flashes\n";
-  wcopreco::OpflashSelection flashes_cosmic = opreco.get_flashes_cosmic();
-  std::cout << flashes_cosmic.size() << " :Number of cosmic flashes\n";
-  wcopreco::OpflashSelection flashes_beam = opreco.get_flashes_beam();
-  std::cout << flashes_beam.size() << " :Number of beam flashes\n";
-//   clock_t t;
+
+  clock_t t;
 //   clock_t dataread;
 //   clock_t satmerger;
 //   clock_t hitsbeam;
@@ -41,7 +35,15 @@ int main(){
 //   clock_t hitscosmic;
 //   clock_t flashcosmic;
 //   clock_t flashfilter;
-//   t=clock();
+  t=clock();
+  std::cout << wcopreco::_WIDTH << " Did it work?\n";
+  wcopreco::Run opreco;
+  wcopreco::OpflashSelection flashes = opreco.get_flashes();
+  std::cout << flashes.size() << " :Number of flashes\n";
+  wcopreco::OpflashSelection flashes_cosmic = opreco.get_flashes_cosmic();
+  std::cout << flashes_cosmic.size() << " :Number of cosmic flashes\n";
+  wcopreco::OpflashSelection flashes_beam = opreco.get_flashes_beam();
+  std::cout << flashes_beam.size() << " :Number of beam flashes\n";
 //
 //
 //   //Set the filepath
@@ -148,9 +150,9 @@ int main(){
 //   hitsbeam    = hitsbeam    - satmerger;
 //   satmerger   = satmerger   - dataread;
 //   dataread    = dataread    - t;
-//   t = clock() - t;
+  t = clock() - t;
 //
-// 	// std::cout << "Total time:           " << t*1.0/CLOCKS_PER_SEC << " seconds" << std::endl << std::endl;
+	std::cout << "Total time:           " << t*1.0/CLOCKS_PER_SEC << " seconds" << std::endl << std::endl;
 //   // std::cout << "DataRead Time:        " << dataread*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;
 //   // std::cout << "DataRead Fraction:           " << (double)dataread/t  <<  std::endl << std::endl;
 //   // std::cout << "SatMerger Time:       " << satmerger*1.0/CLOCKS_PER_SEC << " seconds" <<  std::endl << std::endl;

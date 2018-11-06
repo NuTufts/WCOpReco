@@ -2,7 +2,7 @@
 #define SATURATION_MERGER_H
 
 #include "DataReader.h"
-
+#include "UBEventWaveform.h"
 namespace wcopreco{
 
   // This class is microboone specific. It is designed to merge the high and

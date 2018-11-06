@@ -73,7 +73,7 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     _UB_Ev_wfm.set_wfm_v( empty_vec );
     _UB_Ev_wfm.set_op_gain(*op_gain);
     _UB_Ev_wfm.set_op_gainerror(*op_gainerror);
-    
+
     //Create OpWaveformCollection to hold OpWaveforms
     //Each collection has waveforms from a single event of a specific type
     OpWaveformCollection CHG_wfm_collection;

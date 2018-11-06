@@ -4,8 +4,6 @@ namespace wcopreco{
 
   wcopreco::Run::Run(){
 
-      wcopreco::Config_Params Configuration;
-
       //Set the filepath
       std::string file = "src/data/celltree.root";
       std::cout << "\n\nFilepath is set to:   " << file << std::endl;
@@ -68,14 +66,15 @@ namespace wcopreco{
       wcopreco::HitFinder_cosmic hits_found(&merged_cosmic, &op_gain, &op_gainerror);
 
       //flashes for cosmics
-      wcopreco::Flashes_cosmic flashfinder_cosmic(hits_found.get_ophits_group());
+      std::vector<COphitSelection>  hits = hits_found.get_ophits_group();
+      wcopreco::Flashes_cosmic flashfinder_cosmic(&hits);
       flashes_cosmic = flashfinder_cosmic.get_cosmic_flashes();
       // std::cout << flashes_cosmic.size() << " Cosmic Flashes in Event\n";
 
       // std::cout << flashes.size() << " flashes were found in the cosmic selection\n";
 
       //flash filtering
-      wcopreco::FlashFiltering flashesfiltered(flashes_cosmic, flashes_beam);
+      wcopreco::FlashFiltering flashesfiltered(&flashes_cosmic, &flashes_beam);
       flashes = flashesfiltered.get_flashes();
       // std::cout << flashes.size() << " Matched Flashes in Event\n\n";
 

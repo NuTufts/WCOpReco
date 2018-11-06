@@ -2,19 +2,17 @@
 
 namespace wcopreco {
 
-  wcopreco::FlashFiltering::FlashFiltering(OpflashSelection &c_flashes, OpflashSelection &b_flashes){
+  wcopreco::FlashFiltering::FlashFiltering(OpflashSelection *cosmic_flashes, OpflashSelection *beam_flashes){
     //code to perform flash filtering
     //inputs come from Flashes_cosmic and Flashes_beam
-    cosmic_flashes = c_flashes;
-    beam_flashes = b_flashes;
     Opflash *prev_cflash = 0;
 
     //loop to decide if each cosmic flash should be saved
-    for (size_t i=0; i!=cosmic_flashes.size();i++){
-      Opflash *cflash = cosmic_flashes.at(i);
+    for (size_t i=0; i!=cosmic_flashes->size();i++){
+      Opflash *cflash = cosmic_flashes->at(i);
       bool save = true;
-      for (size_t j=0; j!=beam_flashes.size();j++){
-        Opflash *bflash = beam_flashes.at(j);
+      for (size_t j=0; j!=beam_flashes->size();j++){
+        Opflash *bflash = beam_flashes->at(j);
         if (cflash->get_time() >= bflash->get_low_time() && cflash->get_time() <= bflash->get_high_time()){
         	save = false;
         	break;
@@ -35,8 +33,8 @@ namespace wcopreco {
     }
 
     //if the cosmic isn't saved, save beam instead
-    for (size_t j=0; j!=beam_flashes.size();j++){
-      Opflash *bflash = beam_flashes.at(j);
+    for (size_t j=0; j!=beam_flashes->size();j++){
+      Opflash *bflash = beam_flashes->at(j);
       if (prev_cflash!=0){;
         if (bflash->get_time() - prev_cflash->get_time() < 2.4 && // veto for 3 us
   	    bflash->get_total_PE() < 0.7 * prev_cflash->get_total_PE())

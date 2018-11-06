@@ -11,7 +11,7 @@ namespace wcopreco{
 
   class FlashFiltering {
   public:
-    FlashFiltering(OpflashSelection &c_flashes, OpflashSelection &b_flashes);
+    FlashFiltering(OpflashSelection *cosmic_flashes, OpflashSelection *beam_flashes);
     ~FlashFiltering() {};
 
     OpflashSelection& get_flashes(){return flashes;};

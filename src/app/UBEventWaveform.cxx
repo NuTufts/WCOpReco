@@ -5,7 +5,6 @@ namespace wcopreco {
    UBEventWaveform::UBEventWaveform()  {
 
     // setup the eventwaveform map for our types
-    EventOpWaveforms::_wfm_v.resize(4);
     //  Map elements added when you add waveform collections
     // insert_type2index( kbeam_hg, 0 );
     // insert_type2index( kbeam_lg, 1 );

@@ -6,6 +6,8 @@
 #include <sstream>
 
 namespace wcopreco {
+  float _WIDTH=50.0;
+
 
   class Config_Params {
     public:
@@ -131,6 +133,50 @@ namespace wcopreco {
       void set_flash_filter_pe_thresh(double value) {flash_filter_pe_thresh = value;}
       double get_flash_filter_pe_thresh() {return flash_filter_pe_thresh;}
 
+      void set_rc_tau_badch(double value) {rc_tau_badch = value;}
+      double get_rc_tau_badch() {return rc_tau_badch;}
+
+      void set_rc_tau_goodch(double value) {rc_tau_goodch = value;}
+      double get_rc_tau_goodch() {return rc_tau_goodch;}
+
+      void set_spe_p0(double value) {spe_p0 = value;}
+      double get_spe_p0() {return spe_p0;}
+
+      void set_spe_p1(double value) {spe_p1 = value;}
+      double get_spe_p1() {return spe_p1;}
+
+      void set_COphit_integral_thresh(double value) {COphit_integral_thresh = value;}
+      double get_COphit_integral_thresh() {return COphit_integral_thresh;}
+
+      void set_COphit_baseline_diff_thresh(double value) {COphit_baseline_diff_thresh = value;}
+      double get_COphit_baseline_diff_thresh() {return COphit_baseline_diff_thresh;}
+
+      void set_pe_factor(double value) {pe_factor = value;}
+      double get_pe_factor() {return pe_factor;}
+
+      void set_Baseline_uncertainty(double value) {Baseline_uncertainty = value;}
+      double get_Baseline_uncertainty() {return Baseline_uncertainty;}
+
+      void set_Baseline_unc_bad_baseline(double value) {Baseline_unc_bad_baseline = value;}
+      double get_Baseline_unc_bad_baseline() {return Baseline_unc_bad_baseline;}
+
+      void set_cal_integral_p0(double value) {cal_integral_p0 = value;}
+      double get_cal_integral_p0() {return cal_integral_p0;}
+
+      void set_cal_integral_p1(double value) {cal_integral_p1 = value;}
+      double get_cal_integral_p1() {return cal_integral_p1;}
+
+      void set_cal_integral_p2(double value) {cal_integral_p2 = value;}
+      double get_cal_integral_p2() {return cal_integral_p2;}
+
+      void set_cal_integral_p3(double value) {cal_integral_p3 = value;}
+      double get_cal_integral_p3() {return cal_integral_p3;}
+
+      void set_cal_integral_p4(double value) {cal_integral_p4 = value;}
+      double get_cal_integral_p4() {return cal_integral_p4;}
+
+      void set_cal_integral_p5(double value) {cal_integral_p5 = value;}
+      double get_cal_integral_p5() {return cal_integral_p5;}
     protected:
       int num_channels; //lots
       int num_types; //lots
@@ -138,7 +184,7 @@ namespace wcopreco {
       double baseline_default; //scale_lowgains in satmerge
       double baseline_difference_max; //scale_lowgains in satmerge, also deconv Remove_Baseline_Secondary
       int cosmic_tick_window; //Cosmic merger in satmerge
-      float tick_width_us;  //cosmic merger in satmerge, Deconvolve_One_Wfm in deconv (1/64) for bin_width and 64 for max_freq_MHz, G(i,k) Hitfinder Beam 15.625/1000
+      float tick_width_us;  //cosmic merger in satmerge, Deconvolve_One_Wfm in deconv (1/64) for bin_width and 64 for max_freq_MHz, G(i,k) Hitfinder Beam 15.625/1000, also in Opflash.h and .cxx
       double low_bound_baseline_search; //findBaselineLg in SatMerger
       double high_bound_baseline_search; //findBaselineLg in SatMerger
       int nbins_baseline_search; //find findBaselineLg satmerger
@@ -153,7 +199,7 @@ namespace wcopreco {
       double xq ; //deconv cal_mean_rms
       double xq_diff ; //deconv cal_mean_rms
       int n_bins_end_wfm ; //deconv deconv one wfm end loop 1500-4
-      int beam_rebin_size ; //HitFinder_beam
+      int beam_rebin_size ; //HitFinder_beam (sort of in opflash.h shows up as 6 where 1500/250 = 6)
       double l1_content_thresh ; // Hitfinder beam 0.3
       double frac_G_t2_first ; //Hitfinder beam G
       double frac_G_sametime ; //Hitfinder beam G
@@ -176,7 +222,29 @@ namespace wcopreco {
       int bflash_bin_start_cushion ; //Flashes beam
       double flash_filter_time_thresh ; //Flashfiltering
       double flash_filter_pe_thresh ; //Flashfiltering
+      double rc_tau_badch ; //UB_rc
+      double rc_tau_goodch ; //UB_rc
+      double spe_p0; //UB_spe
+      double spe_p1; //UB_spe
+      double COphit_integral_thresh ; //COPHIT
+      double COphit_baseline_diff_thresh ;//COPHIT
+      double pe_factor ; //COPHIT
+      double Baseline_uncertainty ; //Percent uncertainty COPHIT
+      double Baseline_unc_bad_baseline ; //Percent Unc if baseline bad COPHIT
+      double cal_integral_p0 ;  //COPHIT
+      double cal_integral_p1 ;  //COPHIT
+      double cal_integral_p2 ;  //COPHIT
+      double cal_integral_p3 ;  //COPHIT
+      double cal_integral_p4 ;  //COPHIT
+      double cal_integral_p5 ;  //COPHIT
+      
 
+
+
+
+      //Params NEEDING set:
+      std::vector<float> gain;
+      std::vector<float> gainerror;
 
 
 

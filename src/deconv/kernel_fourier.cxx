@@ -89,29 +89,6 @@ namespace wcopreco {
         mag_v->at(i) = magnitude;
         //End of mag_v calc
       }
-
-      //Test loop to output every 50 entries
-      for (int index =0; index <phase_v->size(); index +=50) {
-        // std::cout << phase_v->at(index) << "    Phase[" << index << "]" << std::endl <<std::endl;
-        // std::cout << im[index] << "    IM[" << index << "]" << std::endl;
-      }
-
-
-      // Deletion test confirms that you can delete re after you delecte fftr2c, so fftr2c doesn't own re or im! Good.
-      /*
-      std::cout<< "Before delete    " << std::endl << std::endl << std::endl << std::endl;
-      delete fftr2c;
-      std::cout<< "After first  delete    " << std::endl << std::endl << std::endl << std::endl;
-      delete [] re;
-      std::cout<< "After Second!!! delete    " << std::endl << std::endl << std::endl << std::endl;
-      */
-
-
-
-
-      // Kernel Fourier Diagnosis
-      // std::cout << nbins << " bins POWER  " << tick_width_ns << "  tick width POWER" << std::endl;
-      // std::cout << nbins*tick_width_ns << " Is total width of wfm" << std::endl <<std::endl;
       return ;
     }
 

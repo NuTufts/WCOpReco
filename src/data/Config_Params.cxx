@@ -30,13 +30,13 @@ namespace wcopreco {
     G_p0 = 6.0 ;
     G_p1 = 3.0 ;
     G_p2 = 1.5 ;
-    Lasso_p0 = 5.0;
-    Lasso_p1 = 100000;
-    Lasso_p2 = 0.05;
-    totPE_v_thresh = 0.2;
-    mult_v_thresh = 1.5;
-    l1_mult_v_thresh = 1.0;
-    ophit_group_t_diff_max = 0.1;
+    Lasso_p0 = 5.0 ;
+    Lasso_p1 = 100000 ;
+    Lasso_p2 = 0.05 ;
+    totPE_v_thresh = 0.2 ;
+    mult_v_thresh = 1.5 ;
+    l1_mult_v_thresh = 1.0 ;
+    ophit_group_t_diff_max = 0.1 ;
     bflash_pe_thresh = 6.0 ;
     bflash_mult_thresh = 3.0 ;
     bflash_bin_diff_p0 = 78 ;
@@ -46,6 +46,24 @@ namespace wcopreco {
     bflash_bin_start_cushion = 2 ;
     flash_filter_time_thresh = 2.4 ;
     flash_filter_pe_thresh = 0.7 ;
+    rc_tau_badch = 28.6 ;
+    rc_tau_goodch = 800.0 ;
+    spe_p0 = 19.6348 ;
+    spe_p1 = 8.18450e-01 ;
+    COphit_integral_thresh = 20e3 ;
+    COphit_baseline_diff_thresh = 50 ;
+    pe_factor = 2.0;
+    Baseline_uncertainty = 0.03 ;
+    Baseline_unc_bad_baseline = 2.0 ;
+    cal_integral_p0 = 4000;
+    cal_integral_p1 = 1.06241e+01;
+    cal_integral_p2 = 2.01214e-04;
+    cal_integral_p3 = 4.5715824e4;
+    cal_integral_p4 = 8.62296e+00;
+    cal_integral_p5 = 6.76898e-04;
+
+
+
 
     std::cout << "\n\nConfiguration File Constructed, Have a Nice Day\n\n";
   }

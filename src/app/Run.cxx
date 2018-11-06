@@ -4,6 +4,8 @@ namespace wcopreco{
 
   wcopreco::Run::Run(){
 
+      wcopreco::Config_Params Configuration;
+
       //Set the filepath
       std::string file = "src/data/celltree.root";
       std::cout << "\n\nFilepath is set to:   " << file << std::endl;

@@ -2,6 +2,7 @@
 #define RUN_H
 
 //WCOpReco includes
+#include "WCOpReco/Config_Params.h"
 #include "WCOpReco/OpWaveform.h"
 #include "WCOpReco/OpWaveformCollection.h"
 #include "WCOpReco/EventOpWaveforms.h"

@@ -7,6 +7,13 @@
 
 namespace wcopreco {
   float _WIDTH=50.0;
+  bool _do_swap_channels = true ;
+  double _flash_filter_time_thresh = 2.4 ;
+  double _flash_filter_pe_thresh = 0.7 ;
+
+  void _set_do_swap_channels(bool do_swap) {_do_swap_channels = do_swap;}
+  bool _get_do_swap_channels() {return _do_swap_channels;}
+
 
 
   class Config_Params {
@@ -252,7 +259,7 @@ namespace wcopreco {
       int    Lasso_p1 ; //Hitfinder beam
       double Lasso_p2 ; //Hitfinder beam
       double totPE_v_thresh ; //Hitfinder beam Also appears in Opflash
-      double mult_v_thresh ; //Hitfinder beam, threshold in PE to determine if add to mult 
+      double mult_v_thresh ; //Hitfinder beam, threshold in PE to determine if add to mult
       double l1_mult_v_thresh ; //Hitfinder beam
       double ophit_group_t_diff_max ; // Hitfinder cosmic twice
       double bflash_pe_thresh ; //Flashes beams

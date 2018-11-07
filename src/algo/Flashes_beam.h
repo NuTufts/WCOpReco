@@ -8,6 +8,9 @@
 #include "WCOpReco/Opflash.h"
 #include "HitFinder_beam.h"
 
+#include "WCOpReco/Config_Opflash.h"
+#include "WCOpReco/Config_FlashesBeam.h"
+
 namespace wcopreco{
   // class for finding flashes in beam data
   // takes in totalPE, totalMult, totalPE_l1, totalMult_l1, decon_vv, and the  start time of the beam
@@ -21,7 +24,10 @@ namespace wcopreco{
                 std::vector<double> *l1_totPE_v,
                 std::vector<double> *l1_mult_v,
                 std::vector< std::vector<double> > decon_vv,
-                double beam_start_time);
+                double beam_start_time,
+                const Config_FlashesBeam &configFB,
+                const Config_Opflash &configOpF
+              );
     ~Flashes_beam() {};
 
     OpflashSelection get_beam_flashes(){return beam_flashes;};
@@ -29,6 +35,9 @@ namespace wcopreco{
   protected:
     double KS_maxdiff(int n, double *array1, double *array2);
     OpflashSelection beam_flashes;
+
+    Config_FlashesBeam _cfgFB;
+    Config_Opflash _cfgOpF;
 
   };
 

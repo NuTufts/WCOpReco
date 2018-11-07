@@ -2,7 +2,9 @@
 
 namespace wcopreco {
 
-  wcopreco::HitFinder_cosmic::HitFinder_cosmic(OpWaveformCollection* merged_cosmic, std::vector<float> *op_gain, std::vector<float> *op_gainerror){
+  wcopreco::HitFinder_cosmic::HitFinder_cosmic(OpWaveformCollection* merged_cosmic, std::vector<float> *op_gain, std::vector<float> *op_gainerror, const Config_COpHit &configCOpH)
+    : _cfgCOpH(configCOpH)
+  {
     //Module for hit finding for cosmics
     //Much of this code can be left the way it is in WC
       int count =0;
@@ -10,7 +12,7 @@ namespace wcopreco {
         OpWaveform wfm_cosmic = merged_cosmic->at(i);
         int channel = wfm_cosmic.get_ChannelNum();
         double timestamp = wfm_cosmic.get_time_from_trigger();
-        COphit *op_hit = new COphit(channel, &wfm_cosmic, timestamp, op_gain->at(channel), op_gainerror->at(channel));
+        COphit *op_hit = new COphit(channel, &wfm_cosmic, timestamp, op_gain->at(channel), op_gainerror->at(channel), _cfgCOpH);
 
         op_hits.push_back(op_hit);
 

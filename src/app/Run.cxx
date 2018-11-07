@@ -55,29 +55,35 @@ namespace wcopreco{
       std::vector< std::vector<double> > decon_vv = hits_found_beam.get_decon_vv();
       double beam_start_time =merged_beam.at(0).get_time_from_trigger();
 
+      const Config_FlashesBeam cfg_FB;
+      const Config_Opflash cfg_OpF;
       wcopreco::Flashes_beam flashfinder_beam( &totPE_v,
                                               &mult_v,
                                               &l1_totPE_v,
                                               &l1_mult_v,
                                               decon_vv,
-                                              beam_start_time);
+                                              beam_start_time,
+                                              cfg_FB,
+                                              cfg_OpF);
 
       flashes_beam = flashfinder_beam.get_beam_flashes();
       // std::cout << "\n\n" << flashes_beam.size() << " Beam Flashes in Event\n";
 
       // //Create the Hitfinder for COSMICS
-      wcopreco::HitFinder_cosmic hits_found(&merged_cosmic, &op_gain, &op_gainerror);
+      const Config_COpHit cfg_COpH;
+      wcopreco::HitFinder_cosmic hits_found(&merged_cosmic, &op_gain, &op_gainerror, cfg_COpH);
 
       //flashes for cosmics
       std::vector<COphitSelection>  hits = hits_found.get_ophits_group();
-      wcopreco::Flashes_cosmic flashfinder_cosmic(&hits);
+      wcopreco::Flashes_cosmic flashfinder_cosmic(&hits, cfg_OpF);
       flashes_cosmic = flashfinder_cosmic.get_cosmic_flashes();
       // std::cout << flashes_cosmic.size() << " Cosmic Flashes in Event\n";
 
       // std::cout << flashes.size() << " flashes were found in the cosmic selection\n";
 
       //flash filtering
-      wcopreco::FlashFiltering flashesfiltered(&flashes_cosmic, &flashes_beam);
+      const Config_FlashFiltering cfg_FF;
+      wcopreco::FlashFiltering flashesfiltered(&flashes_cosmic, &flashes_beam, cfg_FF);
       flashes = flashesfiltered.get_flashes();
       // std::cout << flashes.size() << " Matched Flashes in Event\n\n";
 

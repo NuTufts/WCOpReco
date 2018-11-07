@@ -4,19 +4,22 @@
 
 using namespace wcopreco;
 
-wcopreco::Opflash::Opflash(COphitSelection &ophits) //cosmic
+wcopreco::Opflash::Opflash(COphitSelection &ophits, const Config_Opflash &configOpF) //cosmic
   : type(1)
   , flash_id (-1)
+  , _cfgOpF(configOpF)
 {
-  for (int i=0;i!=32;i++){
+  PE.resize(_cfgOpF._num_channels);
+  PE_err.resize(_cfgOpF._num_channels);
+  for (int i=0;i!=_cfgOpF._num_channels;i++){
     PE[i] = 0;
-    PE_err[i] = 6.4; // 11/sqrt(3.)
+    PE_err[i] = _cfgOpF._PE_err_cosmic;
   }
   time = 0;
   total_PE = 0;
   for (size_t i=0; i!= ophits.size(); i++){
     fired_channels.push_back(ophits.at(i)->get_ch_no());
-    PE[ophits.at(i)->get_ch_no()] = ophits.at(i)->get_PE() - 0.15*2; // 250 kHz at 0.6 us ...
+    PE[ophits.at(i)->get_ch_no()] = ophits.at(i)->get_PE() - _cfgOpF._PE_subtract*2;
     PE_err[ophits.at(i)->get_ch_no()] = ophits.at(i)->get_PE_err();
     time += ophits.at(i)->get_PE() * ophits.at(i)->get_time();
     total_PE += ophits.at(i)->get_PE() ;
@@ -27,22 +30,26 @@ wcopreco::Opflash::Opflash(COphitSelection &ophits) //cosmic
   }else{
     time = ophits.at(0)->get_time();
   }
-  float bin_width = 15.625/1000.; //this  should be derived from det constants in larlite/larsoft
-  low_time = time - 3 * bin_width;
-  high_time = time + 37 * bin_width;
+  float bin_width = _cfgOpF._tick_width_us; //this  should be derived from det constants in larlite/larsoft
+  low_time = time - _cfgOpF._flash_low_time_cushion * bin_width;
+  high_time = time + _cfgOpF._flash_high_time_cushion * bin_width;
 
 }
 
-wcopreco::Opflash::Opflash(const std::vector<std::vector<double>> &vec_v, double start_time, int start_bin, int end_bin, float bin_width) //beam
+wcopreco::Opflash::Opflash(const std::vector<std::vector<double>> &vec_v, double start_time, int start_bin, int end_bin , const Config_Opflash &configOpF) //beam
   : type(2)
   , flash_id (-1)
+  , _cfgOpF (configOpF)
 {
+  PE.resize(_cfgOpF._num_channels);
+  PE_err.resize(_cfgOpF._num_channels);
+  float bin_width = _cfgOpF._rebin_frac*_cfgOpF._tick_width_us;
   low_time = start_time + (start_bin+0.5)*bin_width;
   high_time = start_time + (end_bin-0.5)*bin_width;
 
-  for (int i=0;i!=32;i++){
+  for (int i=0;i!=_cfgOpF._num_channels;i++){
     PE[i] = 0;
-    PE_err[i] = 0.2; // 0.2 PE as base ...
+    PE_err[i] = _cfgOpF._PE_err_beam;
   }
 
   double max = 0;
@@ -51,17 +58,17 @@ wcopreco::Opflash::Opflash(const std::vector<std::vector<double>> &vec_v, double
   for (int i=start_bin; i!=end_bin;i++){
     double peak = 0;
     double mult = 0;
-    for (int j=0;j!=32;j++){
+    for (int j=0;j!=_cfgOpF._num_channels;j++){
       double content = vec_v[j].at(i);
-      if (content < 0.2) content = 0;
+      if (content < _cfgOpF._PE_err_beam) content = 0;
       peak += content;
       PE[j] += content;
-      if (content>1.5) {
-	mult++;
+      if (content>_cfgOpF._mult_content_thresh){
+	       mult++;
       }
     }
 
-    if (peak > max && mult >=3){
+    if (peak > max && mult >=_cfgOpF._mult_required){
       max = peak;
       max_bin = i;
     }
@@ -71,8 +78,8 @@ wcopreco::Opflash::Opflash(const std::vector<std::vector<double>> &vec_v, double
 
 
   total_PE = 0;
-  for (int i=0;i!=32;i++){
-    PE[i] -= 1.875; // 7.5 us * random noise ...
+  for (int i=0;i!=_cfgOpF._num_channels;i++){
+    PE[i] -= _cfgOpF._PE_err_stat_beam ;
     if (PE[i]<0) PE[i] = 0;
     total_PE += PE[i];
 
@@ -81,8 +88,8 @@ wcopreco::Opflash::Opflash(const std::vector<std::vector<double>> &vec_v, double
     }
 
     PE_err[i] = sqrt(pow(PE_err[i],2) // standard error
-		     + (PE[i] + 1.875*2) //statistical term
-		     + pow(PE[i]*0.02,2) // 2% base systematic uncertainties
+		     + (PE[i] + _cfgOpF._PE_err_stat_beam*2) //statistical term
+		     + pow(PE[i]*_cfgOpF._PE_err_unc_beam,2) // 2% base systematic uncertainties
 		     );
 
   }
@@ -122,13 +129,14 @@ void wcopreco::Opflash::swap_channels(){
   PE_err[26] = temp;
 }
 
-void wcopreco::Opflash::Add_l1info(std::vector<double> *totPE_v, std::vector<double> *mult_v, double start_time, int start_bin, int end_bin, float bin_width){
+void wcopreco::Opflash::Add_l1info(std::vector<double> *totPE_v, std::vector<double> *mult_v, double start_time, int start_bin, int end_bin, const Config_Opflash &configOpF){
+  float bin_width = _cfgOpF._rebin_frac*_cfgOpF._tick_width_us;
   std::vector<int> fired_bin;
   std::vector<double> fired_pe;
   for (int i=start_bin; i!=end_bin;i++){
     double pe = totPE_v->at(i);
     double mult = mult_v->at(i);
-    if (pe >=10 && mult>=3){
+    if (pe >=_cfgOpF._addl1_pe_thresh && mult>=_cfgOpF._addl1_mult_thresh){
       fired_bin.push_back(i);
       fired_pe.push_back(pe);
     }
@@ -149,11 +157,6 @@ void wcopreco::Opflash::Add_l1info(std::vector<double> *totPE_v, std::vector<dou
       }
     }
   }
-
-  // std::cout << l1_fired_time.size() << std::endl;
-  // for (size_t i = 0; i!= l1_fired_time.size(); i++){
-  //   std::cout << l1_fired_time.at(i) << " " << l1_fired_pe.at(i) << std::endl;
-  // }
 
 }
 

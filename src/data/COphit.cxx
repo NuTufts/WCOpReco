@@ -2,11 +2,12 @@
 
 using namespace wcopreco;
 
-wcopreco::COphit::COphit(int ch_no, OpWaveform *wfm, double time, double gain, double gain_err)
+wcopreco::COphit::COphit(int ch_no, OpWaveform *wfm, double time, double gain, double gain_err , const Config_COpHit &config)
   : channel_no(ch_no)
   , time(time)
   , gain(gain)
   , gain_err(gain_err)
+  , _cfg(config)
 {
   // calculate baseline
   baseline = wfm->at(0);

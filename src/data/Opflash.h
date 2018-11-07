@@ -2,18 +2,18 @@
 #define Opflash_h
 
 #include "COphit.h"
-#include "Config_Params.h"
+#include "Config_Opflash.h"
 #include <math.h>
 #include <set>
 
 namespace wcopreco{
   class Opflash{
   public:
-    Opflash(COphitSelection &ophits);
-    Opflash(const std::vector<std::vector<double>> &vec_v, double start_time, int start_bin, int end_bin, float bin_width=6*15.625/1000.); //bin width should be derived from detector constants when in larlite/larsoft
+    Opflash(COphitSelection &ophits, const Config_Opflash &configOpF);
+    Opflash(const std::vector<std::vector<double>> &vec_v, double start_time, int start_bin, int end_bin, const Config_Opflash &configOpF);
     ~Opflash();
 
-    void Add_l1info(std::vector<double>* vec1, std::vector<double> *vec2, double start_time , int start_bin, int end_bin, float bin_width=6*15.625/1000.);
+    void Add_l1info(std::vector<double>* vec1, std::vector<double> *vec2, double start_time , int start_bin, int end_bin, const Config_Opflash &configOpF);
 
     void set_flash_id(int value){flash_id = value;};
     int get_flash_id(){return flash_id;};
@@ -34,7 +34,10 @@ namespace wcopreco{
 
     void swap_channels();
 
+
+
   protected:
+    Config_Opflash _cfgOpF;
 
     int type;
     int flash_id;
@@ -44,8 +47,8 @@ namespace wcopreco{
     double time;
     double total_PE;
     std::vector<int> fired_channels;
-    double PE[32];
-    double PE_err[32];
+    std::vector<double> PE;
+    std::vector<double> PE_err;
 
     std::vector<double> l1_fired_time;
     std::vector<double> l1_fired_pe;

@@ -7,51 +7,53 @@ namespace wcopreco {
                                         std::vector<double> *l1_totPE_v,
                                         std::vector<double> *l1_mult_v,
                                         std::vector< std::vector<double> > decon_vv,
-                                        double beam_start_time)
+                                        double beam_start_time,
+                                        const Config_FlashesBeam &configFB,
+                                        const Config_Opflash &configOpF)
+    : _cfgOpF(configOpF) ,  _cfgFB(configFB)
   {
     //Module for flash finding for beams
 
     std::vector<int> flash_time;
-    flash_time.reserve(250);
+    flash_time.reserve(_cfgFB._nbins_beam / _cfgFB._rebin_frac);
     std::vector<double> flash_pe;
 
-    double prev_pe_a[32];
-    double curr_pe_a[32];
+    double prev_pe_a[_cfgFB._num_channels];
+    double curr_pe_a[_cfgFB._num_channels];
 
-    for (int i=0;i!=250;i++){
+    for (int i=0;i!=_cfgFB._nbins_beam / _cfgFB._rebin_frac;i++){
       double pe = totPE_v->at(i);
       double mult = mult_v->at(i);
 
-      // criteria: multiplicity needs to be higher than 3, PE needs to be higher than 6
-      if (pe >= 6 && mult >= 3){
+      if (pe >= _cfgFB._bflash_pe_thresh && mult >= _cfgFB._bflash_mult_thresh){
         bool flag_save = false;
         //first time through:
         if (flash_time.size()==0){
   	       flag_save = true;
-  	       for (int j=0;j!=32;j++){
+  	       for (int j=0;j!=_cfgFB._num_channels;j++){
   	          prev_pe_a[j] = decon_vv.at(j).at(i);
   	       }
         }
         // all other times through:
         else{
-  	       for (int j=0;j!=32;j++){
+  	       for (int j=0;j!=_cfgFB._num_channels;j++){
               curr_pe_a[j] = decon_vv[j].at(i);
   	       }
-  	       if (i - flash_time.back() >= 78){
+  	       if (i - flash_time.back() >= _cfgFB._bflash_bin_diff_p0){
   	          flag_save = true;
            }
-           else if (i-flash_time.back() > 4 && pe > flash_pe.back()){
-  	          if (i-flash_time.back()>15){
+           else if (i-flash_time.back() > _cfgFB._bflash_bin_diff_p1 && pe > flash_pe.back()){
+  	          if (i-flash_time.back()> _cfgFB._bflash_bin_diff_p2){
   	             flag_save = true;
   	          }
               else{
-                 if (KS_maxdiff(32,prev_pe_a,curr_pe_a) > 0.1){
+                 if (KS_maxdiff(_cfgFB._num_channels,prev_pe_a,curr_pe_a) > _cfgFB._KS_test_thresh){
   	               flag_save = true;
   	             }
   	          }
   	       }
 
-           for (int j=0;j!=32;j++){
+           for (int j=0;j!=_cfgFB._num_channels;j++){
               prev_pe_a[j] = decon_vv[j].at(i);
   	       }
         }
@@ -61,7 +63,7 @@ namespace wcopreco {
           	flash_pe.push_back(pe);
         }
         else{
-  	       if (i - flash_time.back()<=6 && pe > flash_pe.back())
+  	       if (i - flash_time.back()<= _cfgFB._bflash_pe_thresh && pe > flash_pe.back())
              {
              flash_pe.back()=pe;
            }
@@ -71,24 +73,24 @@ namespace wcopreco {
 
     for (size_t i=0; i!=flash_time.size(); i++){
       //dertermine start and end bin of flash
-      int start_bin = flash_time.at(i)-2;
+      int start_bin = flash_time.at(i)-_cfgFB._bflash_bin_start_cushion;
       if (start_bin <0) start_bin = 0;
 
-      int end_bin = start_bin + 78;
-      if (end_bin > 250) end_bin = 250;
+      int end_bin = start_bin + _cfgFB._bflash_bin_diff_p0;
+      if (end_bin > _cfgFB._nbins_beam / _cfgFB._rebin_frac) end_bin = _cfgFB._nbins_beam / _cfgFB._rebin_frac;
       if (i+1<flash_time.size()){
-        if (end_bin > flash_time.at(i+1)-2) {
-          end_bin = flash_time.at(i+1)-2;
+        if (end_bin > flash_time.at(i+1)-_cfgFB._bflash_bin_start_cushion) {
+          end_bin = flash_time.at(i+1)-_cfgFB._bflash_bin_start_cushion;
         }
       }
 
       //check with the next bin content ...
       //create Opflash
 
-      Opflash *flash = new Opflash(decon_vv, beam_start_time, start_bin, end_bin);
+      Opflash *flash = new Opflash(decon_vv, beam_start_time, start_bin, end_bin, _cfgOpF);
       for (int p=0; p< l1_totPE_v->size(); p++){
       }
-      flash->Add_l1info(l1_totPE_v, l1_mult_v, beam_start_time, start_bin, end_bin);
+      flash->Add_l1info(l1_totPE_v, l1_mult_v, beam_start_time, start_bin, end_bin, _cfgOpF);
       beam_flashes.push_back(flash);
 
       }

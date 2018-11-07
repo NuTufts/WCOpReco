@@ -3,8 +3,8 @@
 
 #include "Flashes_beam.h"
 #include "Flashes_cosmic.h"
-#include "WCOpReco/Config_Params.h"
 #include "WCOpReco/Opflash.h"
+#include "WCOpReco/Config_FlashFiltering.h"
 
 namespace wcopreco{
   //class to filter Flashes
@@ -12,7 +12,7 @@ namespace wcopreco{
 
   class FlashFiltering {
   public:
-    FlashFiltering(OpflashSelection *cosmic_flashes, OpflashSelection *beam_flashes);
+    FlashFiltering(OpflashSelection *cosmic_flashes, OpflashSelection *beam_flashes, const Config_FlashFiltering &configFF);
     ~FlashFiltering() {};
 
     OpflashSelection& get_flashes(){return flashes;};
@@ -34,6 +34,8 @@ namespace wcopreco{
     OpFlashSet all_set;
     OpFlashSet beam_set;
     OpFlashSet cosmic_set;
+
+    Config_FlashFiltering _cfg;
 
   };
 

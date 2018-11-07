@@ -44,8 +44,6 @@ namespace wcopreco {
     // _bflash_bin_diff_p2  = 15 ; //Flashes beams
     // _KS_test_thresh  = 0.1 ; //Flashes beams
     // _bflash_bin_start_cushion = 2  ; //Flashes beam
-    // _flash_filter_time_thresh = 2.4 ; //Flashfiltering
-    // _flash_filter_pe_thresh = 0.7  ; //Flashfiltering
     // _rc_tau_badch  = 28.6 ; //UB_rc
     // _rc_tau_goodch = 800.0; //UB_rc
     // _spe_p0 = 19.6348 ; //UB_spe
@@ -61,18 +59,7 @@ namespace wcopreco {
     // _cal_egral_p3 = 4.5715824e4;  //COPHIT
     // _cal_egral_p4 = 8.62296e+00;  //COPHIT
     // _cal_egral_p5 = 6.76898e-04;  //COPHIT
-    // _PE_err_cosmic = 6.4; //Opflash
-    // _PE_subtract = 0.15; //Opflash
-    // _flash_low_time_cushion  = -3; //Opflash
-    // _flash_high_time_cushion = +37; //Opflash
-    // _PE_err_beam = 0.2; //Opflash
-    // _mult_content_thresh = 1.5; //Opflash
-    // _mult_required = 3; //Opflash
-    // _PE_err_stat_beam = 1.875;//Opflash
-    // _PE_err_unc_beam = 0.02;//Opflash
-    // _do_swap_channels  = true ;//Opflash
-    // _addl1_pe_thresh = 10.0;//Opflash
-    // _addl1_mult_thresh = 3.0;//Opflash
+
 
   //
   // void _set_num_types_and_bins_per__type(int n, std::vector<int> bins_per_type) {

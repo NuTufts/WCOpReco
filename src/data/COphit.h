@@ -6,12 +6,14 @@
 #include <vector>
 #include <math.h>
 
+#include "Config_COpHit.h"
+
 
 namespace wcopreco{
 
   class COphit{
   public:
-    COphit(int ch_no, OpWaveform *wfm, double time, double gain, double gain_err);
+    COphit(int ch_no, OpWaveform *wfm, double time, double gain, double gain_err, const Config_COpHit &config);
     ~COphit();
 
     double get_time(){return time;};
@@ -42,6 +44,8 @@ namespace wcopreco{
 
     double PE;
     double PE_err;
+
+    Config_COpHit _cfg;
 
   };
 

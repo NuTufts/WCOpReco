@@ -12,6 +12,8 @@
 #include "WCOpReco/OpWaveformCollection.h"
 #include "WCOpReco/Deconvolver.h"
 
+#include "WCOpReco/Config_Hitfinder_Beam.h"
+
 //c++ includes
 #include <vector>
 #include <iostream>
@@ -29,7 +31,7 @@ namespace wcopreco{
 
   class HitFinder_beam {
   public:
-    HitFinder_beam(OpWaveformCollection *deconvolved_beam, std::vector<kernel_fourier_container> &kernel_container_v);
+    HitFinder_beam(OpWaveformCollection &deconvolved_beam, std::vector<kernel_fourier_container> &kernel_container_v, const Config_Hitfinder_Beam &, const Config_Deconvolver &);
     ~HitFinder_beam() {};
 
     void Perform_L1(std::vector<double> inverse_res1,
@@ -49,6 +51,7 @@ namespace wcopreco{
 
 
   protected:
+    Config_Hitfinder_Beam _cfg;
     int channel;
     std::vector<double> totPE_v;
     std::vector<double> mult_v;

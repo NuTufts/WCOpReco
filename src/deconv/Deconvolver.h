@@ -14,6 +14,7 @@
 #include "WCOpReco/OpWaveform.h"
 #include "WCOpReco/OpWaveformCollection.h"
 #include "WCOpReco/EventOpWaveforms.h"
+#include "WCOpReco/Config_Deconvolver.h"
 
 
 //c++ includes
@@ -33,7 +34,7 @@ namespace wcopreco{
 
   class Deconvolver {
   public:
-    Deconvolver(OpWaveformCollection *merged_beam, bool with_filters, std::vector<kernel_fourier_container> &input_k_container_v); //OpWaveform op_wfm, kernel_fourier_shape kernel_fourier, noise_remover noise, std::vector<short???> LL_shape
+    Deconvolver(OpWaveformCollection &merged_beam, bool with_filters, std::vector<kernel_fourier_container> &input_k_container_v, const Config_Deconvolver &); //OpWaveform op_wfm, kernel_fourier_shape kernel_fourier, noise_remover noise, std::vector<short???> LL_shape
     ~Deconvolver() {};
 
 
@@ -45,18 +46,14 @@ namespace wcopreco{
 
 
     void set_filter_status(bool status) {filter_status = status;}
-    OpWaveformCollection Deconvolve_Collection(OpWaveformCollection * merged_beam);
+    OpWaveformCollection Deconvolve_Collection(OpWaveformCollection & merged_beam);
     double HighFreqFilter(double frequency);
     double LateLightFilter(double frequency2);
-    void Remove_Baseline_Leading_Edge(OpWaveform *wfm);
-    void Remove_Baseline_Secondary(OpWaveform *wfm);
-    OpWaveform Deconvolve_One_Wfm(OpWaveform wfm, kernel_fourier_container kernel_container);
-    void Perform_L1(std::vector<double> inverse_res1, std::vector<double> decon_v[32], std::vector<double> *totPE_v, std::vector<double> *mult_v, std::vector<double> *l1_totPE_v, std::vector<double> *l1_mult_v, int ch);
+    void Remove_Baseline_Leading_Edge(OpWaveform &wfm);
+    void Remove_Baseline_Secondary(OpWaveform &wfm);
+    OpWaveform Deconvolve_One_Wfm(OpWaveform &wfm, kernel_fourier_container kernel_container);
     std::pair<double,double> cal_mean_rms(std::vector<double> wfm, int nbin);
-    void testPlot(std::string Title, std::vector<double> input);
-    void testPlot(std::string Title, OpWaveform input);
-    void testPlot(std::string Title, OpWaveform input, std::vector<double> hits, double threshold);
-    void testPlot(std::string Title, OpWaveformCollection inputcollection, Opflash *flash);
+
 
 
 
@@ -69,6 +66,7 @@ namespace wcopreco{
     */
     //UB_rc Make_UB_rc(int ch);
   protected:
+    Config_Deconvolver _cfg;
     int nbins;
 
     bool filter_status;

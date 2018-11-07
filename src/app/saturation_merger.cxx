@@ -3,7 +3,8 @@
 
 namespace wcopreco {
 
-  saturation_merger::saturation_merger(UBEventWaveform UB_Ev) {
+  saturation_merger::saturation_merger(UBEventWaveform UB_Ev, const Config_saturation_merger &cfg)
+  :_cfg(cfg) {
 
     OpWaveformCollection BHG_WFs;
     OpWaveformCollection BLG_WFs;
@@ -59,12 +60,12 @@ namespace wcopreco {
       int nbins;
       //Start with a loop through the beam lg waveforms
       for (int n=0; n < BLG_WFs->size() ; n++){
-        baseline =2050;
+        baseline =_cfg._baseline_default;
         nbins = BLG_WFs->at(n).size();
         temp_baseline = findBaselineLg(&BLG_WFs->at(n), nbins);
 
 
-        if (fabs(temp_baseline-baseline) <= 8 ) {
+        if (fabs(temp_baseline-baseline) <= _cfg._baseline_difference_max ) {
 
           baseline = temp_baseline;
 
@@ -102,12 +103,12 @@ namespace wcopreco {
   double wcopreco::saturation_merger::findBaselineLg(OpWaveform *wfm, int nbin){
     // I think this function needs the histogram, it's using fill to bin up the
     // different signals to find the mode in the first 20 ticks of the wfm --Josh
-    TH1F *h = new TH1F("h","",1000,1500-0.5,2500-0.5);
+    TH1F *h = new TH1F("h","",1000,_cfg._low_bound_baseline_search-0.5,_cfg._high_bound_baseline_search-0.5);
     double baseline=0;
-    for(int i=0; i!=20; i++){
+    for(int i=0; i!=_cfg._nbins_baseline_search; i++){
       double content = wfm->at(i);
       //    baseline += content;
-      if(content>1500 && content<2500){ h->Fill(content); }
+      if(content>_cfg._low_bound_baseline_search && content<_cfg._high_bound_baseline_search){ h->Fill(content); }
     }
     //  baseline /= 6.;
     baseline = h->GetBinCenter(h->GetMaximumBin()+1);
@@ -115,11 +116,12 @@ namespace wcopreco {
     return baseline;
   }//End of Function
 
-OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG, OpWaveformCollection* CLG, short saturation_threshold){
+OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG, OpWaveformCollection* CLG){
   //first pair the low and high gain - can probably make as seperate function...
   //want to remove hard coded values eventually
-  int tick_window = 20;
-  float tick = .015625;
+  short saturation_threshold =_cfg._sat_threshold;
+  int tick_window = _cfg._cosmic_tick_window;
+  float tick = _cfg._tick_width_us;
   //std::cout <<"test check" << tick_window*tick <<std::endl;
   // if (CHG->size()!=CLG->size()){
   //   std::cout << "HG AND LG NOT SAME SIZE!!" << std::endl;
@@ -231,14 +233,13 @@ OpWaveformCollection* saturation_merger::cosmic_merger(OpWaveformCollection* CHG
   return CHG;
 }
 
-OpWaveformCollection* saturation_merger::beam_merger(OpWaveformCollection* BHG, OpWaveformCollection* BLG, short saturation_threshold) {
+OpWaveformCollection* saturation_merger::beam_merger(OpWaveformCollection* BHG, OpWaveformCollection* BLG) {
   OpWaveformCollection* merged_beam;
   if ((BHG->size() != BLG->size() ) && (BHG->size()>0)) {
     std::cout << "Beam High Gain Collection and Beam Low Gain Collection do not have the same number of entries. Returning Empy merge\n";
     return merged_beam;
   }
-
-
+  short saturation_threshold =_cfg._sat_threshold;
   int n_channels = BHG->size();
   bool is_saturated;
   int count_bin_sat=0;
@@ -248,7 +249,7 @@ OpWaveformCollection* saturation_merger::beam_merger(OpWaveformCollection* BHG, 
 
   //Loop through each waveform
   //(generally one per channel so 32 or 36 waveforms for each gain of beam)
-  for(int i =0; i<n_channels; i++){
+  for(int i =0; i<_cfg._num_channels; i++){
 
     //These calls get the index of the wfm that occurs at the channel i
     //for each gain, in case the two Opwaveformcollections aren't ordered the
@@ -265,7 +266,7 @@ OpWaveformCollection* saturation_merger::beam_merger(OpWaveformCollection* BHG, 
     for (int bin =0; bin<BHG->at(idx_ch_hg).size(); bin++){
       if (BHG->at(idx_ch_hg).at(bin) > saturation_threshold) {
         count_bin_sat++ ;
-        if(count_bin_sat >= 3){
+        if(count_bin_sat >= _cfg._nbins_saturation_threshold){
           //Consider it saturated
           is_saturated = true ;
           break;
@@ -314,40 +315,10 @@ OpWaveform wcopreco::saturation_merger::replaceSaturatedBin(OpWaveform &high, Op
 }
 
   float saturation_merger::findScaling(int channel){
-    if(channel == 0){ return 10.13; }
-    if(channel == 1){ return 10.20; }
-    if(channel == 2){ return 10.13; }
-    if(channel == 3){ return 10.05; }
-    if(channel == 4){ return 9.96; }
-    if(channel == 5){ return 9.95; }
-    if(channel == 6){ return 10.04; }
-    if(channel == 7){ return 9.58; }
-    if(channel == 8){ return 9.42; }
-    if(channel == 9){ return 9.81; }
-    if(channel == 10){ return 9.25; }
-    if(channel == 11){ return 9.61; }
-    if(channel == 12){ return 9.56; }
-    if(channel == 13){ return 9.35; }
-    if(channel == 14){ return 9.99; }
-    if(channel == 15){ return 9.66; }
-    if(channel == 16){ return 10.26; }
-    if(channel == 17){ return 9.82; }
-    if(channel == 18){ return 10.32; }
-    if(channel == 19){ return 10.08; }
-    if(channel == 20){ return 9.77; }
-    if(channel == 21){ return 9.64; }
-    if(channel == 22){ return 10.14; }
-    if(channel == 23){ return 9.74; }
-    if(channel == 24){ return 9.76; }
-    if(channel == 25){ return 10.10; }
-    if(channel == 26){ return 10.48; }
-    if(channel == 27){ return 9.81; }
-    if(channel == 28){ return 9.99; }
-    if(channel == 29){ return 9.79; }
-    if(channel == 30){ return 9.93; }
-    if(channel == 31){ return 10.01; }
-    if(channel>35) {std::cout << "    Error in saturation_merger::findScaling, you you input channel bigger than 31:  " << channel << std::endl;}
-    return 0;
+
+    if(channel > (_cfg._scaling_by_channel.size() - 1)) {std::cout << "    Error in saturation_merger::findScaling, you you input channel bigger than 31:  " << channel << std::endl;
+    return 0;}
+    else {return _cfg._scaling_by_channel[channel];}
   }//End of Function
 
 }//end of namespace

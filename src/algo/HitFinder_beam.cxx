@@ -2,11 +2,13 @@
 
 namespace wcopreco {
 
-  wcopreco::HitFinder_beam::HitFinder_beam(OpWaveformCollection *deconvolved_beam, std::vector<kernel_fourier_container> &kernel_container_v){
+  wcopreco::HitFinder_beam::HitFinder_beam(OpWaveformCollection &deconvolved_beam, std::vector<kernel_fourier_container> &kernel_container_v, const Config_Hitfinder_Beam & cfg_HB, const Config_Deconvolver & cfg_DC)
+  :_cfg(cfg_HB)
+  {
     //main function for beam hit finder
 
     //perform deconvolution with kernals add and with filters (true,true)
-    wcopreco::Deconvolver filtered_wfm(deconvolved_beam, true, kernel_container_v);
+    wcopreco::Deconvolver filtered_wfm(deconvolved_beam, true, kernel_container_v, cfg_DC);
     OpWaveformCollection filtered_collection = filtered_wfm.Deconvolve_Collection(deconvolved_beam);
 
     totPE_v.resize(250);

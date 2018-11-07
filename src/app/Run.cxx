@@ -19,8 +19,11 @@ namespace wcopreco{
       std::vector<float> op_gain = _UB_Ev_wfm.get_op_gain();
       std::vector<float> op_gainerror = _UB_Ev_wfm.get_op_gainerror();
 
+      const Config_saturation_merger cfg_SM;
+      const Config_Deconvolver cfg_DC;
+      const Config_Hitfinder_Beam cfg_HB;
       //create the merger and then get a Merged UBEventWaveform UB_Ev_Merged
-      wcopreco::saturation_merger *merger = new wcopreco::saturation_merger(_UB_Ev_wfm);
+      wcopreco::saturation_merger *merger = new wcopreco::saturation_merger(_UB_Ev_wfm, cfg_SM);
       wcopreco::OpWaveformCollection merged_beam = merger->get_merged_beam(); //This is inside UB_Ev_Merged
       wcopreco::OpWaveformCollection merged_cosmic = merger->get_merged_cosmic(); //This is inside UB_Ev_Merged
       wcopreco::UBEventWaveform UB_Ev_Merged = merger->get_merged_UB_Ev();
@@ -42,7 +45,7 @@ namespace wcopreco{
       }
 
       //do beam hitfinding
-      wcopreco::HitFinder_beam hits_found_beam(&merged_beam, kernel_container_v);
+      wcopreco::HitFinder_beam hits_found_beam(merged_beam, kernel_container_v, cfg_HB, cfg_DC);
 
       // do beam flash finding
       std::vector<double> totPE_v = hits_found_beam.get_totPE_v();
@@ -78,9 +81,9 @@ namespace wcopreco{
       flashes = flashesfiltered.get_flashes();
       // std::cout << flashes.size() << " Matched Flashes in Event\n\n";
 
-      // for (int i =0 ; i<flashes.size(); i++) {
-      //     if (flashes.at(i)->get_type() ==2) std::cout << flashes.at(i)->get_total_PE() << "\n";
-      // }
+      for (int i =0 ; i<flashes.size(); i++) {
+          if (flashes.at(i)->get_type() == 2) std::cout << flashes.at(i)->get_total_PE() << "\n";
+      }
 
       delete merger;
 

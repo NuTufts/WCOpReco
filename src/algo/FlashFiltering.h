@@ -3,6 +3,7 @@
 
 #include "Flashes_beam.h"
 #include "Flashes_cosmic.h"
+#include "WCOpReco/Config_Params.h"
 #include "WCOpReco/Opflash.h"
 
 namespace wcopreco{

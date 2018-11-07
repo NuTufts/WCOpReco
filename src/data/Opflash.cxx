@@ -8,15 +8,15 @@ wcopreco::Opflash::Opflash(COphitSelection &ophits) //cosmic
   : type(1)
   , flash_id (-1)
 {
-  for (int i=0;i!=32;i++){
+  for (int i=0;i!=_num_channels;i++){
     PE[i] = 0;
-    PE_err[i] = 6.4; // 11/sqrt(3.)
+    PE_err[i] = _PE_err_cosmic; // 11/sqrt(3.)
   }
   time = 0;
   total_PE = 0;
   for (size_t i=0; i!= ophits.size(); i++){
     fired_channels.push_back(ophits.at(i)->get_ch_no());
-    PE[ophits.at(i)->get_ch_no()] = ophits.at(i)->get_PE() - 0.15*2; // 250 kHz at 0.6 us ...
+    PE[ophits.at(i)->get_ch_no()] = ophits.at(i)->get_PE() - _PE_subtract*2; // 250 kHz at 0.6 us ...
     PE_err[ophits.at(i)->get_ch_no()] = ophits.at(i)->get_PE_err();
     time += ophits.at(i)->get_PE() * ophits.at(i)->get_time();
     total_PE += ophits.at(i)->get_PE() ;
@@ -27,9 +27,9 @@ wcopreco::Opflash::Opflash(COphitSelection &ophits) //cosmic
   }else{
     time = ophits.at(0)->get_time();
   }
-  float bin_width = 15.625/1000.; //this  should be derived from det constants in larlite/larsoft
-  low_time = time - 3 * bin_width;
-  high_time = time + 37 * bin_width;
+  float bin_width = _tick_width_us; //this  should be derived from det constants in larlite/larsoft
+  low_time = time - _flash_low_time_cushion * bin_width;
+  high_time = time + _flash_high_time_cushion * bin_width;
 
 }
 
@@ -40,9 +40,9 @@ wcopreco::Opflash::Opflash(const std::vector<std::vector<double>> &vec_v, double
   low_time = start_time + (start_bin+0.5)*bin_width;
   high_time = start_time + (end_bin-0.5)*bin_width;
 
-  for (int i=0;i!=32;i++){
+  for (int i=0;i!=_num_channels;i++){
     PE[i] = 0;
-    PE_err[i] = 0.2; // 0.2 PE as base ...
+    PE_err[i] = _PE_err_beam; // 0.2 PE as base ...
   }
 
   double max = 0;
@@ -51,17 +51,17 @@ wcopreco::Opflash::Opflash(const std::vector<std::vector<double>> &vec_v, double
   for (int i=start_bin; i!=end_bin;i++){
     double peak = 0;
     double mult = 0;
-    for (int j=0;j!=32;j++){
+    for (int j=0;j!=_num_channels;j++){
       double content = vec_v[j].at(i);
-      if (content < 0.2) content = 0;
+      if (content < _PE_err_beam) content = 0;
       peak += content;
       PE[j] += content;
-      if (content>1.5) {
+      if (content>_mult_content_thresh) {
 	mult++;
       }
     }
 
-    if (peak > max && mult >=3){
+    if (peak > max && mult >=_mult_required){
       max = peak;
       max_bin = i;
     }
@@ -71,8 +71,8 @@ wcopreco::Opflash::Opflash(const std::vector<std::vector<double>> &vec_v, double
 
 
   total_PE = 0;
-  for (int i=0;i!=32;i++){
-    PE[i] -= 1.875; // 7.5 us * random noise ...
+  for (int i=0;i!=_num_channels;i++){
+    PE[i] -= _PE_err_stat_beam;
     if (PE[i]<0) PE[i] = 0;
     total_PE += PE[i];
 
@@ -81,8 +81,8 @@ wcopreco::Opflash::Opflash(const std::vector<std::vector<double>> &vec_v, double
     }
 
     PE_err[i] = sqrt(pow(PE_err[i],2) // standard error
-		     + (PE[i] + 1.875*2) //statistical term
-		     + pow(PE[i]*0.02,2) // 2% base systematic uncertainties
+		     + (PE[i] + _PE_err_stat_beam*2)
+		     + pow(PE[i]*_PE_err_unc_beam,2)
 		     );
 
   }
@@ -128,7 +128,7 @@ void wcopreco::Opflash::Add_l1info(std::vector<double> *totPE_v, std::vector<dou
   for (int i=start_bin; i!=end_bin;i++){
     double pe = totPE_v->at(i);
     double mult = mult_v->at(i);
-    if (pe >=10 && mult>=3){
+    if (pe >=_addl1_pe_thresh && mult>=_addl1_mult_thresh){
       fired_bin.push_back(i);
       fired_pe.push_back(pe);
     }
@@ -141,11 +141,11 @@ void wcopreco::Opflash::Add_l1info(std::vector<double> *totPE_v, std::vector<dou
       l1_fired_pe.push_back(fired_pe.at(0));
     }else{
       if (fired_bin.at(i)-fired_bin.at(i-1)==1){
-	l1_fired_pe.back() += fired_pe.at(i);
+	      l1_fired_pe.back() += fired_pe.at(i);
       }else{
-	double time = start_time + (fired_bin.at(i)+0.5)*bin_width;
-	l1_fired_time.push_back(time);
-	l1_fired_pe.push_back(fired_pe.at(i));
+      	double time = start_time + (fired_bin.at(i)+0.5)*bin_width;
+      	l1_fired_time.push_back(time);
+      	l1_fired_pe.push_back(fired_pe.at(i));
       }
     }
   }

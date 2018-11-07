@@ -2,6 +2,7 @@
 #define COphit_h
 
 #include "OpWaveform.h"
+#include "Config_Params.h"
 #include <vector>
 #include <math.h>
 

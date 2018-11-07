@@ -36,8 +36,8 @@ namespace wcopreco {
     for (size_t j=0; j!=beam_flashes->size();j++){
       Opflash *bflash = beam_flashes->at(j);
       if (prev_cflash!=0){;
-        if (bflash->get_time() - prev_cflash->get_time() < 2.4 && // veto for 3 us
-  	    bflash->get_total_PE() < 0.7 * prev_cflash->get_total_PE())
+        if (bflash->get_time() - prev_cflash->get_time() < _flash_filter_time_thresh && // veto for 3 us
+  	    bflash->get_total_PE() < _flash_filter_pe_thresh * prev_cflash->get_total_PE())
   	       continue;
       }
       flashes.push_back(bflash);
@@ -74,7 +74,7 @@ namespace wcopreco {
   void wcopreco::FlashFiltering::update_pmt_map(){
     for (auto it=flashes.begin(); it!=flashes.end(); it++){
       Opflash *flash = *it;
-      flash->swap_channels();
+      if (_do_swap_channels) flash->swap_channels();
     }
   }
 

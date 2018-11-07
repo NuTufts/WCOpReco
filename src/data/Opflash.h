@@ -2,6 +2,7 @@
 #define Opflash_h
 
 #include "COphit.h"
+#include "Config_Params.h"
 #include <math.h>
 #include <set>
 

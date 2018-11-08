@@ -34,7 +34,7 @@ std::vector<wcopreco::kernel_fourier_container> Build_UB_kernels(wcopreco::Confi
   for (int i =0 ; i<cfg_all._get_cfg_deconvolver()._get_num_channels(); i++){
     wcopreco::UB_spe *spe = new wcopreco::UB_spe(true, op_gain.at(i), cfg_all._get_cfg_ub_spe()); //Place UB_spe on heap, so object not deleted
     kernel_container_v.at(i).add_kernel(spe);
-    if (i == 28){
+    if ( false == cfg_all._get_cfg_cophit()._channel_status_v.at(i) ){
       kernel_container_v.at(i).add_kernel(rc_bad_ch);
     }
     else{

@@ -29,7 +29,7 @@ wcopreco::COphit::COphit(int ch_no, OpWaveform *wfm, double time, double gain, d
   if (integral > _cfg._COphit_integral_thresh || fabs(baseline-_cfg._baseline_default)<_cfg._COphit_baseline_diff_thresh) good_baseline = true;
 
   // special treatment of FEM channel 28 ...
-  if (channel_no == 28) integral = cal_integral(peak);
+  if (_cfg._channel_status_v.at(channel_no) == false) integral = cal_integral(peak);
   if (!good_baseline) integral = cal_integral(peak);
 
   if (good_baseline){

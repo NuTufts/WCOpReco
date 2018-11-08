@@ -11,7 +11,7 @@ namespace wcopreco{
     //bin width should be derived from detector constants when in larlite/larsoft
     float   _tick_width_us;
     //num beam bins/ rebinsize
-    float   _rebin_frac;
+    int   _rebin_frac;
     //num of channels in the detector
     int     _num_channels;
     //  pe error for cosmic, default: 11/sqrt(3.)

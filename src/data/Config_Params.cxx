@@ -2,10 +2,239 @@
 
 namespace wcopreco {
   Config_Params::Config_Params()
-    {
-      
+  {
   }
 
+  void Config_Params::set_num_channels(int n) {
+      _cfg_deconvolver._num_channels = n ;
+      _cfg_flashesbeam._num_channels = n ;
+      _cfg_hitfinder_beam._num_channels = n ;
+      _cfg_opflash._num_channels = n ;
+
+  }
+
+  void Config_Params::set_tick_width_us(float width) {
+      _cfg_deconvolver._tick_width_us = width ;
+      _cfg_hitfinder_beam._tick_width_us = width ;
+      _cfg_opflash._tick_width_us = width ;
+
+  }
+
+  void Config_Params::set_rebin_frac(int n) {
+      _cfg_flashesbeam._rebin_frac = n ;
+      _cfg_hitfinder_beam._rebin_frac = n ;
+      _cfg_opflash._rebin_frac = n ;
+
+  }
+
+  void Config_Params::set_nbins_beam(int n) {
+      _cfg_deconvolver._nbins_beam = n ;
+      _cfg_flashesbeam._nbins_beam = n ;
+      _cfg_hitfinder_beam._nbins_beam = n ;
+  }
+
+  void Config_Params::set_nbins_cosmic(int n) {
+      _cfg_cophit._nbins_cosmic = n ;
+  }
+
+  void Config_Params::set_baseline_default(int baseline) {
+      _cfg_cophit._baseline_default = baseline ;
+  }
+
+  void Config_Params::set_COphit_integral_thresh(double thresh) {
+      _cfg_cophit._COphit_integral_thresh = thresh ;
+  }
+
+  void Config_Params::set_COphit_baseline_diff_thresh(double thresh) {
+      _cfg_cophit._COphit_baseline_diff_thresh = thresh ;
+  }
+
+  void Config_Params::set_pe_factor(double factor) {
+      _cfg_cophit._pe_factor = factor ;
+  }
+
+
+  void Config_Params::set_Baseline_uncertainty(double unc) {
+      _cfg_cophit._Baseline_uncertainty = unc ;
+  }
+
+  void Config_Params::set_Baseline_unc_bad_baseline(double unc) {
+      _cfg_cophit._Baseline_unc_bad_baseline = unc ;
+  }
+
+  void Config_Params::set_cal_integral_p0(double p) {
+      _cfg_cophit._cal_integral_p0 = p ;
+  }
+
+  void Config_Params::set_cal_integral_p1(double p) {
+      _cfg_cophit._cal_integral_p1 = p ;
+  }
+
+  void Config_Params::set_cal_integral_p2(double p) {
+      _cfg_cophit._cal_integral_p2 = p ;
+  }
+
+  void Config_Params::set_cal_integral_p3(double p) {
+      _cfg_cophit._cal_integral_p3 = p ;
+  }
+
+  void Config_Params::set_cal_integral_p4(double p) {
+      _cfg_cophit._cal_integral_p4 = p ;
+  }
+
+  void Config_Params::set_cal_integral_p5(double p) {
+      _cfg_cophit._cal_integral_p5 = p ;
+  }
+
+  void Config_Params::set_baseline_difference_max(double p) {
+      _cfg_deconvolver._baseline_difference_max = p ;
+  }
+
+  void Config_Params::set_high_freq_p0(double p) {
+      _cfg_deconvolver._high_freq_p0 = p ;
+  }
+
+  void Config_Params::set_high_freq_p1(double p) {
+      _cfg_deconvolver._high_freq_p1 = p ;
+  }
+
+  void Config_Params::set_latelight_filter_p0(double p) {
+      _cfg_deconvolver._latelight_filter_p0 = p ;
+  }
+
+  void Config_Params::set_latelight_filter_p1(double p) {
+      _cfg_deconvolver._latelight_filter_p1 = p ;
+  }
+
+  void Config_Params::set_latelight_filter_p2(double p) {
+      _cfg_deconvolver._latelight_filter_p2 = p ;
+  }
+
+  void Config_Params::set_baseline_safety_subtraction(double sub) {
+      _cfg_deconvolver._baseline_safety_subtraction = sub ;
+  }
+
+  void Config_Params::set_xq(double x) {
+      _cfg_deconvolver._xq = x ;
+  }
+
+  void Config_Params::set_xq_diff(double diff) {
+      _cfg_deconvolver._xq_diff = diff ;
+  }
+
+  void Config_Params::set_n_bins_end_wfm(int n) {
+      _cfg_deconvolver._n_bins_end_wfm = n ;
+  }
+
+  void Config_Params::set_small_content_bump(double bump) {
+      _cfg_deconvolver._small_content_bump = bump ;
+  }
+
+  void Config_Params::set_nbins_baseline_search(int n) {
+      _cfg_deconvolver._nbins_baseline_search = n ;
+  }
+
+  void Config_Params::set_bflash_pe_thresh(double thresh) {
+      _cfg_flashesbeam._bflash_pe_thresh = thresh ;
+  }
+
+  void Config_Params::set_bflash_mult_thresh(double thresh) {
+      _cfg_flashesbeam._bflash_mult_thresh = thresh ;
+  }
+
+  void Config_Params::set_bflash_bin_diff_p0(int p) {
+      _cfg_flashesbeam._bflash_bin_diff_p0 = p ;
+  }
+
+  void Config_Params::set_bflash_bin_diff_p1(int p) {
+      _cfg_flashesbeam._bflash_bin_diff_p1 = p ;
+  }
+
+  void Config_Params::set_bflash_bin_diff_p2(int p) {
+      _cfg_flashesbeam._bflash_bin_diff_p2 = p ;
+  }
+
+  void Config_Params::set_KS_test_thresh(double thresh) {
+      _cfg_flashesbeam._KS_test_thresh = thresh ;
+  }
+
+  void Config_Params::set_bflash_bin_start_cushion(int cushion) {
+      _cfg_flashesbeam._bflash_bin_start_cushion = cushion ;
+  }
+
+  void Config_Params::set_flash_filter_time_thresh(double thresh) {
+      _cfg_flashfiltering._flash_filter_time_thresh = thresh ;
+  }
+
+  void Config_Params::set_flash_filter_pe_thresh(double thresh) {
+      _cfg_flashfiltering._flash_filter_pe_thresh = thresh ;
+  }
+
+  void Config_Params::set_do_swap_channels(bool do_swap) {
+      _cfg_flashfiltering._do_swap_channels = do_swap ;
+  }
+
+  void Config_Params::set_l1_content_thresh(double thresh) {
+      _cfg_hitfinder_beam._l1_content_thresh = thresh ;
+  }
+
+  void Config_Params::set_frac_G_t2_first(double frac) {
+      _cfg_hitfinder_beam._frac_G_t2_first = frac ;
+  }
+
+  void Config_Params::set_frac_G_sametime(double frac) {
+      _cfg_hitfinder_beam._frac_G_sametime = frac ;
+  }
+
+  void Config_Params::set_G_p0(double p) {
+      _cfg_hitfinder_beam._G_p0 = p ;
+  }
+
+  void Config_Params::set_G_p1(double p) {
+      _cfg_hitfinder_beam._G_p1 = p ;
+  }
+
+  void Config_Params::set_G_p2(double p) {
+      _cfg_hitfinder_beam._G_p2 = p ;
+  }
+  void Config_Params::set_Lasso_p0(double p) {
+      _cfg_hitfinder_beam._Lasso_p0 = p ;
+  }
+
+  void Config_Params::set_Lasso_p1(int p) {
+      _cfg_hitfinder_beam._Lasso_p1 = p ;
+  }
+
+  void Config_Params::set_Lasso_p2(double p) {
+      _cfg_hitfinder_beam._Lasso_p2 = p ;
+  }
+  void Config_Params::set_totPE_v_thresh(double thresh) {
+      _cfg_hitfinder_beam._totPE_v_thresh = thresh ;
+  }
+
+  void Config_Params::set_mult_v_thresh(double thresh) {
+      _cfg_hitfinder_beam._mult_v_thresh = thresh ;
+  }
+
+  void Config_Params::set_l1_mult_v_thresh(double thresh) {
+      _cfg_hitfinder_beam._l1_mult_v_thresh = thresh ;
+  }
+
+  void Config_Params::set_ophit_group_t_diff_max(double max) {
+      _cfg_hitfinder_cosmic._ophit_group_t_diff_max = max ;
+  }
+  //
+  // void Config_Params::set(double p) {
+  //     _cfg_deconvolver. = p ;
+  // }
+
+  // void Config_Params::set(double p) {
+  //     _cfg_deconvolver. = p ;
+  // }
+  //
+  // void Config_Params::set(double p) {
+  //     _cfg_deconvolver. = p ;
+  // }
 }
 
 

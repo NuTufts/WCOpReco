@@ -19,7 +19,7 @@ namespace wcopreco {
    double  _xq; //Middle Quartile Fitting parameter
    double  _xq_diff; //Quartile Fitting upper and lower dist from middle parameter
    int     _n_bins_end_wfm; //Number of bins at end of deconvolved wfm set to zero
-   double     _small_content_bump; //Small offset amount added to content in wfm after deconvolution.     -
+   double  _small_content_bump; //Small offset amount added to content in wfm after deconvolution.     -
    int     _nbins_baseline_search; //Number of bins to search in order to determine modal baseline     -
 
    void _set_num_channels(int n){_num_channels = n;}

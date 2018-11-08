@@ -23,6 +23,95 @@ namespace wcopreco {
     public:
       Config_Params();
       ~Config_Params() {};
+      //Common
+      void set_num_channels(int n);
+      void set_nbins_beam(int n);
+      void set_nbins_cosmic(int n);
+      //COphit
+      void set_baseline_default( int baseline);
+      void set_COphit_integral_thresh(double thresh);
+      void set_COphit_baseline_diff_thresh(double thresh);
+      void set_pe_factor(double factor);
+      void set_Baseline_uncertainty(double unc);
+      void set_Baseline_unc_bad_baseline(double unc);
+      void set_cal_integral_p0(double p);
+      void set_cal_integral_p1(double p);
+      void set_cal_integral_p2(double p);
+      void set_cal_integral_p3(double p);
+      void set_cal_integral_p4(double p);
+      void set_cal_integral_p5(double p);
+      //Deconvolver
+      void set_baseline_difference_max(double dif);
+      void set_tick_width_us(float width);
+      void set_high_freq_p0(double p);
+      void set_high_freq_p1(double p);
+      void set_latelight_filter_p0(double p);
+      void set_latelight_filter_p1(double p);
+      void set_latelight_filter_p2(double p);
+      void set_baseline_safety_subtraction(double sub);
+      void set_xq(double x);
+      void set_xq_diff(double x);
+      void set_n_bins_end_wfm(int n);
+      void set_small_content_bump(double bump);
+      void set_nbins_baseline_search(int n);
+      //Flashesbeam
+      void set_rebin_frac(int frac);
+      void set_bflash_pe_thresh(double thresh);
+      void set_bflash_mult_thresh(double thresh);
+      void set_bflash_bin_diff_p0(int p);
+      void set_bflash_bin_diff_p1(int p);
+      void set_bflash_bin_diff_p2(int p);
+      void set_KS_test_thresh(double thresh);
+      void set_bflash_bin_start_cushion(int cushion);
+      //FlashFiltering
+      void set_flash_filter_time_thresh(double thresh);
+      void set_flash_filter_pe_thresh(double thresh);
+      void set_do_swap_channels(bool do_swap);
+      //Hitfinder_Beam
+      void set_l1_content_thresh(double thresh);
+      void set_frac_G_t2_first(double frac);
+      void set_frac_G_sametime(double frac);
+      void set_G_p0(double p);
+      void set_G_p1(double p);
+      void set_G_p2(double p);
+      void set_Lasso_p0(double p);
+      void set_Lasso_p1(int p);
+      void set_Lasso_p2(double p);
+      void set_totPE_v_thresh(double thresh);
+      void set_mult_v_thresh(double thresh);
+      void set_l1_mult_v_thresh(double thresh);
+      //Hitfinder_cosmic
+      void set_ophit_group_t_diff_max(double max);
+      //Opflash
+      // void set_PE_err_cosmic
+      // void set_PE_subtract
+      // void set_flash_low_time_cushion
+      // void set_flash_high_time_cushion
+      // void set_PE_err_beam
+      // void set_mult_content_thresh
+      // void set_mult_required
+      // void set_PE_err_stat_beam
+      // void set_PE_err_unc_beam
+      // void set_addl1_pe_thresh
+      // void set_addl1_mult_thresh
+      // void set
+      // void set
+      // void set
+      // void set
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       void _set_cfg_cophit(Config_COpHit cfg){_cfg_cophit = cfg;}
       Config_COpHit _get_cfg_cophit(){return _cfg_cophit;}

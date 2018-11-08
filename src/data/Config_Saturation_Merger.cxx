@@ -2,7 +2,7 @@
 
 namespace wcopreco {
 
-  Config_saturation_merger::Config_Saturation_Merger()
+  Config_Saturation_Merger::Config_Saturation_Merger()
     {
        _num_channels = 32 ;
        _sat_threshold = 4080 ;

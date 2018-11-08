@@ -3,7 +3,7 @@
 
 #include "DataReader.h"
 #include "UBEventWaveform.h"
-#include "WCOpReco/Config_saturation_merger.h"
+#include "WCOpReco/Config_Saturation_Merger.h"
 namespace wcopreco{
 
   // This class is microboone specific. It is designed to merge the high and
@@ -11,10 +11,10 @@ namespace wcopreco{
   // merged_cosmic OpWaveformCollection datamembers, replacing the high gain
   // waveform regions that get saturated if there is a low gain corresponding
   // to it.
-  class saturation_merger {
+  class Saturation_Merger {
   public:
-    saturation_merger(UBEventWaveform, const Config_saturation_merger &);
-    ~saturation_merger() {};
+    Saturation_Merger(UBEventWaveform, const Config_Saturation_Merger &);
+    ~Saturation_Merger() {};
 
     OpWaveformCollection get_merged_beam() {return merged_beam;}
     OpWaveformCollection get_merged_cosmic() {return merged_cosmic;}
@@ -25,7 +25,7 @@ namespace wcopreco{
 
 
   protected:
-    Config_saturation_merger _cfg;
+    Config_Saturation_Merger _cfg;
     float findScaling(int channel);
     void scale_lowgains(OpWaveformCollection *BLG, OpWaveformCollection *CLG);
     double findBaselineLg(OpWaveform *wfm, int nbin);

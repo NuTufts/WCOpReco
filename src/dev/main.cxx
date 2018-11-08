@@ -4,7 +4,7 @@
 #include "WCOpReco/UBEventWaveform.h"
 #include "WCOpReco/DataReader.h"
 #include "WCOpReco/Deconvolver.h"
-#include "WCOpReco/saturation_merger.h"
+#include "WCOpReco/Saturation_Merger.h"
 #include "WCOpReco/HitFinder_cosmic.h"
 #include "WCOpReco/Flashes_cosmic.h"
 #include "WCOpReco/Flashes_beam.h"

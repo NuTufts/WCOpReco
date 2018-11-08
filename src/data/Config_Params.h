@@ -31,7 +31,7 @@ namespace wcopreco {
       Config_Hitfinder_Beam     _cfg_hitfinder_beam ;
       Config_Hitfinder_Cosmic   _cfg_hitfinder_cosmic ;
       Config_Opflash            _cfg_opflash ;
-      Config_saturation_merger  _cfg_saturation_merger ;
+      Config_Saturation_Merger  _cfg_saturation_merger ;
 
 
 

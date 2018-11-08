@@ -10,10 +10,10 @@ namespace wcopreco{
    : std::vector<OpWaveform> (0,OpWaveform(0, 0.0, 0, (0)))
     {
       reserve(500);
-      std::vector<int> v;
-      for (int i =0; i<36; i++){
-        channel2index[i] = v;
-      }
+      // std::vector<int> v;
+      // for (int i =0; i<36; i++){
+      //   channel2index[i] = v;
+      // }
     }
 
   void OpWaveformCollection::set_channel2index(std::map <int,std::vector<int>> input_map)

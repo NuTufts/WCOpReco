@@ -43,6 +43,8 @@ namespace wcopreco {
       void set_cal_integral_p3(double p);
       void set_cal_integral_p4(double p);
       void set_cal_integral_p5(double p);
+      void set_channel_status_v(std::vector<bool> is_ch_bad_v );
+
       //Deconvolver
       void set_high_freq_p0(double p);
       void set_high_freq_p1(double p);

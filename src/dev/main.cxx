@@ -28,10 +28,10 @@
 //Construct the vector of kernel containers (one container per channel)
 std::vector<wcopreco::kernel_fourier_container> Build_UB_kernels(wcopreco::Config_Params cfg_all, std::vector<float> op_gain){
   std::vector<wcopreco::kernel_fourier_container> kernel_container_v;
-  kernel_container_v.resize(32);
+  kernel_container_v.resize(cfg_all._get_cfg_deconvolver()._get_num_channels());
   wcopreco::UB_rc *rc_good_ch = new wcopreco::UB_rc(true, false, cfg_all._get_cfg_ub_rc());
   wcopreco::UB_rc *rc_bad_ch = new wcopreco::UB_rc(true, true, cfg_all._get_cfg_ub_rc());
-  for (int i =0 ; i<32; i++){
+  for (int i =0 ; i<cfg_all._get_cfg_deconvolver()._get_num_channels(); i++){
     wcopreco::UB_spe *spe = new wcopreco::UB_spe(true, op_gain.at(i), cfg_all._get_cfg_ub_spe()); //Place UB_spe on heap, so object not deleted
     kernel_container_v.at(i).add_kernel(spe);
     if (i == 28){

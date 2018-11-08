@@ -1,6 +1,7 @@
 #ifndef CONFIG_COPHIT_H
 #define CONFIG_COPHIT_H
 
+#include <vector>
 namespace wcopreco{
 
   class Config_COpHit {
@@ -29,6 +30,7 @@ namespace wcopreco{
    double  _cal_integral_p3;
    double  _cal_integral_p4;
    double  _cal_integral_p5;
+   std::vector<bool>  _channel_status_v ; //Vector of length number of channels, true is good channels, false is bad channel
 
    void _set_baseline_default(double b){_baseline_default = b;}
    double _get_baseline_default(){return _baseline_default;}

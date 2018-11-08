@@ -101,6 +101,10 @@ namespace wcopreco {
       _cfg_cophit._cal_integral_p5 = p ;
   }
 
+  void Config_Params::set_channel_status_v(std::vector<bool> is_ch_good_v) {
+      _cfg_cophit._channel_status_v = is_ch_good_v ;
+  }
+
   void Config_Params::set_high_freq_p0(double p) {
       _cfg_deconvolver._high_freq_p0 = p ;
   }
@@ -326,65 +330,22 @@ void Config_Params::Check_common_parameters(){
     std::cout << "ERROR!!! DIFFERENT VALUES SET FOR _num_channels: \n";
     std::cout << "Deconvolver" << _cfg_deconvolver._num_channels <<"\n";
     std::cout << "flashesbeam"<< _cfg_flashesbeam._num_channels <<"\n";
-    std::cout << "hitfinder_beam" << _cfg_hitfinder_beam._num_channels <<"\n";
+    std::cout << "hitfinder" << _cfg_hitfinder_beam._num_channels <<"\n";
     std::cout << "opflash"<< _cfg_opflash._num_channels <<"\n";
     std::cout << "saturation_merger" << _cfg_saturation_merger._num_channels <<"\n";
   }
 
   //tick width
-  if(_cfg_deconvolver._tick_width_us == _cfg_hitfinder_beam._tick_width_us
+  if( _cfg_deconvolver._tick_width_us == _cfg_hitfinder_beam._tick_width_us
     && _cfg_deconvolver._tick_width_us == _cfg_opflash._tick_width_us
     && _cfg_deconvolver._tick_width_us == _cfg_saturation_merger._tick_width_us){}
   else{
     std::cout << "ERROR!!! DIFFERENT VALUES SET FOR _tick_width_us: \n";
     std::cout << "Deconvolver"<<_cfg_deconvolver._tick_width_us <<"\n";
-    std::cout << "hitfinder_beam" << _cfg_hitfinder_beam._tick_width_us <<"\n";
+    std::cout << "hitfinder" << _cfg_hitfinder_beam._tick_width_us <<"\n";
     std::cout <<  "opflash"<< _cfg_opflash._tick_width_us <<"\n";
     std::cout << "saturation_merger" << _cfg_saturation_merger._tick_width_us <<"\n";
   }
-
-  //_rebin_frac
-  if(_cfg_flashesbeam._rebin_frac == _cfg_hitfinder_beam._rebin_frac
-    && _cfg_flashesbeam._rebin_frac == _cfg_opflash._rebin_frac){}
-  else{
-    std::cout << "ERROR!!! DIFFERENT VALUES SET FOR _rebin_frac: \n";
-    std::cout << "flashesbeam"<<_cfg_flashesbeam._rebin_frac <<"\n";
-    std::cout << "hitfinder_beam" << _cfg_hitfinder_beam._rebin_frac <<"\n";
-    std::cout <<  "opflash"<< _cfg_opflash._rebin_frac<<"\n";
-  }
-
-  //_nbins_beam
-  if(_cfg_flashesbeam._nbins_beam == _cfg_hitfinder_beam._nbins_beam
-    && _cfg_flashesbeam._nbins_beam == _cfg_deconvolver._nbins_beam){}
-  else{
-    std::cout << "ERROR!!! DIFFERENT VALUES SET FOR _nbins_beam: \n";
-    std::cout << "flashesbeam"<<_cfg_flashesbeam._nbins_beam <<"\n";
-    std::cout << "hitfinder_beam" << _cfg_hitfinder_beam._nbins_beam <<"\n";
-    std::cout <<  "deconvolver"<< _cfg_deconvolver._nbins_beam<<"\n";
-  }
-
-  //_baseline_difference_max
-  if(_cfg_deconvolver._baseline_difference_max == _cfg_saturation_merger._baseline_difference_max){}
-  else{
-    std::cout << "ERROR!!! DIFFERENT VALUES SET FOR _baseline_difference_max: \n";
-    std::cout << "saturation_merger" <<_cfg_saturation_merger._baseline_difference_max  <<"\n";
-    std::cout <<  "deconvolver"<< _cfg_deconvolver._baseline_difference_max<<"\n";
-  }
-
-  //_nbins_baseline_search
-  if(_cfg_deconvolver._nbins_baseline_search  == _cfg_saturation_merger._nbins_baseline_search ){}
-  else{
-    std::cout << "ERROR!!! DIFFERENT VALUES SET FOR _nbins_baseline_search : \n";
-    std::cout << "saturation_merger" <<_cfg_saturation_merger._nbins_baseline_search  <<"\n";
-    std::cout <<  "deconvolver"<< _cfg_deconvolver._nbins_baseline_search <<"\n";
-  }
-
-  //_baseline_default
-  if(_cfg_cophit._baseline_default  == _cfg_saturation_merger._baseline_default ){}
-  else{
-    std::cout << "ERROR!!! DIFFERENT VALUES SET FOR _baseline_default : \n";
-    std::cout << "saturation_merger" <<_cfg_saturation_merger._baseline_default  <<"\n";
-    std::cout <<  "deconvolver"<< _cfg_cophit._baseline_default <<"\n";
-  }
 }
+
 }

@@ -16,6 +16,8 @@ namespace wcopreco{
     _cal_integral_p4 = 8.62296e+00;
     _cal_integral_p5 = 6.76898e-04;
     _baseline_default =2050;
+    _channel_status_v = {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true};
+    _channel_status_v[28] = false ;
 
   }
 }

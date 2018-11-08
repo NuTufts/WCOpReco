@@ -8,7 +8,7 @@ export WCOPRECO_BINDIR=${WCOPRECO_BUILDDIR}/bin
 
 # clean up previously set env
 if [[ -z $EIGEN_INC ]]; then
-    where="/usr/includes/eigen3"
+    where="/usr/include/eigen3"
     export EIGEN_INCDIR=${where}
 else
     export EIGEN_INCDIR=$EIGEN_INC

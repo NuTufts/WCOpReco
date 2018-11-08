@@ -315,4 +315,33 @@ namespace wcopreco {
       _cfg_ub_spe._spe_p1 = p ;
   }
 
+  //function to check that common parameters are all filled the same!
+void Config_Params::Check_common_parameters(){
+  //num_channels
+  if(_cfg_deconvolver._num_channels == _cfg_flashesbeam._num_channels
+    && _cfg_deconvolver._num_channels == _cfg_hitfinder_beam._num_channels
+    && _cfg_deconvolver._num_channels == _cfg_opflash._num_channels
+    && _cfg_deconvolver._num_channels == _cfg_saturation_merger._num_channels){}
+  else{
+    std::cout << "ERROR!!! DIFFERENT VALUES SET FOR _num_channels: \n";
+    std::cout << "Deconvolver" << _cfg_deconvolver._num_channels <<"\n";
+    std::cout << "flashesbeam"<< _cfg_flashesbeam._num_channels <<"\n";
+    std::cout << "hitfinder" << _cfg_hitfinder_beam._num_channels <<"\n";
+    std::cout << "opflash"<< _cfg_opflash._num_channels <<"\n";
+    std::cout << "saturation_merger" << _cfg_saturation_merger._num_channels <<"\n";
+  }
+
+  //tick width
+  if(&& _cfg_deconvolver._tick_width_us == _cfg_hitfinder_beam._tick_width_us
+    && _cfg_deconvolver._tick_width_us == _cfg_opflash._tick_width_us
+    && _cfg_deconvolver._tick_width_us == _cfg_saturation_merger._tick_width_us){}
+  else{
+    std::cout << "ERROR!!! DIFFERENT VALUES SET FOR _tick_width_us: \n";
+    std::cout << "Deconvolver"<<_cfg_deconvolver._tick_width_us <<"\n";
+    std::cout << "hitfinder" << _cfg_hitfinder_beam._tick_width_us <<"\n";
+    std::cout <<  "opflash"<< _cfg_opflash._tick_width_us <<"\n";
+    std::cout << "saturation_merger" << _cfg_saturation_merger._tick_width_us <<"\n";
+  }
+}
+
 }

@@ -64,6 +64,7 @@ int main(){
   wcopreco::UBEventWaveform _UB_Ev_wfm;
 
   wcopreco::Config_Params cfg_all;
+  cfg_all.Check_common_parameters();
   wcopreco::UBAlgo opreco_run(cfg_all);
 
   //change with a config parameter eventually?

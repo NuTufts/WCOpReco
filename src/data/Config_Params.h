@@ -139,6 +139,9 @@ namespace wcopreco {
       void _set_cfg_cfg_ub_spe(Config_UB_spe cfg){_cfg_ub_spe = cfg;}
       Config_UB_spe _get_cfg_ub_spe(){return _cfg_ub_spe;}
 
+      //function to check that common parameters are all filled the same!
+      void Check_common_parameters();
+
     protected:
       Config_COpHit             _cfg_cophit ;
       Config_Deconvolver        _cfg_deconvolver ;

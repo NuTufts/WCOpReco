@@ -3,7 +3,7 @@ CFLAGS   =   -g -fPIC
 CFLAGS   += `root-config --cflags` -DUSE_OPENCV=1
 
 INCLUDES = -I$(OPENCV_INCDIR)
-INCLUDES += -I$(EIGEN_INC_DIR)
+INCLUDES += -I$(EIGEN_INCDIR)
 
 LDFLAGS  =  `root-config --ldflags` -lstdc++
 LIBS     =  `root-config --libs`

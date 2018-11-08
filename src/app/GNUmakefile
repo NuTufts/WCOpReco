@@ -14,10 +14,8 @@ LIBS      = ../../build/lib
 LDLIBS   += -Llib $(addprefix -l, $(LIBS))
 
 HEADERS   = $(wildcard *.h)
-#Need to include eigen namespace
-EIGENSPACE = /usr/include/eigen3
 #build/bin build/lib build/python src/algo
-INCLUDES  += $(addprefix -I,$(EIGENSPACE))
+INCLUDES  += $(addprefix -I,$(EIGEN_INCDIR))
 INCLUDES  += -I. -I$(WCOPRECO_INCDIR)
 FINALINCLUDES= $(addpredix $(WCOPRECO_INCDIR),$(HEADERS))
 SRCS := $(wildcard *.cxx)

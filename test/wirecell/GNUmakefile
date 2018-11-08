@@ -13,8 +13,7 @@ LDLIBS    = `root-config --libs`
 
 HEADERS   = $(wildcard *.h)
 
-EIGENSPACE = /usr/include/eigen3
-INCLUDES  += $(addprefix -I,$(EIGENSPACE))
+INCLUDES  += $(addprefix -I,$(EIGEN_INCDIR))
 
 SRCS := $(wildcard *.cxx)
 OBJS := $(SRCS:.cxx=.o)

@@ -13,5 +13,10 @@ export WC_LIBDIR=${WC_BASEDIR}
 [[ ":$LD_LIBRARY_PATH:" != *":${WC_LIBDIR}:"* ]] && LD_LIBRARY_PATH="${WC_LIBDIR}:${LD_LIBRARY_PATH}"
 
 # SETUP EIGEN
-export EIGEN_INC_DIR=/usr/include/eigen3
+if [[ -z $EIGEN_INC ]]; then
+    where="/usr/includes/eigen3"
+    export EIGEN_INCDIR=${where}
+else
+    export EIGEN_INCDIR=$EIGEN_INC
+fi
 export EIGEN_LIB_DIR=

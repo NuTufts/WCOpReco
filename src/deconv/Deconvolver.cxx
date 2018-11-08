@@ -222,7 +222,7 @@ namespace wcopreco {
 
        for (int i=0;i<nbins;i++){
          double freq;
-         if (i<=750){
+         if (i<=nbins/2){
      	     freq = ((double)i/(double)nbins*2.)*1.0;
          }
          else{

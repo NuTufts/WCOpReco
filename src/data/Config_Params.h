@@ -10,18 +10,49 @@
 #include "Config_Hitfinder_Cosmic.h"
 #include "Config_Opflash.h"
 #include "Config_Saturation_Merger.h"
-// #include "Config_UB_rc.h"
-// #include "Config_UB_spe.h"
+#include "Config_UB_rc.h"
+#include "Config_UB_spe.h"
+
 //Include basics:
 #include <vector>
 #include <iostream>
 #include <sstream>
+
 namespace wcopreco {
     class Config_Params {
     public:
       Config_Params();
       ~Config_Params() {};
 
+      void _set_cfg_cophit(Config_COpHit cfg){_cfg_cophit = cfg;}
+      Config_COpHit _get_cfg_cophit(){return _cfg_cophit;}
+
+      void _set_cfg_deconvolver(Config_Deconvolver cfg){_cfg_deconvolver = cfg;}
+      Config_Deconvolver _get_cfg_deconvolver(){return _cfg_deconvolver;}
+
+      void _set_cfg_flashesbeam(Config_FlashesBeam cfg){_cfg_flashesbeam = cfg;}
+      Config_FlashesBeam _get_cfg_flashesbeam(){return _cfg_flashesbeam;}
+
+      void _set_cfg_flashfiltering(Config_FlashFiltering cfg){_cfg_flashfiltering = cfg;}
+      Config_FlashFiltering _get_cfg_flashfiltering(){return _cfg_flashfiltering;}
+
+      void _set_cfg_hitfinder_beam(Config_Hitfinder_Beam cfg){_cfg_hitfinder_beam = cfg;}
+      Config_Hitfinder_Beam _get_cfg_hitfinder_beam(){return _cfg_hitfinder_beam;}
+
+      void _set_cfg_hitfinder_cosmic(Config_Hitfinder_Cosmic cfg){_cfg_hitfinder_cosmic = cfg;}
+      Config_Hitfinder_Cosmic _get_cfg_hitfinder_cosmic(){return _cfg_hitfinder_cosmic;}
+
+      void _set_cfg_opflash(Config_Opflash cfg){_cfg_opflash = cfg;}
+      Config_Opflash _get_cfg_opflash(){return _cfg_opflash;}
+
+      void _set_cfg_saturation_merger(Config_Saturation_Merger cfg){_cfg_saturation_merger = cfg;}
+      Config_Saturation_Merger _get_cfg_saturation_merger(){return _cfg_saturation_merger;}
+
+      void _set_cfg_ub_rc(Config_UB_rc cfg){_cfg_ub_rc = cfg;}
+      Config_UB_rc _get_cfg_ub_rc(){return _cfg_ub_rc;}
+
+      void _set_cfg_cfg_ub_spe(Config_UB_spe cfg){_cfg_ub_spe = cfg;}
+      Config_UB_spe _get_cfg_ub_spe(){return _cfg_ub_spe;}
 
     protected:
       Config_COpHit             _cfg_cophit ;
@@ -32,6 +63,11 @@ namespace wcopreco {
       Config_Hitfinder_Cosmic   _cfg_hitfinder_cosmic ;
       Config_Opflash            _cfg_opflash ;
       Config_Saturation_Merger  _cfg_saturation_merger ;
+      Config_UB_rc              _cfg_ub_rc ;
+      Config_UB_spe             _cfg_ub_spe ;
+
+
+
 
 
 

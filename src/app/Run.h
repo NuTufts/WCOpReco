@@ -14,6 +14,8 @@
 #include "WCOpReco/FlashFiltering.h"
 
 //Config includes
+#include "WCOpReco/Config_Params.h"
+
 #include "WCOpReco/Config_Saturation_Merger.h"
 #include "WCOpReco/Config_Deconvolver.h"
 #include "WCOpReco/Config_Hitfinder_Beam.h"

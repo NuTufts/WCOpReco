@@ -117,12 +117,7 @@ OpWaveformCollection* Saturation_Merger::cosmic_merger(OpWaveformCollection* CHG
   short saturation_threshold =_cfg._sat_threshold;
   int tick_window = _cfg._cosmic_tick_window;
   float tick = _cfg._tick_width_us;
-  //std::cout <<"test check" << tick_window*tick <<std::endl;
-  // if (CHG->size()!=CLG->size()){
-  //   std::cout << "HG AND LG NOT SAME SIZE!!" << std::endl;
-  //   std::cout << "HG size: " << CHG->size() <<std::endl;
-  //   std::cout << "LG size: " << CLG->size() <<std::endl;
-  // };
+
   /*
   Going to have to loop through the high gains, first we want to see if a waveform is
   saturated. Is so we then need to see if it is isolated from all possible low gains

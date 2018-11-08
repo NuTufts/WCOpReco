@@ -14,7 +14,7 @@
 #include "WCOpReco/FlashFiltering.h"
 
 //Config includes
-#include "WCOpReco/Config_saturation_merger.h"
+#include "WCOpReco/Config_Saturation_Merger.h"
 #include "WCOpReco/Config_Deconvolver.h"
 #include "WCOpReco/Config_Hitfinder_Beam.h"
 #include "WCOpReco/Config_Hitfinder_Cosmic.h"
@@ -23,12 +23,10 @@
 #include "WCOpReco/Config_FlashesBeam.h"
 #include "WCOpReco/Config_FlashFiltering.h"
 
-
-
-
+//UB specific classes
 #include "UBEventWaveform.h"
 #include "DataReader.h"
-#include "saturation_merger.h"
+#include "Saturation_Merger.h"
 #include "UB_rc.h"
 #include "UB_spe.h"
 

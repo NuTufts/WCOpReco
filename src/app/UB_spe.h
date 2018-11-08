@@ -2,6 +2,7 @@
 #define UB_SPE_H
 
 #include "WCOpReco/kernel_fourier.h"
+#include "WCOpReco/Config_UB_spe.h"
 
 #include "TH1D.h"
 #include "TVirtualFFT.h"
@@ -18,7 +19,7 @@ namespace wcopreco {
 
   class UB_spe : public kernel_fourier {
   public:
-     UB_spe(bool mult_flag, float gain);
+     UB_spe(bool mult_flag, float gain, const Config_UB_spe &configSPE);
      virtual ~UB_spe() {};
 
     std::vector<double> Get_wfm(int nbins, float tick_width_ns);
@@ -26,6 +27,7 @@ namespace wcopreco {
     float gain;
 
   protected:
+    Config_UB_spe _cfgSPE;
 
 
 

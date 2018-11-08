@@ -19,22 +19,24 @@ namespace wcopreco{
       std::vector<float> op_gain = _UB_Ev_wfm.get_op_gain();
       std::vector<float> op_gainerror = _UB_Ev_wfm.get_op_gainerror();
 
-      const Config_saturation_merger cfg_SM;
+      const Config_Saturation_Merger cfg_SM;
       const Config_Deconvolver cfg_DC;
       const Config_Hitfinder_Beam cfg_HB;
       //create the merger and then get a Merged UBEventWaveform UB_Ev_Merged
-      wcopreco::saturation_merger *merger = new wcopreco::saturation_merger(_UB_Ev_wfm, cfg_SM);
+      wcopreco::Saturation_Merger *merger = new wcopreco::Saturation_Merger(_UB_Ev_wfm, cfg_SM);
       wcopreco::OpWaveformCollection merged_beam = merger->get_merged_beam(); //This is inside UB_Ev_Merged
       wcopreco::OpWaveformCollection merged_cosmic = merger->get_merged_cosmic(); //This is inside UB_Ev_Merged
       wcopreco::UBEventWaveform UB_Ev_Merged = merger->get_merged_UB_Ev();
 
       //Construct the vector of kernel containers (one container per channel)
+      const Config_UB_rc cfg_RC;
+      const Config_UB_spe cfg_SPE;
       std::vector<wcopreco::kernel_fourier_container> kernel_container_v;
       kernel_container_v.resize(32);
-      wcopreco::UB_rc *rc_good_ch = new wcopreco::UB_rc(true, false);
-      wcopreco::UB_rc *rc_bad_ch = new wcopreco::UB_rc(true, true);
+      wcopreco::UB_rc *rc_good_ch = new wcopreco::UB_rc(true, false, cfg_RC);
+      wcopreco::UB_rc *rc_bad_ch = new wcopreco::UB_rc(true, true, cfg_RC);
       for (int i =0 ; i<32; i++){
-        wcopreco::UB_spe *spe = new wcopreco::UB_spe(true, op_gain.at(i)); //Place UB_spe on heap, so object not deleted
+        wcopreco::UB_spe *spe = new wcopreco::UB_spe(true, op_gain.at(i), cfg_SPE); //Place UB_spe on heap, so object not deleted
         kernel_container_v.at(i).add_kernel(spe);
         if (i == 28){
           kernel_container_v.at(i).add_kernel(rc_bad_ch);

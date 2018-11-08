@@ -1,5 +1,5 @@
-#ifndef RUN_H
-#define RUN_H
+#ifndef UBALGO_H
+#define UBALGO_H
 
 //WCOpReco includes
 #include "WCOpReco/Config_Params.h"
@@ -15,15 +15,6 @@
 
 //Config includes
 #include "WCOpReco/Config_Params.h"
-
-#include "WCOpReco/Config_Saturation_Merger.h"
-#include "WCOpReco/Config_Deconvolver.h"
-#include "WCOpReco/Config_Hitfinder_Beam.h"
-#include "WCOpReco/Config_Hitfinder_Cosmic.h"
-#include "WCOpReco/Config_COpHit.h"
-#include "WCOpReco/Config_Opflash.h"
-#include "WCOpReco/Config_FlashesBeam.h"
-#include "WCOpReco/Config_FlashFiltering.h"
 
 //UB specific classes
 #include "UBEventWaveform.h"
@@ -48,16 +39,22 @@
 namespace wcopreco  {
 
   //This is a class to run the WCOpReco code, for uboone
-  class Run {
+  class UBAlgo {
   public:
-    Run();
-    ~Run() {};
+    UBAlgo(const Config_Params &cfg_all);
+    ~UBAlgo() {};
+
+    void Run(UBEventWaveform * _UB_Ev_wfm,
+            std::vector<float> * op_gain,
+            std::vector<float> * op_gainerror,
+            std::vector<wcopreco::kernel_fourier_container> * kernel_container_v);
 
     OpflashSelection get_flashes_cosmic(){return flashes_cosmic;};
     OpflashSelection get_flashes_beam(){return flashes_beam;};
     OpflashSelection get_flashes(){return flashes;};
 
   protected:
+    Config_Params _cfg;
     OpflashSelection flashes_cosmic;
     OpflashSelection flashes_beam;
     OpflashSelection flashes;

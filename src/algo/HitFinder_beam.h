@@ -31,7 +31,7 @@ namespace wcopreco{
 
   class HitFinder_beam {
   public:
-    HitFinder_beam(OpWaveformCollection &deconvolved_beam, std::vector<kernel_fourier_container> &kernel_container_v, const Config_Hitfinder_Beam &, const Config_Deconvolver &);
+    HitFinder_beam(OpWaveformCollection &deconvolved_beam, std::vector<kernel_fourier_container> &kernel_container_v, const Config_Hitfinder_Beam &cfg_HB, const Config_Deconvolver &cfg_DC);
     ~HitFinder_beam() {};
 
     void Perform_L1(std::vector<double> inverse_res1,

@@ -10,7 +10,7 @@
 #include "WCOpReco/Flashes_beam.h"
 #include "WCOpReco/HitFinder_beam.h"
 #include "WCOpReco/FlashFiltering.h"
-#include "WCOpReco/Run.h"
+#include "WCOpReco/UBAlgo.h"
 #include "WCOpReco/Config_Params.h"
 
 //root includes
@@ -27,78 +27,6 @@
 
 
 int main(){
-  // wcopreco::_num_channels = 32; //lots
-  // wcopreco::_num_types = 6; //lots
-  // wcopreco::_nbins_by_type = {1500, 1500, 40, 40, 1500, 40}; //lots?
-  // wcopreco::_sat_threshold = 4080 ; //satmerge, cosmic_merger, probably beam_merger
-  // wcopreco::_baseline_default =2050; //scale_lowgains in satmerge
-  // wcopreco::_baseline_difference_max = 8; //scale_lowgains in satmerge, also deconv Remove_Baseline_Secondary
-  // wcopreco::_cosmic_tick_window = 20; //Cosmic merger in satmerge
-  // wcopreco::_tick_width_us = .015625;  //cosmic merger in satmerge, Deconvolve_One_Wfm in deconv (1/64) for bin_width and 64 for max_freq_MHz, G(i,k) Hitfinder Beam 15.625/1000, also in Opflash.h and .cxx
-  // wcopreco::_low_bound_baseline_search = 1500; //findBaselineLg in SatMerger
-  // wcopreco::_high_bound_baseline_search = 2500; //findBaselineLg in SatMerger
-  // wcopreco::_nbins_baseline_search = 20; //find findBaselineLg satmerger
-  // wcopreco::_nbins_saturation_threshold = 3; //satmerger beam and cosmic mergers
-  // wcopreco::_scaling_by_channel = {10.13, 10.20, 10.13, 10.05, 9.96, 9.95, 10.04, 9.58, 9.42, 9.81, 9.25, 9.61, 9.56, 9.35, 9.99, 9.66, 10.26, 9.82, 10.32, 10.08, 9.77, 9.64, 10.14, 9.74, 9.76, 10.10, 10.48, 9.81, 9.99, 9.79, 9.93, 10.01}; // findScaling in satmerger
-  // wcopreco::_high_freq_p0 = 0.45;  //deconv HighFreqFilter
-  // wcopreco::_high_freq_p1 = 3.07;  //deconv HighFreqFilter
-  // wcopreco::_latelight_filter_p0 = 0.05;  //deconv LateLightFilter
-  // wcopreco::_latelight_filter_p1 = 0.45;  //deconv LateLightFilter
-  // wcopreco::_latelight_filter_p2 = 3.07;  //deconv latelight_filter
-  // wcopreco::_baseline_safety_subtraction = 100; // deconv Remove_Baseline_Secondary
-  // wcopreco::_xq  = 0.5 ; //deconv cal_mean_rms
-  // wcopreco::_xq_diff = 0.34 ; //deconv cal_mean_rms
-  // wcopreco::_n_bins_end_wfm = 4 ; //deconv deconv one wfm end loop 1500-4
-  // wcopreco::_beam_rebin_size = 250 ; //HitFinder_beam (sort of in opflash.h shows up as 6 where 1500/250 = 6)
-  // wcopreco::_l1_content_thresh = 0.3 ; // Hitfinder beam 0.3
-  // wcopreco::_frac_G_t2_first = 0.75 ; //Hitfinder beam G
-  // wcopreco::_frac_G_sametime = 0.25  ; //Hitfinder beam G
-  // wcopreco::_G_p0 = 6.0 ; //Hitfinder beam G
-  // wcopreco::_G_p1 = 3.0 ; //Hitfinder beam G
-  // wcopreco::_G_p2 = 1.5 ; //Hitfinder beam G
-  // wcopreco::_Lasso_p0 = 5.0 ; //Hitfinder beam
-  // wcopreco::_Lasso_p1 = 100000; //Hitfinder beam
-  // wcopreco::_Lasso_p2 = 0.05 ; //Hitfinder beam
-  // wcopreco::_totPE_v_thresh = 0.2 ; //Hitfinder beam Also appears in Opflash
-  // wcopreco::_mult_v_thresh  = 1.5 ; //Hitfinder beam, threshold in PE to determine if add to mult
-  // wcopreco::_l1_mult_v_thresh  = 1.0 ; //Hitfinder beam
-  // wcopreco::_ophit_group_t_diff_max  = 0.1 ; // Hitfinder cosmic twice
-  // wcopreco::_bflash_pe_thresh  = 6.0 ; //Flashes beams
-  // wcopreco::_bflash_mult_thresh = 3.0 ; //Flashes beams
-  // wcopreco::_bflash_bin_diff_p0 = 78 ; //Flashes beams 78 is in there 2x
-  // wcopreco::_bflash_bin_diff_p1 = 4  ; //Flashes beams
-  // wcopreco::_bflash_bin_diff_p2  = 15 ; //Flashes beams
-  // wcopreco::_KS_test_thresh  = 0.1 ; //Flashes beams
-  // wcopreco::_bflash_bin_start_cushion = 2  ; //Flashes beam
-  // wcopreco::_flash_filter_time_thresh = 2.4 ; //Flashfiltering
-  // wcopreco::_flash_filter_pe_thresh = 0.7  ; //Flashfiltering
-  // wcopreco::_rc_tau_badch  = 28.6 ; //UB_rc
-  // wcopreco::_rc_tau_goodch = 800.0; //UB_rc
-  // wcopreco::_spe_p0 = 19.6348 ; //UB_spe
-  // wcopreco::_spe_p1 = 8.18450e-01 ; //UB_spe
-  // wcopreco::_COphit_integral_thresh = 20e3 ; //COPHIT
-  // wcopreco::_COphit_baseline_diff_thresh = 50 ;//COPHIT
-  // wcopreco::_pe_factor  = 2.0; //COPHIT
-  // wcopreco::_Baseline_uncertainty  = 0.03 ; //Percent uncertay COPHIT
-  // wcopreco::_Baseline_unc_bad_baseline  = 2.0 ; //Percent Unc if baseline bad COPHIT
-  // wcopreco::_cal_integral_p0 = 4000;  //COPHIT
-  // wcopreco::_cal_integral_p1 = 1.06241e+01;  //COPHIT
-  // wcopreco::_cal_integral_p2 = 2.01214e-04;  //COPHIT
-  // wcopreco::_cal_integral_p3 = 4.5715824e4;  //COPHIT
-  // wcopreco::_cal_integral_p4 = 8.62296e+00;  //COPHIT
-  // wcopreco::_cal_integral_p5 = 6.76898e-04;  //COPHIT
-  // wcopreco::_PE_err_cosmic = 6.4; //Opflash
-  // wcopreco::_PE_subtract = 0.15; //Opflash
-  // wcopreco::_flash_low_time_cushion  = -3; //Opflash
-  // wcopreco::_flash_high_time_cushion = +37; //Opflash
-  // wcopreco::_PE_err_beam = 0.2; //Opflash
-  // wcopreco::_mult_content_thresh = 1.5; //Opflash
-  // wcopreco::_mult_required = 3; //Opflash
-  // wcopreco::_PE_err_stat_beam = 1.875;//Opflash
-  // wcopreco::_PE_err_unc_beam = 0.02;//Opflash
-  // wcopreco::_do_swap_channels  = true ;//Opflash
-  // wcopreco::_addl1_pe_thresh = 10.0;//Opflash
-  // wcopreco::_addl1_mult_thresh = 3.0;//Opflash
 
   clock_t t;
 //   clock_t dataread;
@@ -110,12 +38,48 @@ int main(){
 //   clock_t flashfilter;
   t=clock();
   //std::cout << wcopreco::_WIDTH << " Did it work?\n";
-  wcopreco::Run opreco;
-  wcopreco::OpflashSelection flashes = opreco.get_flashes();
+  //Set the filepath
+  std::string file = "src/data/celltree.root";
+  std::cout << "\n\nFilepath is set to:   " << file << std::endl;
+
+  //Open the reader, choose event number, create the UBEventWaveform _UB_Ev_wfm
+  wcopreco::DataReader reader(&file);
+  wcopreco::UBEventWaveform _UB_Ev_wfm;
+
+  //change with a config parameter eventually?
+  int EVENT_NUM =51;
+
+  _UB_Ev_wfm = reader.Reader(EVENT_NUM);
+  std::vector<float> op_gain = _UB_Ev_wfm.get_op_gain();
+  std::vector<float> op_gainerror = _UB_Ev_wfm.get_op_gainerror();
+
+  wcopreco::Config_Params cfg_all;
+
+  wcopreco::UBAlgo opreco_run(cfg_all);
+
+  //Construct the vector of kernel containers (one container per channel)
+  std::vector<wcopreco::kernel_fourier_container> kernel_container_v;
+  kernel_container_v.resize(32);
+  wcopreco::UB_rc *rc_good_ch = new wcopreco::UB_rc(true, false, cfg_all._get_cfg_ub_rc());
+  wcopreco::UB_rc *rc_bad_ch = new wcopreco::UB_rc(true, true, cfg_all._get_cfg_ub_rc());
+  for (int i =0 ; i<32; i++){
+    wcopreco::UB_spe *spe = new wcopreco::UB_spe(true, op_gain.at(i), cfg_all._get_cfg_ub_spe()); //Place UB_spe on heap, so object not deleted
+    kernel_container_v.at(i).add_kernel(spe);
+    if (i == 28){
+      kernel_container_v.at(i).add_kernel(rc_bad_ch);
+    }
+    else{
+      kernel_container_v.at(i).add_kernel(rc_good_ch);
+    }
+  }
+
+  opreco_run.Run(&_UB_Ev_wfm, &op_gain, &op_gainerror, &kernel_container_v);
+
+  wcopreco::OpflashSelection flashes = opreco_run.get_flashes();
   std::cout << flashes.size() << " :Number of flashes\n";
-  wcopreco::OpflashSelection flashes_cosmic = opreco.get_flashes_cosmic();
+  wcopreco::OpflashSelection flashes_cosmic = opreco_run.get_flashes_cosmic();
   std::cout << flashes_cosmic.size() << " :Number of cosmic flashes\n";
-  wcopreco::OpflashSelection flashes_beam = opreco.get_flashes_beam();
+  wcopreco::OpflashSelection flashes_beam = opreco_run.get_flashes_beam();
   std::cout << flashes_beam.size() << " :Number of beam flashes\n";
 //
 //

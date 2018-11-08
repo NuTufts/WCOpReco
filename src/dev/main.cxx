@@ -78,13 +78,16 @@ int main(){
       std::vector<wcopreco::kernel_fourier_container> kernel_container_v = Build_UB_kernels(cfg_all, op_gain);
 
       opreco_run.Run(&_UB_Ev_wfm, &op_gain, &op_gainerror, &kernel_container_v);
-
+      wcopreco::OpWaveformCollection merged_beam = opreco_run.get_merged_beam();
+      wcopreco::OpWaveformCollection merged_cosmic = opreco_run.get_merged_cosmic();
       wcopreco::OpflashSelection flashes = opreco_run.get_flashes();
-      std::cout << flashes.size() << " :Number of flashes\n";
       wcopreco::OpflashSelection flashes_cosmic = opreco_run.get_flashes_cosmic();
-      std::cout << flashes_cosmic.size() << " :Number of cosmic flashes\n";
       wcopreco::OpflashSelection flashes_beam = opreco_run.get_flashes_beam();
+
+      std::cout << flashes.size() << " :Number of flashes\n";
+      std::cout << flashes_cosmic.size() << " :Number of cosmic flashes\n";
       std::cout << flashes_beam.size() << " :Number of beam flashes\n";
+
   }
 //
 //

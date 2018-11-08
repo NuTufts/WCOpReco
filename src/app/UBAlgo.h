@@ -52,12 +52,16 @@ namespace wcopreco  {
     OpflashSelection get_flashes_cosmic(){return flashes_cosmic;};
     OpflashSelection get_flashes_beam(){return flashes_beam;};
     OpflashSelection get_flashes(){return flashes;};
+    OpWaveformCollection get_merged_beam(){return merged_beam;};
+    OpWaveformCollection get_merged_cosmic(){return merged_cosmic;};
 
   protected:
     Config_Params _cfg;
     OpflashSelection flashes_cosmic;
     OpflashSelection flashes_beam;
     OpflashSelection flashes;
+    OpWaveformCollection merged_beam;
+    OpWaveformCollection merged_cosmic;
 
   };
 

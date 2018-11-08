@@ -97,7 +97,6 @@ namespace wcopreco {
         }
     }
 
-    double lambda = 5;
     wcopreco::LassoModel m2(_cfg._Lasso_p0, _cfg._Lasso_p1, _cfg._Lasso_p2);
     m2.SetData(G, W);
     m2.Fit();

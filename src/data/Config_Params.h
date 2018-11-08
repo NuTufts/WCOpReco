@@ -27,8 +27,11 @@ namespace wcopreco {
       void set_num_channels(int n);
       void set_nbins_beam(int n);
       void set_nbins_cosmic(int n);
-      //COphit
+      void set_tick_width_us(float width);
+      void set_rebin_frac(int frac);
+      void set_baseline_difference_max(double dif);
       void set_baseline_default( int baseline);
+      //COphit
       void set_COphit_integral_thresh(double thresh);
       void set_COphit_baseline_diff_thresh(double thresh);
       void set_pe_factor(double factor);
@@ -41,8 +44,6 @@ namespace wcopreco {
       void set_cal_integral_p4(double p);
       void set_cal_integral_p5(double p);
       //Deconvolver
-      void set_baseline_difference_max(double dif);
-      void set_tick_width_us(float width);
       void set_high_freq_p0(double p);
       void set_high_freq_p1(double p);
       void set_latelight_filter_p0(double p);
@@ -55,7 +56,6 @@ namespace wcopreco {
       void set_small_content_bump(double bump);
       void set_nbins_baseline_search(int n);
       //Flashesbeam
-      void set_rebin_frac(int frac);
       void set_bflash_pe_thresh(double thresh);
       void set_bflash_mult_thresh(double thresh);
       void set_bflash_bin_diff_p0(int p);

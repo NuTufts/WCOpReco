@@ -12,8 +12,8 @@ namespace wcopreco{
                   std::vector<wcopreco::kernel_fourier_container> * kernel_container_v){
       //create the merger and then get a Merged UBEventWaveform UB_Ev_Merged
       wcopreco::Saturation_Merger *merger = new wcopreco::Saturation_Merger(*_UB_Ev_wfm , _cfg._get_cfg_saturation_merger());
-      wcopreco::OpWaveformCollection merged_beam = merger->get_merged_beam(); //This is inside UB_Ev_Merged
-      wcopreco::OpWaveformCollection merged_cosmic = merger->get_merged_cosmic(); //This is inside UB_Ev_Merged
+      merged_beam = merger->get_merged_beam(); //This is inside UB_Ev_Merged
+      merged_cosmic = merger->get_merged_cosmic(); //This is inside UB_Ev_Merged
       wcopreco::UBEventWaveform UB_Ev_Merged = merger->get_merged_UB_Ev();
 
       //do beam hitfinding

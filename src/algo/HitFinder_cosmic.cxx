@@ -2,8 +2,12 @@
 
 namespace wcopreco {
 
-  wcopreco::HitFinder_cosmic::HitFinder_cosmic(OpWaveformCollection* merged_cosmic, std::vector<float> *op_gain, std::vector<float> *op_gainerror, const Config_COpHit &configCOpH)
-    : _cfgCOpH(configCOpH)
+  wcopreco::HitFinder_cosmic::HitFinder_cosmic(OpWaveformCollection* merged_cosmic,
+                                              std::vector<float> *op_gain,
+                                              std::vector<float> *op_gainerror,
+                                              const Config_Hitfinder_Cosmic &configHC,
+                                              const Config_COpHit &configCOpH)
+    : _cfgCOpH(configCOpH), _cfgHC(configHC)
   {
     //Module for hit finding for cosmics
     //Much of this code can be left the way it is in WC
@@ -33,7 +37,7 @@ namespace wcopreco {
           else{
           	for (size_t j=0; j!=ophits_group.size();j++){
           	  for (size_t k=0; k!= ophits_group.at(j).size(); k++){
-          	    if (fabs(op_hit->get_time() - ophits_group.at(j).at(k)->get_time()) < 0.1 ){  // time unit??? 0.1 us?
+          	    if (fabs(op_hit->get_time() - ophits_group.at(j).at(k)->get_time()) < _cfgHC._ophit_group_t_diff_max ){
           	      ophits_group.at(j).push_back(op_hit);
           	      flag_used = true;
           	      break;
@@ -63,7 +67,7 @@ namespace wcopreco {
         bool flag_used = false;
         for (size_t j=0; j!=ophits_group.size();j++){
           for (size_t k=0; k!= ophits_group.at(j).size(); k++){
-          	if (fabs(left_ophits.at(i)->get_time() - ophits_group.at(j).at(k)->get_time())<0.1){
+          	if (fabs(left_ophits.at(i)->get_time() - ophits_group.at(j).at(k)->get_time())< _cfgHC._ophit_group_t_diff_max ){
           	  ophits_group.at(j).push_back(left_ophits.at(i));
           	  flag_used = true;
           	  break;

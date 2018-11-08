@@ -71,7 +71,8 @@ namespace wcopreco{
 
       // //Create the Hitfinder for COSMICS
       const Config_COpHit cfg_COpH;
-      wcopreco::HitFinder_cosmic hits_found(&merged_cosmic, &op_gain, &op_gainerror, cfg_COpH);
+      const Config_Hitfinder_Cosmic cfg_HC;
+      wcopreco::HitFinder_cosmic hits_found(&merged_cosmic, &op_gain, &op_gainerror, cfg_HC, cfg_COpH);
 
       //flashes for cosmics
       std::vector<COphitSelection>  hits = hits_found.get_ophits_group();

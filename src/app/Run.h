@@ -17,6 +17,11 @@
 #include "WCOpReco/Config_saturation_merger.h"
 #include "WCOpReco/Config_Deconvolver.h"
 #include "WCOpReco/Config_Hitfinder_Beam.h"
+#include "WCOpReco/Config_Hitfinder_Cosmic.h"
+#include "WCOpReco/Config_COpHit.h"
+#include "WCOpReco/Config_Opflash.h"
+#include "WCOpReco/Config_FlashesBeam.h"
+#include "WCOpReco/Config_FlashFiltering.h"
 
 
 

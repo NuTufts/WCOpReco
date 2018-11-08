@@ -8,13 +8,18 @@
 #include "WCOpReco/COphit.h"
 
 #include "WCOpReco/Config_COpHit.h"
+#include "WCOpReco/Config_Hitfinder_Cosmic.h"
 
 namespace wcopreco{
 
 
   class HitFinder_cosmic {
   public:
-    HitFinder_cosmic(OpWaveformCollection* merged_cosmic, std::vector<float> *op_gain,std::vector<float> *op_gainerror, const Config_COpHit &configCOpH);
+    HitFinder_cosmic(OpWaveformCollection* merged_cosmic,
+                    std::vector<float> *op_gain,
+                    std::vector<float> *op_gainerror ,
+                    const Config_Hitfinder_Cosmic &configHC,
+                    const Config_COpHit &configCOpH);
     ~HitFinder_cosmic() {};
 
     std::vector<COphitSelection>  get_ophits_group() {return ophits_group;}
@@ -27,6 +32,7 @@ namespace wcopreco{
     COphitSelection left_ophits;
     COphitSelection op_hits;
 
+    Config_Hitfinder_Cosmic _cfgHC;
     Config_COpHit _cfgCOpH;
 
 

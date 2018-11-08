@@ -8,10 +8,10 @@
 
 namespace wcopreco {
 
-  class Config_saturation_merger {
+  class Config_Saturation_Merger {
   public:
-    Config_saturation_merger();
-    ~Config_saturation_merger() {};
+    Config_Saturation_Merger();
+    ~Config_Saturation_Merger() {};
      int     _num_channels ; //Number of PMT channels
      short   _sat_threshold; // Value at which a tick is marked saturated
      double  _baseline_default; //Default Assumed Baseline

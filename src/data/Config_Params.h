@@ -83,21 +83,33 @@ namespace wcopreco {
       //Hitfinder_cosmic
       void set_ophit_group_t_diff_max(double max);
       //Opflash
-      // void set_PE_err_cosmic
-      // void set_PE_subtract
-      // void set_flash_low_time_cushion
-      // void set_flash_high_time_cushion
-      // void set_PE_err_beam
-      // void set_mult_content_thresh
-      // void set_mult_required
-      // void set_PE_err_stat_beam
-      // void set_PE_err_unc_beam
-      // void set_addl1_pe_thresh
-      // void set_addl1_mult_thresh
+      void set_PE_err_cosmic(double err);
+      void set_PE_subtract(double sub);
+      void set_flash_low_time_cushion(int bin);
+      void set_flash_high_time_cushion(int bin);
+      void set_PE_err_beam(double err);
+      void set_mult_content_thresh(double thresh);
+      void set_mult_required(int req);
+      void set_PE_err_stat_beam(double err);
+      void set_PE_err_unc_beam(double err);
+      void set_addl1_pe_thresh(double thresh);
+      void set_addl1_mult_thresh(double thresh);
+      // Saturation Merger
+      void set_sat_threshold(short thresh);
+      void set_cosmic_tick_window(int n);
+      void set_low_bound_baseline_search(double d);
+      void set_high_bound_baseline_search(double d);
+      void set_nbins_saturation_threshold(int n);
+      void set_scaling_by_channel(std::vector<float> scales_v);
+      // UB_rc
       // void set
       // void set
       // void set
       // void set
+      // void set
+      //Next
+      // void set
+
 
 
 

@@ -10,6 +10,8 @@ namespace wcopreco {
       _cfg_flashesbeam._num_channels = n ;
       _cfg_hitfinder_beam._num_channels = n ;
       _cfg_opflash._num_channels = n ;
+      _cfg_saturation_merger._num_channels = n ;
+
 
   }
 
@@ -17,6 +19,8 @@ namespace wcopreco {
       _cfg_deconvolver._tick_width_us = width ;
       _cfg_hitfinder_beam._tick_width_us = width ;
       _cfg_opflash._tick_width_us = width ;
+      _cfg_saturation_merger._tick_width_us = width ;
+
 
   }
 
@@ -33,12 +37,23 @@ namespace wcopreco {
       _cfg_hitfinder_beam._nbins_beam = n ;
   }
 
-  void Config_Params::set_nbins_cosmic(int n) {
-      _cfg_cophit._nbins_cosmic = n ;
+  void Config_Params::set_baseline_difference_max(double p) {
+      _cfg_deconvolver._baseline_difference_max = p ;
+      _cfg_saturation_merger._baseline_difference_max = p ;
+  }
+
+  void Config_Params::set_nbins_baseline_search(int n) {
+      _cfg_deconvolver._nbins_baseline_search = n ;
+      _cfg_saturation_merger._nbins_baseline_search = n ;
   }
 
   void Config_Params::set_baseline_default(int baseline) {
       _cfg_cophit._baseline_default = baseline ;
+      _cfg_saturation_merger._baseline_default = baseline ;
+  }
+
+  void Config_Params::set_nbins_cosmic(int n) {
+      _cfg_cophit._nbins_cosmic = n ;
   }
 
   void Config_Params::set_COphit_integral_thresh(double thresh) {
@@ -86,10 +101,6 @@ namespace wcopreco {
       _cfg_cophit._cal_integral_p5 = p ;
   }
 
-  void Config_Params::set_baseline_difference_max(double p) {
-      _cfg_deconvolver._baseline_difference_max = p ;
-  }
-
   void Config_Params::set_high_freq_p0(double p) {
       _cfg_deconvolver._high_freq_p0 = p ;
   }
@@ -128,10 +139,6 @@ namespace wcopreco {
 
   void Config_Params::set_small_content_bump(double bump) {
       _cfg_deconvolver._small_content_bump = bump ;
-  }
-
-  void Config_Params::set_nbins_baseline_search(int n) {
-      _cfg_deconvolver._nbins_baseline_search = n ;
   }
 
   void Config_Params::set_bflash_pe_thresh(double thresh) {
@@ -223,15 +230,93 @@ namespace wcopreco {
   void Config_Params::set_ophit_group_t_diff_max(double max) {
       _cfg_hitfinder_cosmic._ophit_group_t_diff_max = max ;
   }
+
+  void Config_Params::set_PE_err_cosmic(double err) {
+      _cfg_opflash._PE_err_cosmic = err ;
+  }
+
+  void Config_Params::set_PE_subtract(double sub) {
+      _cfg_opflash._PE_subtract = sub ;
+  }
+
+  void Config_Params::set_flash_low_time_cushion(int bin) {
+      _cfg_opflash._flash_low_time_cushion = bin ;
+  }
+
+  void Config_Params::set_flash_high_time_cushion(int bin) {
+      _cfg_opflash._flash_high_time_cushion = bin ;
+  }
+
+  void Config_Params::set_PE_err_beam(double err) {
+      _cfg_opflash._PE_err_beam = err ;
+  }
+
+  void Config_Params::set_mult_content_thresh(double thresh) {
+      _cfg_opflash._mult_content_thresh = thresh ;
+  }
+
+  void Config_Params::set_mult_required(int req) {
+      _cfg_opflash._mult_required = req ;
+  }
+
+  void Config_Params::set_PE_err_stat_beam(double err) {
+      _cfg_opflash._PE_err_stat_beam = err ;
+  }
+
+  void Config_Params::set_PE_err_unc_beam(double err) {
+      _cfg_opflash._PE_err_unc_beam = err ;
+  }
+
+  void Config_Params::set_addl1_pe_thresh(double thresh) {
+      _cfg_opflash._addl1_pe_thresh = thresh ;
+  }
+
+  void Config_Params::set_addl1_mult_thresh(double thresh) {
+      _cfg_opflash._addl1_mult_thresh = thresh ;
+  }
+
+  void Config_Params::set_sat_threshold(short thresh) {
+      _cfg_saturation_merger._sat_threshold = thresh ;
+  }
+
+  void Config_Params::set_cosmic_tick_window(int n) {
+      _cfg_saturation_merger._cosmic_tick_window = n ;
+  }
+
+  void Config_Params::set_low_bound_baseline_search(double d) {
+      _cfg_saturation_merger._low_bound_baseline_search = d ;
+  }
+
+  void Config_Params::set_high_bound_baseline_search(double d) {
+      _cfg_saturation_merger._high_bound_baseline_search = d ;
+  }
+
+  void Config_Params::set_nbins_saturation_threshold(int n) {
+      _cfg_saturation_merger._nbins_saturation_threshold = n ;
+  }
+
+  void Config_Params::set_scaling_by_channel(std::vector<float> scales_v) {
+      _cfg_saturation_merger._scaling_by_channel = scales_v ;
+  }
+  // void Config_Params::set(double p) {
+  //     _cfg_saturation_merger. = p ;
+  // }
   //
   // void Config_Params::set(double p) {
-  //     _cfg_deconvolver. = p ;
+  //     _cfg_saturation_merger. = p ;
+  // }
+  //
+  // void Config_Params::set(double p) {
+  //     _cfg_saturation_merger. = p ;
+  // }
+  // void Config_Params::set(double p) {
+  //     _cfg_saturation_merger. = p ;
+  // }
+  //
+  // void Config_Params::set(double p) {
+  //     _cfg_saturation_merger. = p ;
   // }
 
-  // void Config_Params::set(double p) {
-  //     _cfg_deconvolver. = p ;
-  // }
-  //
   // void Config_Params::set(double p) {
   //     _cfg_deconvolver. = p ;
   // }

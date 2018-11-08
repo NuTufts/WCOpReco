@@ -3,6 +3,8 @@
 
 
 #include <vector>
+#include <iostream>
+#include <sstream>
 
 namespace wcopreco {
 

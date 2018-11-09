@@ -59,7 +59,7 @@ int main(){
 
   wcopreco::Config_Params cfg_all;
   cfg_all.Check_common_parameters();
-  wcopreco::UBAlgo opreco_run(cfg_all);
+  for (int l=0;l<5;l++){
 
   // //make root file of outputs to test
   // TFile output("OurOutput.root", "RECREATE");
@@ -90,8 +90,9 @@ int main(){
   // OpReco->Branch("PEperPMT_cosmic", &TPEperPMT_cosmic);
   // OpReco->Branch("PEperPMT_beam", &TPEperPMT_beam);
   // //loop over all events
-  for (int l=0;l<100;l++){
+
     for (int EVENT_NUM = 0; EVENT_NUM < 52; EVENT_NUM ++){
+        wcopreco::UBAlgo opreco_run(cfg_all);
 
         // create UBEventWaveform object
         _UB_Ev_wfm = reader.Reader(EVENT_NUM);
@@ -99,15 +100,15 @@ int main(){
         std::vector<float> op_gainerror = _UB_Ev_wfm.get_op_gainerror();
         //create vector of kernals
         std::vector<wcopreco::kernel_fourier_container> kernel_container_v = Build_UB_kernels(cfg_all, op_gain);
-        // //deconvole beam, find hits, make flashes
-        // opreco_run.Run(&_UB_Ev_wfm, &op_gain, &op_gainerror, &kernel_container_v);
-        // //get outputs
-        // wcopreco::OpWaveformCollection merged_beam = opreco_run.get_merged_beam();
-        // wcopreco::OpWaveformCollection merged_cosmic = opreco_run.get_merged_cosmic();
-        // wcopreco::OpflashSelection flashes = opreco_run.get_flashes();
-        // wcopreco::OpflashSelection flashes_cosmic = opreco_run.get_flashes_cosmic();
-        // wcopreco::OpflashSelection flashes_beam = opreco_run.get_flashes_beam();
-        //check size of outputs
+        //deconvole beam, find hits, make flashes
+        opreco_run.Run(&_UB_Ev_wfm, &op_gain, &op_gainerror, &kernel_container_v);
+        //get outputs
+        wcopreco::OpWaveformCollection merged_beam = opreco_run.get_merged_beam();
+        wcopreco::OpWaveformCollection merged_cosmic = opreco_run.get_merged_cosmic();
+        wcopreco::OpflashSelection flashes = opreco_run.get_flashes();
+        wcopreco::OpflashSelection flashes_cosmic = opreco_run.get_flashes_cosmic();
+        wcopreco::OpflashSelection flashes_beam = opreco_run.get_flashes_beam();
+        // check size of outputs
         // std::cout << flashes.size() << " :Number of flashes\n";
         // std::cout << flashes_cosmic.size() << " :Number of cosmic flashes\n";
         // std::cout << flashes_beam.size() << " :Number of beam flashes\n";
@@ -177,6 +178,7 @@ int main(){
         // //     std::cout << flashes.at(i)->get_time() << "\n";
         // // }
         // OpReco->Fill();
+
     }
     // output.Write();
     // output.Close();

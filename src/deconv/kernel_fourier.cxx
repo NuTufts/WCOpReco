@@ -91,6 +91,7 @@ namespace wcopreco {
       }
       delete re;
       delete im;
+      delete fftr2c;
       return ;
     }
 

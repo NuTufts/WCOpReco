@@ -42,7 +42,7 @@ namespace wcopreco  {
   class UBAlgo {
   public:
     UBAlgo(const Config_Params &cfg_all);
-    ~UBAlgo() {};
+    ~UBAlgo();
 
     void Run(UBEventWaveform * _UB_Ev_wfm,
             std::vector<float> * op_gain,

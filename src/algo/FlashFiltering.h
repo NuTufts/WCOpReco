@@ -25,6 +25,7 @@ namespace wcopreco{
 
     void sort_flashes();
     void update_pmt_map();
+    // void clear_flashes();
 
   protected:
 

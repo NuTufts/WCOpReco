@@ -81,4 +81,17 @@ namespace wcopreco {
   }
 
 
+  // void wcopreco::FlashFiltering::clear_flashes(){
+  //   for (auto it = beam_flashes.begin(); it!=beam_flashes.end(); it++){
+  //       delete (*it);
+  //     }
+  //     for (auto it=cosmic_flashes.begin(); it!= cosmic_flashes.end(); it++){
+  //       delete (*it);
+  //     }
+  //     beam_flashes.clear();
+  //     cosmic_flashes.clear();
+  //     flashes.clear();
+  // }
+
+
 }

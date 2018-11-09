@@ -15,9 +15,9 @@ namespace wcopreco {
     int get_ChannelNum() {return ChannelNum;};
     double get_time_from_trigger() {return time_from_trigger;};
     int get_type() {return type;};
-    int set_ChannelNum(int ch) {ChannelNum = ch;};
-    double set_time_from_trigger(double time_diff) {time_from_trigger = time_diff;};
-    int set_type(int typ) {type = typ;};
+    void set_ChannelNum(int ch) {ChannelNum = ch;};
+    void set_time_from_trigger(double time_diff) {time_from_trigger = time_diff;};
+    void set_type(int typ) {type = typ;};
 
 
 

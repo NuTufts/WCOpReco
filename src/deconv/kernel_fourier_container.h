@@ -12,10 +12,10 @@ namespace wcopreco {
 
   public:
     kernel_fourier_container();
-    virtual ~kernel_fourier_container() {};
+    virtual ~kernel_fourier_container() ;
 
 
-    void add_kernel(kernel_fourier *kernel) { emplace_back(std::move(kernel));}
+    void add_kernel(kernel_fourier *kernel) { push_back(kernel);}
     void clear_kernels_v() {clear();}
 
 

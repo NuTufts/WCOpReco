@@ -11,20 +11,20 @@ namespace wcopreco{
                   std::vector<float> * op_gainerror,
                   std::vector<wcopreco::kernel_fourier_container> * kernel_container_v){
       //create the merger and then get a Merged UBEventWaveform UB_Ev_Merged
-      wcopreco::Saturation_Merger *merger = new wcopreco::Saturation_Merger(*_UB_Ev_wfm , _cfg._get_cfg_saturation_merger());
-      merged_beam = merger->get_merged_beam(); //This is inside UB_Ev_Merged
-      merged_cosmic = merger->get_merged_cosmic(); //This is inside UB_Ev_Merged
-      wcopreco::UBEventWaveform UB_Ev_Merged = merger->get_merged_UB_Ev();
+      wcopreco::Saturation_Merger merger(*_UB_Ev_wfm , _cfg._get_cfg_saturation_merger());
+      merged_beam = merger.get_merged_beam(); //This is inside UB_Ev_Merged
+      merged_cosmic = merger.get_merged_cosmic(); //This is inside UB_Ev_Merged
+      wcopreco::UBEventWaveform UB_Ev_Merged = merger.get_merged_UB_Ev();
 
       //do beam hitfinding
-      wcopreco::HitFinder_beam *hits_found_beam = new HitFinder_beam(merged_beam, *kernel_container_v, _cfg._get_cfg_hitfinder_beam(), _cfg._get_cfg_deconvolver());
+      wcopreco::HitFinder_beam hits_found_beam(merged_beam, *kernel_container_v, _cfg._get_cfg_hitfinder_beam(), _cfg._get_cfg_deconvolver());
 
       // do beam flash finding
-      std::vector<double> totPE_v = hits_found_beam->get_totPE_v();
-      std::vector<double> mult_v =hits_found_beam->get_mult_v();
-      std::vector<double> l1_totPE_v =hits_found_beam->get_l1_totPE_v();
-      std::vector<double> l1_mult_v = hits_found_beam->get_l1_mult_v();
-      std::vector< std::vector<double> > decon_vv = hits_found_beam->get_decon_vv();
+      std::vector<double> totPE_v = hits_found_beam.get_totPE_v();
+      std::vector<double> mult_v =hits_found_beam.get_mult_v();
+      std::vector<double> l1_totPE_v =hits_found_beam.get_l1_totPE_v();
+      std::vector<double> l1_mult_v = hits_found_beam.get_l1_mult_v();
+      std::vector< std::vector<double> > decon_vv = hits_found_beam.get_decon_vv();
       double beam_start_time =merged_beam.at(0).get_time_from_trigger();
 
 
@@ -60,12 +60,10 @@ namespace wcopreco{
       flashes = flashesfiltered.get_flashes();
       // std::cout << flashes.size() << " Matched Flashes in Event\n\n";
 
-      for (int i =0 ; i<flashes.size(); i++) {
-          if (flashes.at(i)->get_type() == 2) std::cout << flashes.at(i)->get_total_PE() << "\n";
-      }
+      // for (int i =0 ; i<flashes.size(); i++) {
+      //     if (flashes.at(i)->get_type() == 2) std::cout << flashes.at(i)->get_total_PE() << "\n";
+      // }
 
-      delete merger;
-      delete hits_found_beam;
   }
 
 }

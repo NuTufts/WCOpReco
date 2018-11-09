@@ -38,10 +38,10 @@ namespace wcopreco{
     ~Deconvolver() {};
 
 
-    std::vector<kernel_fourier_container> get_kernel_container_v() {return kernel_container_v;}
-    kernel_fourier_container get_kernel_container_entry(int channel) {return kernel_container_v.at(channel);}
-    void add_kernel_container_entry(kernel_fourier *kernel, int channel =-1);
-    void clear_kernels();
+    const std::vector<kernel_fourier_container> & get_kernel_container_v() {return *kernel_container_v;}
+    kernel_fourier_container get_kernel_container_entry(int channel) {return kernel_container_v->at(channel);}
+    // void add_kernel_container_entry(kernel_fourier *kernel, int channel =-1);
+    // void clear_kernels();
     // void add_kernel_container
 
 
@@ -51,7 +51,7 @@ namespace wcopreco{
     double LateLightFilter(double frequency2);
     void Remove_Baseline_Leading_Edge(OpWaveform &wfm);
     void Remove_Baseline_Secondary(OpWaveform &wfm);
-    OpWaveform Deconvolve_One_Wfm(OpWaveform &wfm, kernel_fourier_container kernel_container);
+    OpWaveform Deconvolve_One_Wfm(OpWaveform &wfm, const kernel_fourier_container &kernel_container);
     std::pair<double,double> cal_mean_rms(std::vector<double> wfm, int nbin);
 
 
@@ -72,7 +72,7 @@ namespace wcopreco{
     bool filter_status;
 
     std::vector<float>  op_gain;
-    std::vector<kernel_fourier_container> kernel_container_v;
+    const std::vector<kernel_fourier_container> *kernel_container_v;
     OpWaveformCollection deconvolved_collection;
   };
 

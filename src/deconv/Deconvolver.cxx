@@ -9,7 +9,7 @@ namespace wcopreco {
 
     int type = merged_beam.at(0).get_type();
     op_gain = merged_beam.get_op_gain();
-    kernel_container_v = input_k_container_v;
+    kernel_container_v = &input_k_container_v;
     filter_status = with_filters;
 
   }
@@ -33,28 +33,29 @@ namespace wcopreco {
         Remove_Baseline_Secondary(wfm);
 
         //Do deconvolution (need to add a way to incorporate kernels)
-        deconvolved_collection.add_waveform(Deconvolve_One_Wfm(wfm, kernel_container_v.at(wfm.get_ChannelNum())));
+        deconvolved_collection.add_waveform(Deconvolve_One_Wfm(wfm, kernel_container_v->at(wfm.get_ChannelNum())));
+        std::cout << "Delete\n";
 
         }
     return deconvolved_collection;
     }//End of Deconvolve_Collection
 
 
-    void Deconvolver::add_kernel_container_entry(kernel_fourier *kernel, int channel) {
-
-      //If channel is ommitted from the function arguments then we add the kernel to all
-      if (channel <0) {
-        for (int i =0 ; i<_cfg._num_channels; i++){
-          kernel_container_v.at(i).add_kernel(kernel);
-        }
-      }
-      else if (channel < _cfg._num_channels) {
-        kernel_container_v.at(channel).add_kernel(kernel);
-      }
-      else
-      {std::cout << "You're asking to add a kernel to a nonexistant channel. Options are 0-"<<_cfg._num_channels-1<<" for individual beam channels or input channel < 0 to apply to all channels (by default params )\n";}
-
-    }
+    // void Deconvolver::add_kernel_container_entry(kernel_fourier *kernel, int channel) {
+    //
+    //   //If channel is ommitted from the function arguments then we add the kernel to all
+    //   if (channel <0) {
+    //     for (int i =0 ; i<_cfg._num_channels; i++){
+    //       kernel_container_v->at(i).add_kernel(kernel);
+    //     }
+    //   }
+    //   else if (channel < _cfg._num_channels) {
+    //     kernel_container_v->at(channel).add_kernel(kernel);
+    //   }
+    //   else
+    //   {std::cout << "You're asking to add a kernel to a nonexistant channel. Options are 0-"<<_cfg._num_channels-1<<" for individual beam channels or input channel < 0 to apply to all channels (by default params )\n";}
+    //
+    // }
 
     double Deconvolver::HighFreqFilter(double frequency)
     {
@@ -142,7 +143,7 @@ namespace wcopreco {
        return maxdiff;
      }
 
-     OpWaveform Deconvolver::Deconvolve_One_Wfm(OpWaveform & wfm, kernel_fourier_container kernel_container) {
+     OpWaveform Deconvolver::Deconvolve_One_Wfm(OpWaveform & wfm, const kernel_fourier_container & kernel_container) {
        //BEGIN DECONVOLUTION MARKER
        std::vector<double> wfm_doubles(wfm.begin(), wfm.end());
        float bin_width = (_cfg._tick_width_us*1e-6 ); // e-6 to go from microseconds to seconds
@@ -207,7 +208,7 @@ namespace wcopreco {
 
 
       int channel = wfm.get_ChannelNum();
-        int num_kernels = kernel_container_v.at(channel).size();
+        int num_kernels = kernel_container_v->at(channel).size();
       std::vector<std::vector<double>> mag_kernel;
       mag_kernel.resize(num_kernels);
       std::vector<std::vector<double>> phase_kernel;
@@ -215,7 +216,7 @@ namespace wcopreco {
 
 
       for (int n=0; n < num_kernels; n++ ) {
-        kernel_container_v.at(channel).at(n) ->Get_pow_spec(nbins, bin_width, &mag_kernel.at(n), &phase_kernel.at(n));
+        kernel_container_v->at(channel).at(n) ->Get_pow_spec(nbins, bin_width, &mag_kernel.at(n), &phase_kernel.at(n));
 
       }
 
@@ -343,11 +344,11 @@ namespace wcopreco {
        return inverse_res1;
      }
 
-     void Deconvolver::clear_kernels() {
-       for (int i=0; i< kernel_container_v.size() ; i++) {
-         kernel_container_v.at(i).clear_kernels_v();
-       }
-     }
+     // void Deconvolver::clear_kernels() {
+     //   for (int i=0; i< kernel_container_v->size() ; i++) {
+     //     kernel_container_v->at(i).clear_kernels_v();
+     //   }
+     // }
 
 
 

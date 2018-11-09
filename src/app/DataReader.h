@@ -45,8 +45,6 @@ namespace wcopreco  {
       int type,
       OpWaveformCollection &wfm_collection);
 
-    void IAMTHENIGHT();
-
     //Make a bunch of root reading datamembers:
     Int_t nevents;
     TFile *file;

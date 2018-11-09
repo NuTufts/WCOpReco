@@ -49,9 +49,9 @@ namespace wcopreco{
 
       //flashes for cosmics
       std::vector<COphitSelection>  hits = hits_found.get_ophits_group();
-      hits_found.clear_ophits();
       wcopreco::Flashes_cosmic flashfinder_cosmic(&hits, _cfg._get_cfg_opflash());
       flashes_cosmic = flashfinder_cosmic.get_cosmic_flashes();
+      hits_found.clear_ophits();
       // std::cout << flashes_cosmic.size() << " Cosmic Flashes in Event\n";
 
       // std::cout << flashes.size() << " flashes were found in the cosmic selection\n";

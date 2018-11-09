@@ -54,6 +54,7 @@ namespace wcopreco  {
     OpflashSelection get_flashes(){return flashes;};
     OpWaveformCollection get_merged_beam(){return merged_beam;};
     OpWaveformCollection get_merged_cosmic(){return merged_cosmic;};
+    void clear_flashes();
 
   protected:
     Config_Params _cfg;

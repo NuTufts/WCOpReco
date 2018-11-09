@@ -60,7 +60,7 @@ int main(){
   wcopreco::Config_Params cfg_all;
   cfg_all.Check_common_parameters();
   for (int l=0;l<5;l++){
-
+    wcopreco::UBAlgo opreco_run(cfg_all);
   // //make root file of outputs to test
   // TFile output("OurOutput.root", "RECREATE");
   // //create TTree
@@ -92,7 +92,7 @@ int main(){
   // //loop over all events
 
     for (int EVENT_NUM = 0; EVENT_NUM < 52; EVENT_NUM ++){
-        wcopreco::UBAlgo opreco_run(cfg_all);
+
 
         // create UBEventWaveform object
         _UB_Ev_wfm = reader.Reader(EVENT_NUM);
@@ -178,7 +178,7 @@ int main(){
         // //     std::cout << flashes.at(i)->get_time() << "\n";
         // // }
         // OpReco->Fill();
-
+        opreco_run.clear_flashes();
     }
     // output.Write();
     // output.Close();

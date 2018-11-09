@@ -69,18 +69,27 @@ namespace wcopreco{
 
    wcopreco::UBAlgo::~UBAlgo(){
     for (auto it = flashes_beam.begin(); it!=flashes_beam.end(); it++){
-        std::cout << "Delete Flash\n";
         delete (*it);
       }
       for (auto it=flashes_cosmic.begin(); it!= flashes_cosmic.end(); it++){
-        std::cout << "Delete Flash\n";
-
         delete (*it);
       }
       flashes_beam.clear();
       flashes_cosmic.clear();
       flashes.clear();
   }
+
+   void wcopreco::UBAlgo::clear_flashes(){
+   for (auto it = flashes_beam.begin(); it!=flashes_beam.end(); it++){
+       delete (*it);
+     }
+     for (auto it=flashes_cosmic.begin(); it!= flashes_cosmic.end(); it++){
+       delete (*it);
+     }
+     flashes_beam.clear();
+     flashes_cosmic.clear();
+     flashes.clear();
+ }
 
 
 }

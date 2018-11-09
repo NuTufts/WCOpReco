@@ -34,7 +34,6 @@ namespace wcopreco {
 
         //Do deconvolution (need to add a way to incorporate kernels)
         deconvolved_collection.add_waveform(Deconvolve_One_Wfm(wfm, kernel_container_v->at(wfm.get_ChannelNum())));
-        std::cout << "Delete\n";
 
         }
     return deconvolved_collection;
@@ -339,7 +338,12 @@ namespace wcopreco {
    	       inverse_res1.at(i) = 0;
          }
        }
-
+       delete re;
+       delete im;
+       delete re_inv;
+       delete im_inv;
+       delete re_inv1;
+       delete im_inv1;
        //END OF DECONVOLUTION
        return inverse_res1;
      }

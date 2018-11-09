@@ -89,6 +89,8 @@ namespace wcopreco {
         mag_v->at(i) = magnitude;
         //End of mag_v calc
       }
+      delete re;
+      delete im;
       return ;
     }
 

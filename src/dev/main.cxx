@@ -90,7 +90,7 @@ int main(){
   // OpReco->Branch("PEperPMT_cosmic", &TPEperPMT_cosmic);
   // OpReco->Branch("PEperPMT_beam", &TPEperPMT_beam);
   // //loop over all events
-  for (int l=0;l<200;l++){
+  for (int l=0;l<1;l++){
     for (int EVENT_NUM = 0; EVENT_NUM < 52; EVENT_NUM ++){
 
         // create UBEventWaveform object
@@ -99,19 +99,19 @@ int main(){
         std::vector<float> op_gainerror = _UB_Ev_wfm.get_op_gainerror();
         //create vector of kernals
         std::vector<wcopreco::kernel_fourier_container> kernel_container_v = Build_UB_kernels(cfg_all, op_gain);
-        // //deconvole beam, find hits, make flashes
-        // opreco_run.Run(&_UB_Ev_wfm, &op_gain, &op_gainerror, &kernel_container_v);
-        // //get outputs
-        // wcopreco::OpWaveformCollection merged_beam = opreco_run.get_merged_beam();
-        // wcopreco::OpWaveformCollection merged_cosmic = opreco_run.get_merged_cosmic();
-        // wcopreco::OpflashSelection flashes = opreco_run.get_flashes();
-        // wcopreco::OpflashSelection flashes_cosmic = opreco_run.get_flashes_cosmic();
-        // wcopreco::OpflashSelection flashes_beam = opreco_run.get_flashes_beam();
-        // //check size of outputs
-        // // std::cout << flashes.size() << " :Number of flashes\n";
-        // // std::cout << flashes_cosmic.size() << " :Number of cosmic flashes\n";
-        // // std::cout << flashes_beam.size() << " :Number of beam flashes\n";
-        //
+        //deconvole beam, find hits, make flashes
+        opreco_run.Run(&_UB_Ev_wfm, &op_gain, &op_gainerror, &kernel_container_v);
+        //get outputs
+        wcopreco::OpWaveformCollection merged_beam = opreco_run.get_merged_beam();
+        wcopreco::OpWaveformCollection merged_cosmic = opreco_run.get_merged_cosmic();
+        wcopreco::OpflashSelection flashes = opreco_run.get_flashes();
+        wcopreco::OpflashSelection flashes_cosmic = opreco_run.get_flashes_cosmic();
+        wcopreco::OpflashSelection flashes_beam = opreco_run.get_flashes_beam();
+        //check size of outputs
+        // std::cout << flashes.size() << " :Number of flashes\n";
+        // std::cout << flashes_cosmic.size() << " :Number of cosmic flashes\n";
+        // std::cout << flashes_beam.size() << " :Number of beam flashes\n";
+
         // // fill root branches
         // int num_channels = cfg_all._get_cfg_deconvolver()._get_num_channels();
         // int num_flashes = flashes.size();

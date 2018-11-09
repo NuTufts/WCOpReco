@@ -35,7 +35,7 @@ namespace wcopreco  {
   class DataReader {
   public:
     DataReader(std::string *filepath);
-    ~DataReader() {};
+    ~DataReader() ;
 
     UBEventWaveform Reader(int event_num);
 

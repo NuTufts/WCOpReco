@@ -59,6 +59,12 @@ wcopreco::DataReader::DataReader(std::string *filepath) :
     std::cout << "Number of Events Constructed:    " << tree->GetEntries() << std::endl;
 
   }
+wcopreco::DataReader::~DataReader() {
+  delete cosmic_hg_wf;
+  delete cosmic_lg_wf ;
+  delete beam_hg_wf ;
+  delete beam_lg_wf ;
+}
 
 UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     if ( event_num > nevents)

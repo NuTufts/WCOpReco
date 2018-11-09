@@ -30,14 +30,14 @@ std::vector<wcopreco::kernel_fourier_container> Build_UB_kernels(wcopreco::Confi
   std::vector<wcopreco::kernel_fourier_container> kernel_container_v;
   kernel_container_v.resize(cfg_all._get_cfg_deconvolver()._get_num_channels());
   for (int i =0 ; i<cfg_all._get_cfg_deconvolver()._get_num_channels(); i++){
-    wcopreco::UB_rc *rc_good_ch = new wcopreco::UB_rc(true, false, cfg_all._get_cfg_ub_rc());
-    wcopreco::UB_rc *rc_bad_ch = new wcopreco::UB_rc(true, true, cfg_all._get_cfg_ub_rc());
     wcopreco::UB_spe *spe = new wcopreco::UB_spe(true, op_gain.at(i), cfg_all._get_cfg_ub_spe()); //Place UB_spe on heap, so object not deleted
     kernel_container_v.at(i).add_kernel(spe);
     if ( false == cfg_all._get_cfg_cophit()._channel_status_v.at(i) ){
+      wcopreco::UB_rc *rc_bad_ch = new wcopreco::UB_rc(true, true, cfg_all._get_cfg_ub_rc());
       kernel_container_v.at(i).add_kernel(rc_bad_ch);
     }
     else{
+      wcopreco::UB_rc *rc_good_ch = new wcopreco::UB_rc(true, false, cfg_all._get_cfg_ub_rc());
       kernel_container_v.at(i).add_kernel(rc_good_ch);
     }
   }
@@ -90,7 +90,7 @@ int main(){
   // OpReco->Branch("PEperPMT_cosmic", &TPEperPMT_cosmic);
   // OpReco->Branch("PEperPMT_beam", &TPEperPMT_beam);
   // //loop over all events
-  for (int l=0;l<1;l++){
+  for (int l=0;l<100;l++){
     for (int EVENT_NUM = 0; EVENT_NUM < 52; EVENT_NUM ++){
 
         // create UBEventWaveform object
@@ -99,14 +99,14 @@ int main(){
         std::vector<float> op_gainerror = _UB_Ev_wfm.get_op_gainerror();
         //create vector of kernals
         std::vector<wcopreco::kernel_fourier_container> kernel_container_v = Build_UB_kernels(cfg_all, op_gain);
-        //deconvole beam, find hits, make flashes
-        opreco_run.Run(&_UB_Ev_wfm, &op_gain, &op_gainerror, &kernel_container_v);
-        //get outputs
-        wcopreco::OpWaveformCollection merged_beam = opreco_run.get_merged_beam();
-        wcopreco::OpWaveformCollection merged_cosmic = opreco_run.get_merged_cosmic();
-        wcopreco::OpflashSelection flashes = opreco_run.get_flashes();
-        wcopreco::OpflashSelection flashes_cosmic = opreco_run.get_flashes_cosmic();
-        wcopreco::OpflashSelection flashes_beam = opreco_run.get_flashes_beam();
+        // //deconvole beam, find hits, make flashes
+        // opreco_run.Run(&_UB_Ev_wfm, &op_gain, &op_gainerror, &kernel_container_v);
+        // //get outputs
+        // wcopreco::OpWaveformCollection merged_beam = opreco_run.get_merged_beam();
+        // wcopreco::OpWaveformCollection merged_cosmic = opreco_run.get_merged_cosmic();
+        // wcopreco::OpflashSelection flashes = opreco_run.get_flashes();
+        // wcopreco::OpflashSelection flashes_cosmic = opreco_run.get_flashes_cosmic();
+        // wcopreco::OpflashSelection flashes_beam = opreco_run.get_flashes_beam();
         //check size of outputs
         // std::cout << flashes.size() << " :Number of flashes\n";
         // std::cout << flashes_cosmic.size() << " :Number of cosmic flashes\n";

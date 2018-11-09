@@ -46,13 +46,6 @@ std::vector<wcopreco::kernel_fourier_container> Build_UB_kernels(wcopreco::Confi
 
 int main(){
   clock_t t;
-//   clock_t dataread;
-//   clock_t satmerger;
-//   clock_t hitsbeam;
-//   clock_t flashbeam;
-//   clock_t hitscosmic;
-//   clock_t flashcosmic;
-//   clock_t flashfilter;
   t=clock();
 
   //Set the filepath
@@ -67,31 +60,101 @@ int main(){
   cfg_all.Check_common_parameters();
   wcopreco::UBAlgo opreco_run(cfg_all);
 
-  //change with a config parameter eventually?
+  //make root file of outputs to test
+  TFile output("OurOutput.root", "RECREATE");
+  //create TTree
+  TTree *OpReco = new TTree("OpReco", "A tree to hold outputs from OpReco");
+  //make objects to save
+  std::vector<std::vector<double>> Tmerged_beam;
+  std::vector<std::vector<double>> Tmerged_cosmic;
+  std::vector<double> TtotalPE_all;
+  std::vector<double> Tflashtime_all;
+  std::vector<double> TtotalPE_cosmic;
+  std::vector<double> Tflashtime_cosmic;
+  std::vector<double> TtotalPE_beam;
+  std::vector<double> Tflashtime_beam;
+  //create branches
+  OpReco->Branch("merged_beam", &Tmerged_beam);
+  OpReco->Branch("merged_cosmic", &Tmerged_cosmic);
+  OpReco->Branch("totalPE_all", &TtotalPE_all);
+  OpReco->Branch("flashtime_all", &Tflashtime_all);
+  OpReco->Branch("totalPE_cosmic", &TtotalPE_cosmic);
+  OpReco->Branch("flashtime_cosmic", &Tflashtime_cosmic);
+  OpReco->Branch("totalPE_beam", &TtotalPE_beam);
+  OpReco->Branch("flashtime_beam", &Tflashtime_beam);
+  //loop over all events
   for (int EVENT_NUM = 0; EVENT_NUM < 52; EVENT_NUM ++){
-
+      // create UBEventWaveform object
       _UB_Ev_wfm = reader.Reader(EVENT_NUM);
       std::vector<float> op_gain = _UB_Ev_wfm.get_op_gain();
       std::vector<float> op_gainerror = _UB_Ev_wfm.get_op_gainerror();
-
-      //Construct the vector of kernel containers (one container per channel)
-
+      //create vector of kernals
       std::vector<wcopreco::kernel_fourier_container> kernel_container_v = Build_UB_kernels(cfg_all, op_gain);
-
+      //deconvole beam, find hits, make flashes
       opreco_run.Run(&_UB_Ev_wfm, &op_gain, &op_gainerror, &kernel_container_v);
+      //get outputs
       wcopreco::OpWaveformCollection merged_beam = opreco_run.get_merged_beam();
       wcopreco::OpWaveformCollection merged_cosmic = opreco_run.get_merged_cosmic();
       wcopreco::OpflashSelection flashes = opreco_run.get_flashes();
       wcopreco::OpflashSelection flashes_cosmic = opreco_run.get_flashes_cosmic();
       wcopreco::OpflashSelection flashes_beam = opreco_run.get_flashes_beam();
-
+      //check size of outputs
       std::cout << flashes.size() << " :Number of flashes\n";
       std::cout << flashes_cosmic.size() << " :Number of cosmic flashes\n";
       std::cout << flashes_beam.size() << " :Number of beam flashes\n";
 
-  }
+      // fill root branches
+      Tmerged_beam.resize(merged_beam.size());
+      for (int i = 0; i<merged_beam.size(); i++){
+        Tmerged_beam.at(i).resize(merged_beam.at(i).size());
+        for (int j = 0; j<merged_beam.at(i).size(); j++){
+          Tmerged_beam.at(i).at(j) = merged_beam.at(i).at(j);
+        }
+      }
+      Tmerged_cosmic.resize(merged_cosmic.size());
+      for (int i = 0; i<merged_cosmic.size(); i++){
+        Tmerged_cosmic.at(i).resize(merged_cosmic.at(i).size());
+        for (int j = 0; j<merged_cosmic.at(i).size(); j++){
+          Tmerged_cosmic.at(i).at(j) = merged_cosmic.at(i).at(j);
+        }
+      }
+      TtotalPE_all.resize(flashes.size());
+      Tflashtime_all.resize(flashes.size());
+      for (int i =0; i<flashes.size(); i++){
+        TtotalPE_all.at(i) = flashes.at(i)->get_total_PE();
+        Tflashtime_all.at(i) = flashes.at(i)->get_time();
+      }
+      TtotalPE_cosmic.resize(flashes_cosmic.size());
+      Tflashtime_cosmic.resize(flashes_cosmic.size());
+      for (int i =0; i<flashes_cosmic.size(); i++){
+        TtotalPE_cosmic.at(i) = flashes_cosmic.at(i)->get_total_PE();
+        Tflashtime_cosmic.at(i) = flashes_cosmic.at(i)->get_time();
+      }
+      TtotalPE_beam.resize(flashes_beam.size());
+      Tflashtime_beam.resize(flashes_beam.size());
+      for (int i =0; i<flashes_beam.size(); i++){
+        TtotalPE_beam.at(i) = flashes_beam.at(i)->get_total_PE();
+        Tflashtime_beam.at(i) = flashes_beam.at(i)->get_time();
+      }
 
-//
+
+
+      // for (int i =0 ; i<flashes.size(); i++) {
+      //     std::cout << flashes.at(i)->get_time() << "\n";
+      // }
+
+      OpReco->Fill();
+  }
+  output.Write();
+  output.Close();
+
+//   clock_t dataread;
+//   clock_t satmerger;
+//   clock_t hitsbeam;
+//   clock_t flashbeam;
+//   clock_t hitscosmic;
+//   clock_t flashcosmic;
+//   clock_t flashfilter;
 //   if (do_loop){
 //     EVENT_NUM=0;
 //     size = 52;

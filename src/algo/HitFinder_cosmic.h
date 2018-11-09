@@ -20,8 +20,14 @@ namespace wcopreco{
                     std::vector<float> *op_gainerror ,
                     const Config_Hitfinder_Cosmic &configHC,
                     const Config_COpHit &configCOpH);
-    ~HitFinder_cosmic() {};
+    ~HitFinder_cosmic() {
+      for (auto it = op_hits.begin(); it!=op_hits.end(); it++){
+        delete (*it);
+      }
+      op_hits.clear();
+    };
 
+    void clear_ophits();
     std::vector<COphitSelection>  get_ophits_group() {return ophits_group;}
     COphitSelection               get_left_ophits() {return left_ophits;}
     COphitSelection               get_op_hits(){return op_hits;}

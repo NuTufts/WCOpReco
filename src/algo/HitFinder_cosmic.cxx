@@ -80,4 +80,11 @@ namespace wcopreco {
 
   }
 
+  void HitFinder_cosmic::clear_ophits(){
+    for (auto it = op_hits.begin(); it!=op_hits.end(); it++){
+      delete (*it);
+    }
+    op_hits.clear();
+  }
+
 }

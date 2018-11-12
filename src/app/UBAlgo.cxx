@@ -2,9 +2,13 @@
 
 namespace wcopreco{
 
-  wcopreco::UBAlgo::UBAlgo(const Config_Params &cfg_all)
-  : _cfg(cfg_all)
+  wcopreco::UBAlgo::UBAlgo()
+  //: _cfg(cfg_all)
   {};
+
+  void UBAlgo::Configure(const Config_Params &cfg_all){
+    _cfg = cfg_all;
+  };
 
   void UBAlgo::Run(UBEventWaveform * _UB_Ev_wfm,
                   std::vector<float> * op_gain,
@@ -54,8 +58,6 @@ namespace wcopreco{
       hits_found.clear_ophits();
       // std::cout << flashes_cosmic.size() << " Cosmic Flashes in Event\n";
 
-      // std::cout << flashes.size() << " flashes were found in the cosmic selection\n";
-
       //flash filtering
       wcopreco::FlashFiltering flashesfiltered(&flashes_cosmic, &flashes_beam, _cfg._get_cfg_flashfiltering());
       flashes = flashesfiltered.get_flashes();
@@ -68,7 +70,7 @@ namespace wcopreco{
   }
 
 
-   wcopreco::UBAlgo::~UBAlgo(){
+  wcopreco::UBAlgo::~UBAlgo(){
     for (auto it = flashes_beam.begin(); it!=flashes_beam.end(); it++){
         delete (*it);
       }

@@ -41,9 +41,11 @@ namespace wcopreco  {
   //This is a class to run the WCOpReco code, for uboone
   class UBAlgo {
   public:
-    UBAlgo(const Config_Params &cfg_all);
+    //UBAlgo(const Config_Params &cfg_all);
+    UBAlgo();
     ~UBAlgo();
 
+    void Configure(const Config_Params &cfg_all);
     void Run(UBEventWaveform * _UB_Ev_wfm,
             std::vector<float> * op_gain,
             std::vector<float> * op_gainerror,

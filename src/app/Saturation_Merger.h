@@ -21,9 +21,6 @@ namespace wcopreco{
     UBEventWaveform get_merged_UB_Ev() {return UB_Ev_Merged;}
 
 
-
-
-
   protected:
     Config_Saturation_Merger _cfg;
     float findScaling(int channel);
@@ -43,9 +40,6 @@ namespace wcopreco{
     OpWaveformCollection merged_cosmic;
     OpWaveformCollection merged_beam;
     UBEventWaveform UB_Ev_Merged;
-
-
-
 
 
   };

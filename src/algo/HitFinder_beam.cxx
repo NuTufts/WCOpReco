@@ -10,7 +10,6 @@ namespace wcopreco {
     //perform deconvolution with kernals add and with filters (true,true)
     wcopreco::Deconvolver filtered_wfm(deconvolved_beam, true, kernel_container_v, cfg_DC);
 
-
     OpWaveformCollection filtered_collection = filtered_wfm.Deconvolve_Collection(deconvolved_beam);
 
     totPE_v.resize(_cfg._nbins_beam/_cfg._rebin_frac);
@@ -30,9 +29,7 @@ namespace wcopreco {
                   l1_totPE_v,
                   l1_mult_v,
                   ch);
-
     }
-
   }
 
   void HitFinder_beam::Perform_L1(std::vector<double> inverse_res1,
@@ -41,11 +38,8 @@ namespace wcopreco {
                                std::vector<double> &mult_v,
                                std::vector<double> &l1_totPE_v,
                                std::vector<double> &l1_mult_v,
-                               int ch
-                               )
+                               int ch)
   {
-    //function to perform L1
-
     // prepare L1 fit ...
     std::vector<float> rebin_v;
     rebin_v.resize(_cfg._nbins_beam/_cfg._rebin_frac);
@@ -62,6 +56,7 @@ namespace wcopreco {
     decon_vv[ch].resize(_cfg._nbins_beam/_cfg._rebin_frac);
     for (int i=0;i!=_cfg._nbins_beam/_cfg._rebin_frac;i++){
       decon_vv[ch].at(i) = rebin_v[i];
+
     }
 
     // work on the L1 ...

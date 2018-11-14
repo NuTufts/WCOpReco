@@ -105,11 +105,8 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
     LoopThroughWfms(*cosmic_lg_opch, *cosmic_lg_timestamp, *cosmic_lg_wf, kcosmic_lg, CLG_wfm_collection);
 
     _UB_Ev_wfm.add_entry(BHG_wfm_collection, kbeam_hg );
-
     _UB_Ev_wfm.add_entry(BLG_wfm_collection, kbeam_lg );
-
     _UB_Ev_wfm.add_entry(CHG_wfm_collection, kcosmic_hg );
-
     _UB_Ev_wfm.add_entry(CLG_wfm_collection, kcosmic_lg );
 
     std::map <int,int> testmap = _UB_Ev_wfm.get_type2index();
@@ -129,7 +126,6 @@ UBEventWaveform wcopreco::DataReader::Reader(int event_num) {
       if (ch[j]%100 > 31) continue;
       TH1S *waveform = (TH1S*)Eventwaveform_root.At(j);
       Int_t n = waveform->GetNbinsX();
-
       //These IF statements enforces cosmic wf to have <100 bins (~40), and Beam to have >1000 (~1500)
       if (((type == kbeam_hg)||(type==kbeam_lg) )&& n-1 > 1000 ){
           wcopreco::OpWaveform wfm(ch[j]%100, timestamp[j]-triggerTime, type, 1500);

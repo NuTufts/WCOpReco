@@ -16,14 +16,7 @@ namespace wcopreco {
     CHG_WFs = (UB_Ev.get_wfm_v() [kcosmic_hg]);
     CLG_WFs = (UB_Ev.get_wfm_v() [kcosmic_lg]);
 
-    // std::cout << "BeamLowGainWf 1 BEFORE Scaling: " << UB_Ev.get__wfm_v().at(1).at(18).at(750) << "\n";
-    // std::cout << "CosmicLowGainWf 1 BEFORE  Scaling: " << UB_Ev.get__wfm_v().at(3).at(18).at(20) << "\n";
-
     scale_lowgains(&BLG_WFs,&CLG_WFs);
-    //Note the original waveforms in UB_Ev do not change, just those in our copies
-    // std::cout << "BeamLGWF_COPY 1 AFTER  Scaling: " << BLG_WFs.at(18).at(750) << "\n";
-    // std::cout << "CosmicLGWF_COPY 1 AFTER  Scaling: " << CLG_WFs.at(18).at(20) << "\n";
-
 
     //Set data member merged versions of waveforms
     merged_beam = *beam_merger(&BHG_WFs, &BLG_WFs);
@@ -43,7 +36,7 @@ namespace wcopreco {
     UB_Ev_Merged.set_op_gain(   UB_Ev.get_op_gain()   );
     UB_Ev_Merged.set_op_gainerror( UB_Ev.get_op_gainerror()   );
 
-
+    std::cout << UB_Ev_Merged.get_wfm_v().at(0).at(22).at(j)<<" " << UB_Ev_Merged.get_wfm_v().at(0).size() << std::endl;
   }//End of Class Constructor
 
   void Saturation_Merger::scale_lowgains(OpWaveformCollection *BLG_WFs, OpWaveformCollection *CLG_WFs){
@@ -96,8 +89,6 @@ namespace wcopreco {
   }//End of Function
 
   double wcopreco::Saturation_Merger::findBaselineLg(OpWaveform *wfm, int nbin){
-    // I think this function needs the histogram, it's using fill to bin up the
-    // different signals to find the mode in the first 20 ticks of the wfm --Josh
     TH1F *h = new TH1F("h","",1000,_cfg._low_bound_baseline_search-0.5,_cfg._high_bound_baseline_search-0.5);
     double baseline=0;
     for(int i=0; i!=_cfg._nbins_baseline_search; i++){
@@ -112,22 +103,15 @@ namespace wcopreco {
   }//End of Function
 
 OpWaveformCollection* Saturation_Merger::cosmic_merger(OpWaveformCollection* CHG, OpWaveformCollection* CLG){
-  //first pair the low and high gain - can probably make as seperate function...
-  //want to remove hard coded values eventually
   short saturation_threshold =_cfg._sat_threshold;
   int tick_window = _cfg._cosmic_tick_window;
   float tick = _cfg._tick_width_us;
 
   /*
-  Going to have to loop through the high gains, first we want to see if a waveform is
-  saturated. Is so we then need to see if it is isolated from all possible low gains
-  If it is isolated, at it to the output, we want that. If not isolated then add the low gain version
-  to the output instead. Those should be the 3 cases we care about. The output of this should
-  be the same size as the inputted CHGcollection, so we can just update that collection by reference
-  instead. That will save us memory.
+  Loop through high gain discriminators, if a waveform is saturated:
+  -- if isolated from all low gain discriminators add to output
+  -- if not isolated add the corresponding low gain discriminator
   */
-
-  //loop through high gain (important) collection:
 
   //Create a map to ensure we only use each lowgain wfm at most once.
   std::map<int,bool> is_used;
@@ -161,12 +145,7 @@ OpWaveformCollection* Saturation_Merger::cosmic_merger(OpWaveformCollection* CHG
 
       //Loop through all LG looking for a friend
       for (int idx_clg = 0; idx_clg<CLG->size(); idx_clg++){
-        /*
-        If this lowgain waveform has already been used, skip to the next one
-        Meant to duplicate WC's deletion of the low gain wfm after use.
-        As far as I can tell all this is doing is saving you the trouble of
-        calculating the next few stuff for this waveform
-        */
+        //If this lowgain waveform has already been used, skip to the next one
         if (is_used[idx_clg]) {
           continue;
         }
@@ -188,7 +167,7 @@ OpWaveformCollection* Saturation_Merger::cosmic_merger(OpWaveformCollection* CHG
     }
     //Since this is a boolean it should always be true or false, but else if for check
     else if (is_saturated ==false){
-      //It was unsaturated.
+      //It was not saturated.
       //Keep it in the collection to be returned.
       //Go Through Low Gains, and mark any that match it as used so they
       //don't go in the end collection as well.
@@ -242,17 +221,14 @@ OpWaveformCollection* Saturation_Merger::beam_merger(OpWaveformCollection* BHG, 
   for(int i =0; i<_cfg._num_channels; i++){
 
     //These calls get the index of the wfm that occurs at the channel i
-    //for each gain, in case the two Opwaveformcollections aren't ordered the
-    //same. The at(0) is because get_channel2index returns a vector of wfms
-    //occurring at channel i but for beam we expect just one wfm per channel
+    //for each gain, in case the two Opwaveformcollections aren't ordered the same
 
     idx_ch_hg = BHG->get_channel2index(i).at(0);
     idx_ch_lg = BLG->get_channel2index(i).at(0);
 
-
     is_saturated = false;
     count_bin_sat=0;
-    //Now loop through HG wfm to see if saturated (3+ ticks at value  >4050)
+    //Now loop through HG wfm to see if saturated (3+ ticks at value >4050)
     for (int bin =0; bin<BHG->at(idx_ch_hg).size(); bin++){
       if (BHG->at(idx_ch_hg).at(bin) > saturation_threshold) {
         count_bin_sat++ ;

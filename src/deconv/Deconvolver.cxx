@@ -15,7 +15,6 @@ namespace wcopreco {
   }
 
 
-
   OpWaveformCollection wcopreco::Deconvolver::Deconvolve_Collection(OpWaveformCollection & merged_beam)
 
     {
@@ -34,8 +33,8 @@ namespace wcopreco {
 
         //Do deconvolution (need to add a way to incorporate kernels)
         deconvolved_collection.add_waveform(Deconvolve_One_Wfm(wfm, kernel_container_v->at(wfm.get_ChannelNum())));
+      }
 
-        }
     return deconvolved_collection;
     }//End of Deconvolve_Collection
 
@@ -168,7 +167,6 @@ namespace wcopreco {
 
        fftr2c->GetPointsComplex(re, im); //Put the values in the arrays
 
-
        //Copy those array values into vectors passed in by reference.
        // This is inefficient, but makes for an easier user interface.
        double im_i =0;
@@ -184,7 +182,6 @@ namespace wcopreco {
          }
          phase_raw.at(i) = ph;
 
-
          //End of phase_raw calc
 
          //Calculate the mag_v
@@ -192,7 +189,6 @@ namespace wcopreco {
          mag_raw[i] = magnitude;
          //End of mag_v calc
        }
-
 
 
        delete fftr2c;
@@ -204,10 +200,8 @@ namespace wcopreco {
        double value_im1[nbins];
 
        //Set up the kernels to be deconvolved out:
-
-
       int channel = wfm.get_ChannelNum();
-        int num_kernels = kernel_container_v->at(channel).size();
+      int num_kernels = kernel_container_v->at(channel).size();
       std::vector<std::vector<double>> mag_kernel;
       mag_kernel.resize(num_kernels);
       std::vector<std::vector<double>> phase_kernel;
@@ -215,10 +209,8 @@ namespace wcopreco {
 
 
       for (int n=0; n < num_kernels; n++ ) {
-        kernel_container_v->at(channel).at(n) ->Get_pow_spec(nbins, bin_width, &mag_kernel.at(n), &phase_kernel.at(n));
-
+        kernel_container_v->at(channel).at(n)->Get_pow_spec(nbins, bin_width, &mag_kernel.at(n), &phase_kernel.at(n));
       }
-
 
        for (int i=0;i<nbins;i++){
          double freq;
@@ -239,14 +231,14 @@ namespace wcopreco {
 
 
          if (i==0) rho = 0;
-         //Perform Decon with Filters
+         //Perform Deconv with Filters
          if (filter_status){
            value_re[i] = rho * (cos(phi)/nbins) * LateLightFilter(freq);
            value_im[i] = rho * (sin(phi)/nbins) * LateLightFilter(freq);
            value_re1[i] = rho * (cos(phi)/nbins) * HighFreqFilter(freq);
            value_im1[i] = rho * (sin(phi)/nbins) * HighFreqFilter(freq);
          }
-         //Perform Decon without Filters
+         //Perform Deconv without Filters
          else{
            value_re[i] = rho * (cos(phi)/nbins) ;
            value_im[i] = rho * (sin(phi)/nbins) ;
@@ -274,18 +266,18 @@ namespace wcopreco {
        };
        delete ifft;
 
-       // calcumate rms and mean ...
+       // calcumate rms and mean
        std::pair<double,double> results = cal_mean_rms(inverse_res, nbins);
        std::vector<double> hflag;
        hflag.resize(nbins);
        for (int i=0;i<nbins;i++){
          double content = inverse_res.at(i);
          if (fabs(content-results.first)>5*results.second){
-   	       for (int j=-20;j!=20;j++){
-             double flag =1.0;
-             if((i+j) >= 0 && (i+j) < _cfg._nbins_beam) hflag.at(i+j) = flag;
-   	       }
-          }
+	   for (int j=-20;j!=20;j++){
+	     double flag =1.0;
+	     if((i+j) >= 0 && (i+j) < _cfg._nbins_beam) hflag.at(i+j) = flag;
+	   }
+	 }
        }
 
        // solve for baseline
@@ -298,14 +290,11 @@ namespace wcopreco {
 
        ifft1->GetPointsComplex(re_inv1, im_inv1);
 
-
        OpWaveform inverse_res1(channel,wfm.get_time_from_trigger(), wfm.get_type(), nbins);
        for (int i = 0; i < nbins ; i++){
          double value = re_inv1[i];
          inverse_res1.at(i) = value;
-       };
-
-
+       }
 
        double A11 = 0, A12 = 0, A21=0, A22=0;
        double B1 = 0, B2 = 0;

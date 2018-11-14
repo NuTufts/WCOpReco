@@ -36,7 +36,6 @@ namespace wcopreco {
     UB_Ev_Merged.set_op_gain(   UB_Ev.get_op_gain()   );
     UB_Ev_Merged.set_op_gainerror( UB_Ev.get_op_gainerror()   );
 
-    std::cout << UB_Ev_Merged.get_wfm_v().at(0).at(22).at(j)<<" " << UB_Ev_Merged.get_wfm_v().at(0).size() << std::endl;
   }//End of Class Constructor
 
   void Saturation_Merger::scale_lowgains(OpWaveformCollection *BLG_WFs, OpWaveformCollection *CLG_WFs){

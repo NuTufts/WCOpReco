@@ -16,17 +16,17 @@ namespace wcopreco{
     COphit(int ch_no, OpWaveform *wfm, double time, double gain, double gain_err, const Config_COpHit &config);
     ~COphit();
 
-    double get_time(){return time;};
-    double get_baseline(){return baseline;};
-    double get_peak(){return peak;};
-    double get_integral(){return integral;};
-    double get_gain(){return gain;}
-    int get_ch_no(){return channel_no;};
+    double get_time() const {return time;};
+    double get_baseline() const {return baseline;};
+    double get_peak() const {return peak;};
+    double get_integral() const {return integral;};
+    double get_gain() const {return gain;}
+    int get_ch_no() const {return channel_no;};
 
     // derived
-    double get_PE(){return PE;};
-    double get_PE_err(){return PE_err;};
-    bool get_type(){return good_baseline;};
+    double get_PE() const {return PE;};
+    double get_PE_err() const {return PE_err;};
+    bool get_type()const {return good_baseline;};
 
 
   protected:

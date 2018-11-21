@@ -16,22 +16,22 @@ namespace wcopreco{
     void Add_l1info(std::vector<double>* vec1, std::vector<double> *vec2, double start_time , int start_bin, int end_bin, const Config_Opflash &configOpF);
 
     void set_flash_id(int value){flash_id = value;};
-    int get_flash_id(){return flash_id;};
+    int get_flash_id() const {return flash_id;};
 
-    double get_time(){return time;};
-    double get_total_PE(){return total_PE;};
-    double get_PE(int ch){return PE[ch];};
-    std::vector<double> get_pe_v(){return PE;};
-    double get_PE_err(int ch){return PE_err[ch];};
+    double get_time() const {return time;};
+    double get_total_PE() const {return total_PE;};
+    double get_PE(int ch) const {return PE[ch];};
+    std::vector<double> get_pe_v() const {return PE;};
+    double get_PE_err(int ch) const {return PE_err[ch];};
     bool get_fired(int ch);
-    int get_num_fired(){return fired_channels.size();};
+    int get_num_fired() const {return fired_channels.size();};
 
-    int get_type(){return type;}
-    double get_low_time(){return low_time;};
-    double get_high_time(){return high_time;};
+    int get_type() const {return type;}
+    double get_low_time() const {return low_time;};
+    double get_high_time() const {return high_time;};
 
-    std::vector<double>& get_l1_fired_time(){return l1_fired_time;};
-    std::vector<double>& get_l1_fired_pe(){return l1_fired_pe;};
+    std::vector<double>& get_l1_fired_time() {return l1_fired_time;};
+    std::vector<double>& get_l1_fired_pe() {return l1_fired_pe;};
 
     void swap_channels();
 

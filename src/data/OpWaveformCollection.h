@@ -24,10 +24,10 @@ namespace wcopreco {
     std::vector<int> get_channel2index(int channel) {return channel2index[channel];};
     void add_waveform(OpWaveform wfm);
     
-    std::vector<float> get_op_gain() {return op_gain;}
+    std::vector<float> get_op_gain() const {return op_gain;}
     void set_op_gain(std::vector<float> gains_v) {op_gain = gains_v;}
 
-    std::vector<float> get_op_gainerror() {return op_gainerror;}
+    std::vector<float> get_op_gainerror() const {return op_gainerror;}
     void set_op_gainerror(std::vector<float> gainserror_v) {op_gainerror = gainserror_v;}
 
   protected:

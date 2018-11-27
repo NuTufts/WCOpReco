@@ -46,10 +46,10 @@ namespace wcopreco  {
     ~UBAlgo();
 
     void Configure(const Config_Params &cfg_all);
-    void Run(UBEventWaveform * _UB_Ev_wfm,
-            std::vector<float> * op_gain,
-            std::vector<float> * op_gainerror,
-            std::vector<wcopreco::kernel_fourier_container> * kernel_container_v);
+    void SaturationCorrection(UBEventWaveform *_UB_Ev_wfm);
+    void Run(std::vector<float> * op_gain,
+	     std::vector<float> * op_gainerror,
+	     std::vector<wcopreco::kernel_fourier_container> * kernel_container_v);
 
     OpflashSelection get_flashes_cosmic(){return flashes_cosmic;};
     OpflashSelection get_flashes_beam(){return flashes_beam;};

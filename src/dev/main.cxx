@@ -30,6 +30,7 @@ std::vector<wcopreco::kernel_fourier_container> Build_UB_kernels(wcopreco::Confi
   std::vector<wcopreco::kernel_fourier_container> kernel_container_v;
   kernel_container_v.resize(cfg_all._get_cfg_deconvolver()._get_num_channels());
   for (int i =0 ; i<cfg_all._get_cfg_deconvolver()._get_num_channels(); i++){
+
     wcopreco::UB_spe *spe = new wcopreco::UB_spe(true, op_gain.at(i), cfg_all._get_cfg_ub_spe()); //Place UB_spe on heap, so object not deleted
     kernel_container_v.at(i).add_kernel(spe);
     if ( false == cfg_all._get_cfg_cophit()._channel_status_v.at(i) ){
@@ -40,6 +41,7 @@ std::vector<wcopreco::kernel_fourier_container> Build_UB_kernels(wcopreco::Confi
       wcopreco::UB_rc *rc_good_ch = new wcopreco::UB_rc(true, false, cfg_all._get_cfg_ub_rc());
       kernel_container_v.at(i).add_kernel(rc_good_ch);
     }
+
   }
 
   return kernel_container_v;
@@ -50,7 +52,7 @@ int main(){
   t=clock();
 
   //Set the filepath
-  std::string file = "src/data/celltree.root";
+  std::string file = "src/data/celltreeMC_modified.root";
   std::cout << "\n\nFilepath is set to:   " << file << std::endl;
 
   //Open the reader, choose event number, create the UBEventWaveform _UB_Ev_wfm
@@ -89,17 +91,19 @@ int main(){
   OpReco->Branch("PEperPMT_cosmic", &TPEperPMT_cosmic);
   OpReco->Branch("PEperPMT_beam", &TPEperPMT_beam);
   //loop over all events
-  for (int EVENT_NUM = 0; EVENT_NUM < 52; EVENT_NUM ++){
+  for (int EVENT_NUM = 0; EVENT_NUM < 3; EVENT_NUM ++){
     wcopreco::UBAlgo opreco_run;
     opreco_run.Configure(cfg_all);
     // create UBEventWaveform object
     _UB_Ev_wfm = reader.Reader(EVENT_NUM);
     std::vector<float> op_gain = _UB_Ev_wfm.get_op_gain();
     std::vector<float> op_gainerror = _UB_Ev_wfm.get_op_gainerror();
-    //create vector of kernals
+    //create vector of kernels
     std::vector<wcopreco::kernel_fourier_container> kernel_container_v = Build_UB_kernels(cfg_all, op_gain);
+    //saturation correction
+    opreco_run.SaturationCorrection(&_UB_Ev_wfm);
     //deconvole beam, find hits, make flashes
-    opreco_run.Run(&_UB_Ev_wfm, &op_gain, &op_gainerror, &kernel_container_v);
+    opreco_run.Run(&op_gain, &op_gainerror, &kernel_container_v);
     //get outputs
     wcopreco::OpWaveformCollection merged_beam = opreco_run.get_merged_beam();
     wcopreco::OpWaveformCollection merged_cosmic = opreco_run.get_merged_cosmic();
@@ -107,16 +111,16 @@ int main(){
     wcopreco::OpflashSelection flashes_cosmic = opreco_run.get_flashes_cosmic();
     wcopreco::OpflashSelection flashes_beam = opreco_run.get_flashes_beam();
     // check size of outputs
-    // std::cout << flashes.size() << " :Number of flashes\n";
-    // std::cout << flashes_cosmic.size() << " :Number of cosmic flashes\n";
-    // std::cout << flashes_beam.size() << " :Number of beam flashes\n";
-    
+    //std::cout << flashes.size() << " :Number of flashes\n";
+    //std::cout << flashes_cosmic.size() << " :Number of cosmic flashes\n";
+    //std::cout << flashes_beam.size() << " :Number of beam flashes\n";
+    //std::cout << flashes_beam[0]->get_total_PE() << " :beam flash[0] totPE\n";
     // fill root branches
     int num_channels = cfg_all._get_cfg_deconvolver()._get_num_channels();
     int num_flashes = flashes.size();
     int num_flashes_cosmic = flashes_cosmic.size();
     int num_flashes_beam = flashes_beam.size();
-    
+    /*    
     Tmerged_beam.resize(num_channels);
     for (int i = 0; i<num_channels; i++){
       Tmerged_beam.at(i).resize(merged_beam.at(i).size());
@@ -131,12 +135,14 @@ int main(){
 	Tmerged_cosmic.at(i).at(j) = merged_cosmic.at(i).at(j);
       }
     }
+    */
     TtotalPE_all.resize(num_flashes);
     Tflashtime_all.resize(num_flashes);
     for (int i =0; i<num_flashes; i++){
       TtotalPE_all.at(i) = flashes.at(i)->get_total_PE();
       Tflashtime_all.at(i) = flashes.at(i)->get_time();
     }
+    /*
     TtotalPE_cosmic.resize(num_flashes_cosmic);
     Tflashtime_cosmic.resize(num_flashes_cosmic);
     for (int i =0; i<num_flashes_cosmic; i++){
@@ -149,6 +155,7 @@ int main(){
       TtotalPE_beam.at(i) = flashes_beam.at(i)->get_total_PE();
       Tflashtime_beam.at(i) = flashes_beam.at(i)->get_time();
     }
+    */
     TPEperPMT_all.resize(num_flashes);
     for (int i = 0; i < num_flashes; i++){
       TPEperPMT_all.at(i).resize(num_channels);
@@ -156,6 +163,7 @@ int main(){
 	TPEperPMT_all.at(i).at(j) = flashes.at(i)->get_PE(j);
       }
     }
+    /*
     TPEperPMT_cosmic.resize(num_flashes_cosmic);
     for (int i = 0; i < num_flashes_cosmic; i++){
       TPEperPMT_cosmic.at(i).resize(num_channels);
@@ -170,7 +178,7 @@ int main(){
 	TPEperPMT_beam.at(i).at(j) = flashes_beam.at(i)->get_PE(j);
       }
     }
-    
+    */
     // for (int i =0 ; i<flashes.size(); i++) {
     //     std::cout << flashes.at(i)->get_time() << "\n";
     // }

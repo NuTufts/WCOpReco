@@ -47,6 +47,8 @@ namespace wcopreco  {
 
     void Configure(const Config_Params &cfg_all);
     void SaturationCorrection(UBEventWaveform *_UB_Ev_wfm);
+    void set_merged_beam(OpWaveformCollection &ext_merged_beam);
+    void set_merged_cosmic(OpWaveformCollection &ext_merged_cosmic);
     void Run(std::vector<float> * op_gain,
 	     std::vector<float> * op_gainerror,
 	     std::vector<wcopreco::kernel_fourier_container> * kernel_container_v);

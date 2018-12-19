@@ -18,6 +18,12 @@ namespace wcopreco{
     //wcopreco::UBEventWaveform UB_Ev_Merged = merger.get_merged_UB_Ev();
 
   }
+  void UBAlgo::set_merged_beam(OpWaveformCollection &ext_merged_beam){
+    merged_beam = ext_merged_beam;
+  }
+  void UBAlgo::set_merged_cosmic(OpWaveformCollection &ext_merged_cosmic){
+    merged_cosmic = ext_merged_cosmic;
+  }
   void UBAlgo::Run(std::vector<float> * op_gain,
 		   std::vector<float> * op_gainerror,
 		   std::vector<wcopreco::kernel_fourier_container> * kernel_container_v){

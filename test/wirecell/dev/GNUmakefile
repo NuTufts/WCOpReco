@@ -3,11 +3,12 @@ CFLAGS   =   -g -fPIC
 CFLAGS   += `root-config --cflags` -DUSE_OPENCV=1
 
 INCLUDES = -I$(OPENCV_INCDIR)
-INCLUDES += -I$(EIGEN_INCDIR)
+#INCLUDES += -I$(EIGEN_INCDIR)
+INCLUDES  += $(addprefix -I,$(EIGEN_INCDIR))
 
 LDFLAGS  =  `root-config --ldflags` -lstdc++
 LIBS     =  `root-config --libs`
-LIBS     += -L$(OPENCV_LIBDIR) -lopencv_core
+#LIBS     += -L$(OPENCV_LIBDIR) -lopencv_core
 
 LIB = ../libWC_test.so
 WCLIBDIR = ..

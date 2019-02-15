@@ -58,9 +58,11 @@ namespace wcopreco  {
     OpflashSelection get_flashes(){return flashes;};
     OpWaveformCollection get_merged_beam(){return merged_beam;};
     OpWaveformCollection get_merged_cosmic(){return merged_cosmic;};
+    std::vector< std::vector<double> > get_decon_vv(){return decon_vv;};
     void clear_flashes();
 
   protected:
+    std::vector< std::vector<double> > decon_vv;
     Config_Params _cfg;
     OpflashSelection flashes_cosmic;
     OpflashSelection flashes_beam;

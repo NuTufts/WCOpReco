@@ -14,7 +14,7 @@ LDLIBS   += $(LDFLAGS) $(ROOTLIBS)
 
 HEADERS   = $(wildcard *.h)
 PACKAGE_HEADERS = $(wildcard $(WCOPRECO_INCDIR)/WCOpReco/*.h)
-#build/bin build/lib build/python src/algo
+
 INCLUDES  += $(addprefix -I,$(EIGEN_INCDIR))
 INCLUDES  += -I. -I$(WCOPRECO_INCDIR)
 
